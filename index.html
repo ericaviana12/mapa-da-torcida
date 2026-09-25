@@ -18,7 +18,7 @@
         crossorigin=""
     >
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./style.css?v=4">
 </head>
 
 <body>
@@ -51,8 +51,6 @@
 
 
     <main>
-
-        <!-- HERO -->
 
         <section class="hero">
 
@@ -106,8 +104,6 @@
 
         </section>
 
-
-        <!-- CONTADORES -->
 
         <section class="counter-section">
 
@@ -184,8 +180,6 @@
 
         </section>
 
-
-        <!-- MAPA -->
 
         <section class="map-section" id="mapa">
 
@@ -268,8 +262,6 @@
         </section>
 
 
-        <!-- ESTATÍSTICAS -->
-
         <section class="stats-section" id="estatisticas">
 
             <div class="section-heading centered">
@@ -292,8 +284,6 @@
 
 
             <div class="stats-grid">
-
-                <!-- GÊNERO -->
 
                 <article class="stats-card">
 
@@ -330,6 +320,7 @@
 
                             <div class="gender-label">
                                 <span>Feminino</span>
+
                                 <strong id="genderFemalePercent">
                                     0%
                                 </strong>
@@ -349,6 +340,7 @@
 
                             <div class="gender-label">
                                 <span>Masculino</span>
+
                                 <strong id="genderMalePercent">
                                     0%
                                 </strong>
@@ -368,6 +360,7 @@
 
                             <div class="gender-label">
                                 <span>Não binário</span>
+
                                 <strong id="genderNonBinaryPercent">
                                     0%
                                 </strong>
@@ -387,6 +380,7 @@
 
                             <div class="gender-label">
                                 <span>Outros</span>
+
                                 <strong id="genderOtherPercent">
                                     0%
                                 </strong>
@@ -405,7 +399,10 @@
                         <div class="gender-row">
 
                             <div class="gender-label">
-                                <span>Prefiro não informar</span>
+                                <span>
+                                    Prefiro não informar
+                                </span>
+
                                 <strong id="genderPrivatePercent">
                                     0%
                                 </strong>
@@ -430,8 +427,6 @@
 
                 </article>
 
-
-                <!-- ORIGEM -->
 
                 <article class="stats-card origin-card">
 
@@ -519,8 +514,6 @@
         </section>
 
 
-        <!-- TORCIDA PELO MUNDO -->
-
         <section class="world-section" id="mundo">
 
             <div class="section-heading centered">
@@ -542,6 +535,7 @@
             >
 
                 <div class="country-card">
+
                     <span>🌎</span>
 
                     <strong>
@@ -551,14 +545,13 @@
                     <small>
                         0 torcedores
                     </small>
+
                 </div>
 
             </div>
 
         </section>
 
-
-        <!-- PARTICIPAÇÃO -->
 
         <section class="join-section" id="participar">
 
@@ -580,7 +573,10 @@
                         para todo mundo o tamanho dessa torcida.
                     </p>
 
-                    <a href="#formulario" class="primary-button">
+                    <a
+                        href="#formulario"
+                        class="primary-button"
+                    >
                         QUERO FAZER PARTE
                     </a>
 
@@ -589,10 +585,21 @@
 
                 <div class="join-decoration">
 
-                    <div class="map-pin pin-one">●</div>
-                    <div class="map-pin pin-two">●</div>
-                    <div class="map-pin pin-three">●</div>
-                    <div class="map-pin pin-four">●</div>
+                    <div class="map-pin pin-one">
+                        ●
+                    </div>
+
+                    <div class="map-pin pin-two">
+                        ●
+                    </div>
+
+                    <div class="map-pin pin-three">
+                        ●
+                    </div>
+
+                    <div class="map-pin pin-four">
+                        ●
+                    </div>
 
                     <div class="join-circle">
                         🇧🇷
@@ -604,8 +611,6 @@
 
         </section>
 
-
-        <!-- FORMULÁRIO -->
 
         <section class="form-section" id="formulario">
 
@@ -665,7 +670,7 @@
                         type="number"
                         id="age"
                         name="age"
-                        min="1"
+                        min="13"
                         max="120"
                         placeholder="Ex.: 32"
                         required
@@ -717,8 +722,6 @@
                 </div>
 
 
-                <!-- BRASIL -->
-
                 <div
                     class="location-fields brasil-fields"
                     id="brazilFields"
@@ -733,6 +736,7 @@
                         <select
                             id="state"
                             name="state"
+                            required
                         >
 
                             <option value="">
@@ -781,6 +785,7 @@
                         <select
                             id="city"
                             name="city"
+                            required
                             disabled
                         >
 
@@ -794,8 +799,6 @@
 
                 </div>
 
-
-                <!-- EXTERIOR -->
 
                 <div
                     class="location-fields exterior-fields hidden"
@@ -818,21 +821,65 @@
                                 Selecione o país
                             </option>
 
-                            <option>Argentina</option>
-                            <option>Austrália</option>
-                            <option>Canadá</option>
-                            <option>Chile</option>
-                            <option>Colômbia</option>
-                            <option>Espanha</option>
-                            <option>Estados Unidos</option>
-                            <option>França</option>
-                            <option>Itália</option>
-                            <option>Japão</option>
-                            <option>México</option>
-                            <option>Portugal</option>
-                            <option>Reino Unido</option>
-                            <option>Uruguai</option>
-                            <option>Outro</option>
+                            <option value="Argentina">
+                                Argentina
+                            </option>
+
+                            <option value="Austrália">
+                                Austrália
+                            </option>
+
+                            <option value="Canadá">
+                                Canadá
+                            </option>
+
+                            <option value="Chile">
+                                Chile
+                            </option>
+
+                            <option value="Colômbia">
+                                Colômbia
+                            </option>
+
+                            <option value="Espanha">
+                                Espanha
+                            </option>
+
+                            <option value="Estados Unidos">
+                                Estados Unidos
+                            </option>
+
+                            <option value="França">
+                                França
+                            </option>
+
+                            <option value="Itália">
+                                Itália
+                            </option>
+
+                            <option value="Japão">
+                                Japão
+                            </option>
+
+                            <option value="México">
+                                México
+                            </option>
+
+                            <option value="Portugal">
+                                Portugal
+                            </option>
+
+                            <option value="Reino Unido">
+                                Reino Unido
+                            </option>
+
+                            <option value="Uruguai">
+                                Uruguai
+                            </option>
+
+                            <option value="Outro">
+                                Outro
+                            </option>
 
                         </select>
 
@@ -840,8 +887,6 @@
 
                 </div>
 
-
-                <!-- GÊNERO -->
 
                 <div class="form-group">
 
@@ -884,8 +929,6 @@
                 </div>
 
 
-                <!-- VISIBILIDADE -->
-
                 <div class="form-group">
 
                     <label for="visibility">
@@ -914,8 +957,6 @@
 
                 </div>
 
-
-                <!-- AUTORIZAÇÃO -->
 
                 <div class="consent-box">
 
@@ -953,8 +994,6 @@
             </form>
 
 
-            <!-- CONFIRMAÇÃO -->
-
             <div
                 class="success-message hidden"
                 id="successMessage"
@@ -976,7 +1015,10 @@
                     Sua participação foi registrada.
                 </p>
 
-                <a href="#mapa" class="primary-button">
+                <a
+                    href="#mapa"
+                    class="primary-button"
+                >
                     VER O MAPA
                 </a>
 
@@ -998,6 +1040,7 @@
                 </span>
 
                 <div>
+
                     <strong>
                         MAPA DA TORCIDA
                     </strong>
@@ -1006,6 +1049,7 @@
                         Uma torcida. Milhares de lugares.
                         Uma só paixão.
                     </p>
+
                 </div>
 
             </div>
@@ -1035,7 +1079,7 @@
         crossorigin=""
     ></script>
 
-    <script src="script.js"></script>
+    <script src="./script.js?v=4"></script>
 
 </body>
 </html>
