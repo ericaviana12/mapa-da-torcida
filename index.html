@@ -4,13 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="description"
-        content="Mapa da Torcida — descubra de onde vem a nossa torcida e faça parte do mapa."
-    >
+    <meta name="description" content="Mapa da Torcida — descubra de onde vem a nossa torcida e faça parte do mapa.">
 
     <title>Mapa da Torcida</title>
 
+    <!-- Leaflet -->
     <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -18,10 +16,15 @@
         crossorigin=""
     >
 
-    <link rel="stylesheet" href="./style.css?v=4">
+    <!-- CSS do projeto -->
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+
+    <!-- =========================
+         CABEÇALHO
+    ========================== -->
 
     <header class="site-header">
 
@@ -51,6 +54,10 @@
 
 
     <main>
+
+        <!-- =========================
+             HERO
+        ========================== -->
 
         <section class="hero">
 
@@ -93,7 +100,7 @@
                 </span>
 
                 <strong id="heroCounter">
-                    0
+                    1.284
                 </strong>
 
                 <span class="highlight-text">
@@ -104,6 +111,10 @@
 
         </section>
 
+
+        <!-- =========================
+             CONTADORES
+        ========================== -->
 
         <section class="counter-section">
 
@@ -119,7 +130,7 @@
                         </span>
 
                         <strong id="totalSupporters">
-                            0
+                            1.284
                         </strong>
                     </div>
 
@@ -136,7 +147,7 @@
                         </span>
 
                         <strong id="totalCities">
-                            0
+                            187
                         </strong>
                     </div>
 
@@ -153,7 +164,7 @@
                         </span>
 
                         <strong id="totalStates">
-                            0
+                            27
                         </strong>
                     </div>
 
@@ -170,7 +181,7 @@
                         </span>
 
                         <strong id="foreignSupporters">
-                            0
+                            46
                         </strong>
                     </div>
 
@@ -180,6 +191,10 @@
 
         </section>
 
+
+        <!-- =========================
+             MAPA
+        ========================== -->
 
         <section class="map-section" id="mapa">
 
@@ -262,6 +277,10 @@
         </section>
 
 
+        <!-- =========================
+             ESTATÍSTICAS
+        ========================== -->
+
         <section class="stats-section" id="estatisticas">
 
             <div class="section-heading centered">
@@ -285,16 +304,15 @@
 
             <div class="stats-grid">
 
+                <!-- GÊNERO -->
+
                 <article class="stats-card">
 
                     <div class="stats-card-header">
 
                         <div>
-                            <span
-                                class="stats-number"
-                                id="genderTotal"
-                            >
-                                0
+                            <span class="stats-number">
+                                1.284
                             </span>
 
                             <span class="stats-title">
@@ -313,24 +331,17 @@
                         Identidade da torcida
                     </h3>
 
-
                     <div class="gender-bars">
 
                         <div class="gender-row">
 
                             <div class="gender-label">
                                 <span>Feminino</span>
-
-                                <strong id="genderFemalePercent">
-                                    0%
-                                </strong>
+                                <strong>52%</strong>
                             </div>
 
                             <div class="progress">
-                                <span
-                                    id="genderFemaleBar"
-                                    style="width:0%"
-                                ></span>
+                                <span style="width:52%"></span>
                             </div>
 
                         </div>
@@ -340,17 +351,11 @@
 
                             <div class="gender-label">
                                 <span>Masculino</span>
-
-                                <strong id="genderMalePercent">
-                                    0%
-                                </strong>
+                                <strong>38%</strong>
                             </div>
 
                             <div class="progress">
-                                <span
-                                    id="genderMaleBar"
-                                    style="width:0%"
-                                ></span>
+                                <span style="width:38%"></span>
                             </div>
 
                         </div>
@@ -360,17 +365,11 @@
 
                             <div class="gender-label">
                                 <span>Não binário</span>
-
-                                <strong id="genderNonBinaryPercent">
-                                    0%
-                                </strong>
+                                <strong>3%</strong>
                             </div>
 
                             <div class="progress">
-                                <span
-                                    id="genderNonBinaryBar"
-                                    style="width:0%"
-                                ></span>
+                                <span style="width:3%"></span>
                             </div>
 
                         </div>
@@ -380,17 +379,11 @@
 
                             <div class="gender-label">
                                 <span>Outros</span>
-
-                                <strong id="genderOtherPercent">
-                                    0%
-                                </strong>
+                                <strong>2%</strong>
                             </div>
 
                             <div class="progress">
-                                <span
-                                    id="genderOtherBar"
-                                    style="width:0%"
-                                ></span>
+                                <span style="width:2%"></span>
                             </div>
 
                         </div>
@@ -399,20 +392,12 @@
                         <div class="gender-row">
 
                             <div class="gender-label">
-                                <span>
-                                    Prefiro não informar
-                                </span>
-
-                                <strong id="genderPrivatePercent">
-                                    0%
-                                </strong>
+                                <span>Prefiro não informar</span>
+                                <strong>5%</strong>
                             </div>
 
                             <div class="progress">
-                                <span
-                                    id="genderPrivateBar"
-                                    style="width:0%"
-                                ></span>
+                                <span style="width:5%"></span>
                             </div>
 
                         </div>
@@ -428,16 +413,15 @@
                 </article>
 
 
+                <!-- ORIGEM -->
+
                 <article class="stats-card origin-card">
 
                     <div class="stats-card-header">
 
                         <div>
-                            <span
-                                class="stats-number"
-                                id="brazilPercentage"
-                            >
-                                0%
+                            <span class="stats-number">
+                                96,4%
                             </span>
 
                             <span class="stats-title">
@@ -461,14 +445,12 @@
 
                         <div
                             class="origin-brazil"
-                            id="originBrazilBar"
-                            style="width:0%"
+                            style="width:96.4%"
                         ></div>
 
                         <div
                             class="origin-world"
-                            id="originWorldBar"
-                            style="width:0%"
+                            style="width:3.6%"
                         ></div>
 
                     </div>
@@ -478,26 +460,14 @@
 
                         <div>
                             <span class="origin-dot brazil"></span>
-
-                            <strong id="brazilCount">
-                                0
-                            </strong>
-
-                            <span>
-                                Brasil
-                            </span>
+                            <strong>1.238</strong>
+                            <span>Brasil</span>
                         </div>
 
                         <div>
                             <span class="origin-dot world"></span>
-
-                            <strong id="worldCount">
-                                0
-                            </strong>
-
-                            <span>
-                                Exterior
-                            </span>
+                            <strong>46</strong>
+                            <span>Exterior</span>
                         </div>
 
                     </div>
@@ -514,6 +484,10 @@
         </section>
 
 
+        <!-- =========================
+             TORCIDA PELO MUNDO
+        ========================== -->
+
         <section class="world-section" id="mundo">
 
             <div class="section-heading centered">
@@ -529,29 +503,52 @@
             </div>
 
 
-            <div
-                class="countries-grid"
-                id="countriesGrid"
-            >
+            <div class="countries-grid">
 
                 <div class="country-card">
+                    <span>🇺🇸</span>
+                    <strong>Estados Unidos</strong>
+                    <small>18 torcedores</small>
+                </div>
 
+                <div class="country-card">
+                    <span>🇵🇹</span>
+                    <strong>Portugal</strong>
+                    <small>9 torcedores</small>
+                </div>
+
+                <div class="country-card">
+                    <span>🇯🇵</span>
+                    <strong>Japão</strong>
+                    <small>7 torcedores</small>
+                </div>
+
+                <div class="country-card">
+                    <span>🇪🇸</span>
+                    <strong>Espanha</strong>
+                    <small>5 torcedores</small>
+                </div>
+
+                <div class="country-card">
+                    <span>🇬🇧</span>
+                    <strong>Reino Unido</strong>
+                    <small>4 torcedores</small>
+                </div>
+
+                <div class="country-card">
                     <span>🌎</span>
-
-                    <strong>
-                        Ainda não há registros
-                    </strong>
-
-                    <small>
-                        0 torcedores
-                    </small>
-
+                    <strong>Outros países</strong>
+                    <small>3 torcedores</small>
                 </div>
 
             </div>
 
         </section>
 
+
+        <!-- =========================
+             PARTICIPAÇÃO
+        ========================== -->
 
         <section class="join-section" id="participar">
 
@@ -573,10 +570,7 @@
                         para todo mundo o tamanho dessa torcida.
                     </p>
 
-                    <a
-                        href="#formulario"
-                        class="primary-button"
-                    >
+                    <a href="#formulario" class="primary-button">
                         QUERO FAZER PARTE
                     </a>
 
@@ -585,21 +579,10 @@
 
                 <div class="join-decoration">
 
-                    <div class="map-pin pin-one">
-                        ●
-                    </div>
-
-                    <div class="map-pin pin-two">
-                        ●
-                    </div>
-
-                    <div class="map-pin pin-three">
-                        ●
-                    </div>
-
-                    <div class="map-pin pin-four">
-                        ●
-                    </div>
+                    <div class="map-pin pin-one">●</div>
+                    <div class="map-pin pin-two">●</div>
+                    <div class="map-pin pin-three">●</div>
+                    <div class="map-pin pin-four">●</div>
 
                     <div class="join-circle">
                         🇧🇷
@@ -611,6 +594,10 @@
 
         </section>
 
+
+        <!-- =========================
+             FORMULÁRIO
+        ========================== -->
 
         <section class="form-section" id="formulario">
 
@@ -633,10 +620,7 @@
             </div>
 
 
-            <form
-                id="supporterForm"
-                class="supporter-form"
-            >
+            <form id="supporterForm" class="supporter-form">
 
                 <div class="form-group">
 
@@ -670,7 +654,7 @@
                         type="number"
                         id="age"
                         name="age"
-                        min="13"
+                        min="1"
                         max="120"
                         placeholder="Ex.: 32"
                         required
@@ -722,6 +706,8 @@
                 </div>
 
 
+                <!-- BRASIL -->
+
                 <div
                     class="location-fields brasil-fields"
                     id="brazilFields"
@@ -733,11 +719,7 @@
                             Estado
                         </label>
 
-                        <select
-                            id="state"
-                            name="state"
-                            required
-                        >
+                        <select id="state" name="state">
 
                             <option value="">
                                 Selecione o estado
@@ -785,7 +767,6 @@
                         <select
                             id="city"
                             name="city"
-                            required
                             disabled
                         >
 
@@ -800,6 +781,8 @@
                 </div>
 
 
+                <!-- EXTERIOR -->
+
                 <div
                     class="location-fields exterior-fields hidden"
                     id="exteriorFields"
@@ -811,75 +794,27 @@
                             País
                         </label>
 
-                        <select
-                            id="country"
-                            name="country"
-                            disabled
-                        >
+                        <select id="country" name="country">
 
                             <option value="">
                                 Selecione o país
                             </option>
 
-                            <option value="Argentina">
-                                Argentina
-                            </option>
-
-                            <option value="Austrália">
-                                Austrália
-                            </option>
-
-                            <option value="Canadá">
-                                Canadá
-                            </option>
-
-                            <option value="Chile">
-                                Chile
-                            </option>
-
-                            <option value="Colômbia">
-                                Colômbia
-                            </option>
-
-                            <option value="Espanha">
-                                Espanha
-                            </option>
-
-                            <option value="Estados Unidos">
-                                Estados Unidos
-                            </option>
-
-                            <option value="França">
-                                França
-                            </option>
-
-                            <option value="Itália">
-                                Itália
-                            </option>
-
-                            <option value="Japão">
-                                Japão
-                            </option>
-
-                            <option value="México">
-                                México
-                            </option>
-
-                            <option value="Portugal">
-                                Portugal
-                            </option>
-
-                            <option value="Reino Unido">
-                                Reino Unido
-                            </option>
-
-                            <option value="Uruguai">
-                                Uruguai
-                            </option>
-
-                            <option value="Outro">
-                                Outro
-                            </option>
+                            <option>Argentina</option>
+                            <option>Austrália</option>
+                            <option>Canadá</option>
+                            <option>Chile</option>
+                            <option>Colômbia</option>
+                            <option>Espanha</option>
+                            <option>Estados Unidos</option>
+                            <option>França</option>
+                            <option>Itália</option>
+                            <option>Japão</option>
+                            <option>México</option>
+                            <option>Portugal</option>
+                            <option>Reino Unido</option>
+                            <option>Uruguai</option>
+                            <option>Outro</option>
 
                         </select>
 
@@ -888,39 +823,37 @@
                 </div>
 
 
+                <!-- GÊNERO -->
+
                 <div class="form-group">
 
                     <label for="gender">
                         Gênero
                     </label>
 
-                    <select
-                        id="gender"
-                        name="gender"
-                        required
-                    >
+                    <select id="gender" name="gender" required>
 
                         <option value="">
                             Selecione
                         </option>
 
-                        <option value="Feminino">
+                        <option value="feminino">
                             Feminino
                         </option>
 
-                        <option value="Masculino">
+                        <option value="masculino">
                             Masculino
                         </option>
 
-                        <option value="Não binário">
+                        <option value="nao-binario">
                             Não binário
                         </option>
 
-                        <option value="Outro">
+                        <option value="outro">
                             Outro
                         </option>
 
-                        <option value="Prefiro não me identificar">
+                        <option value="prefiro-nao-informar">
                             Prefiro não me identificar
                         </option>
 
@@ -928,6 +861,8 @@
 
                 </div>
 
+
+                <!-- VISIBILIDADE -->
 
                 <div class="form-group">
 
@@ -957,6 +892,8 @@
 
                 </div>
 
+
+                <!-- AUTORIZAÇÃO -->
 
                 <div class="consent-box">
 
@@ -994,6 +931,8 @@
             </form>
 
 
+            <!-- CONFIRMAÇÃO -->
+
             <div
                 class="success-message hidden"
                 id="successMessage"
@@ -1015,10 +954,7 @@
                     Sua participação foi registrada.
                 </p>
 
-                <a
-                    href="#mapa"
-                    class="primary-button"
-                >
+                <a href="#mapa" class="primary-button">
                     VER O MAPA
                 </a>
 
@@ -1028,6 +964,10 @@
 
     </main>
 
+
+    <!-- =========================
+         RODAPÉ
+    ========================== -->
 
     <footer class="site-footer">
 
@@ -1040,7 +980,6 @@
                 </span>
 
                 <div>
-
                     <strong>
                         MAPA DA TORCIDA
                     </strong>
@@ -1049,7 +988,6 @@
                         Uma torcida. Milhares de lugares.
                         Uma só paixão.
                     </p>
-
                 </div>
 
             </div>
@@ -1073,13 +1011,15 @@
     </footer>
 
 
+    <!-- Leaflet -->
     <script
         src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""
     ></script>
 
-    <script src="./script.js?v=4"></script>
+    <!-- JavaScript do projeto -->
+    <script src="script.js"></script>
 
 </body>
 </html>
