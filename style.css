@@ -1,2140 +1,1315 @@
-/* =========================================================
-   MAPA DA TORCIDA
-   CSS PRINCIPAL
-========================================================= */
-
-
-/* =========================================================
-   VARIÁVEIS
-========================================================= */
-
-:root {
-
-    --green: #009739;
-    --green-dark: #006b29;
-    --green-light: #e8f7ee;
-
-    --yellow: #ffdf00;
-    --yellow-light: #fff8c7;
-
-    --blue: #002776;
-    --blue-light: #edf2ff;
-
-    --white: #ffffff;
-
-    --gray-50: #f7f8f7;
-    --gray-100: #eef0ee;
-    --gray-200: #dfe3df;
-    --gray-300: #c8cec9;
-    --gray-500: #737a75;
-    --gray-700: #3c433f;
-    --gray-900: #17201a;
-
-    --shadow-sm:
-        0 4px 16px rgba(0, 0, 0, 0.06);
-
-    --shadow-md:
-        0 12px 35px rgba(0, 0, 0, 0.09);
-
-    --radius-sm: 10px;
-    --radius-md: 18px;
-    --radius-lg: 28px;
-
-    --max-width: 1240px;
-
-}
-
-
-/* =========================================================
-   RESET
-========================================================= */
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-
-html {
-    scroll-behavior: smooth;
-}
-
-
-body {
-    font-family:
-        Inter,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        Roboto,
-        Arial,
-        sans-serif;
-
-    background: var(--white);
-    color: var(--gray-900);
-
-    line-height: 1.5;
-}
-
-
-img {
-    max-width: 100%;
-}
-
-
-a {
-    color: inherit;
-    text-decoration: none;
-}
-
-
-button,
-input,
-select {
-    font: inherit;
-}
-
-
-/* =========================================================
-   CABEÇALHO
-========================================================= */
-
-.site-header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-
-    background: rgba(255, 255, 255, 0.96);
-
-    border-bottom: 1px solid var(--gray-100);
-
-    backdrop-filter: blur(12px);
-}
-
-
-.header-content {
-    width: min(
-        calc(100% - 32px),
-        var(--max-width)
-    );
-
-    min-height: 76px;
-
-    margin: 0 auto;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 24px;
-}
-
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    font-weight: 900;
-    letter-spacing: -0.03em;
-}
-
-
-.logo-mark {
-    width: 38px;
-    height: 38px;
-
-    display: grid;
-    place-items: center;
-
-    background: var(--green);
-    color: var(--white);
-
-    border-radius: 10px;
-
-    font-weight: 900;
-    font-size: 18px;
-
-    box-shadow:
-        inset 0 -4px 0 rgba(0, 0, 0, 0.12);
-}
-
-
-.logo-text {
-    font-size: 14px;
-}
-
-
-.desktop-nav {
-    display: flex;
-    align-items: center;
-    gap: 28px;
-
-    margin-left: auto;
-}
-
-
-.desktop-nav a {
-    color: var(--gray-700);
-    font-size: 14px;
-    font-weight: 700;
-
-    transition: color 0.2s ease;
-}
-
-
-.desktop-nav a:hover {
-    color: var(--green);
-}
-
-
-.header-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    min-height: 42px;
-    padding: 0 18px;
-
-    background: var(--green);
-    color: var(--white);
-
-    border-radius: 10px;
-
-    font-size: 12px;
-    font-weight: 900;
-    letter-spacing: 0.04em;
-
-    transition:
-        transform 0.2s ease,
-        background 0.2s ease;
-}
-
-
-.header-button:hover {
-    background: var(--green-dark);
-    transform: translateY(-1px);
-}
-
-
-/* =========================================================
-   HERO
-========================================================= */
-
-.hero {
-    position: relative;
-
-    overflow: hidden;
-
-    background:
-        linear-gradient(
-            135deg,
-            var(--green) 0%,
-            #007f30 60%,
-            var(--blue) 100%
-        );
-
-    color: var(--white);
-
-    padding:
-        clamp(70px, 10vw, 125px)
-        20px
-        clamp(65px, 8vw, 100px);
-}
-
-
-.hero::after {
-    content: "";
-
-    position: absolute;
-
-    width: 480px;
-    height: 480px;
-
-    right: -180px;
-    bottom: -280px;
-
-    border-radius: 50%;
-
-    border: 70px solid rgba(255, 223, 0, 0.16);
-
-    pointer-events: none;
-}
-
-
-.hero-content {
-    width: min(
-        calc(100% - 32px),
-        var(--max-width)
-    );
-
-    margin: 0 auto;
-
-    position: relative;
-    z-index: 2;
-}
-
-
-.hero-label,
-.section-kicker {
-    display: inline-block;
-
-    font-size: 11px;
-    font-weight: 900;
-
-    letter-spacing: 0.14em;
-
-    text-transform: uppercase;
-}
-
-
-.hero-label {
-    color: var(--yellow);
-
-    margin-bottom: 22px;
-}
-
-
-.hero h1 {
-    max-width: 760px;
-
-    font-size:
-        clamp(42px, 7vw, 82px);
-
-    line-height: 0.98;
-
-    letter-spacing: -0.055em;
-
-    margin-bottom: 28px;
-}
-
-
-.hero h1 strong {
-    color: var(--yellow);
-}
-
-
-.hero p {
-    max-width: 590px;
-
-    color: rgba(255, 255, 255, 0.86);
-
-    font-size:
-        clamp(16px, 2vw, 20px);
-
-    line-height: 1.6;
-
-    margin-bottom: 34px;
-}
-
-
-.hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-}
-
-
-.primary-button,
-.secondary-button {
-    display: inline-flex;
-
-    align-items: center;
-    justify-content: center;
-
-    min-height: 50px;
-
-    padding:
-        0 24px;
-
-    border-radius: 12px;
-
-    font-size: 12px;
-    font-weight: 900;
-
-    letter-spacing: 0.05em;
-
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        background 0.2s ease;
-}
-
-
-.primary-button {
-    background: var(--yellow);
-    color: var(--gray-900);
-
-    box-shadow:
-        0 8px 20px rgba(0, 0, 0, 0.12);
-}
-
-
-.primary-button:hover {
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 12px 28px rgba(0, 0, 0, 0.17);
-}
-
-
-.secondary-button {
-    border:
-        1px solid rgba(255, 255, 255, 0.4);
-
-    color: var(--white);
-
-    background:
-        rgba(255, 255, 255, 0.08);
-}
-
-
-.secondary-button:hover {
-    background:
-        rgba(255, 255, 255, 0.16);
-}
-
-
-.hero-highlight {
-    width: min(
-        calc(100% - 32px),
-        var(--max-width)
-    );
-
-    margin: 50px auto 0;
-
-    position: relative;
-    z-index: 2;
-
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-
-    border-top:
-        1px solid rgba(255, 255, 255, 0.2);
-
-    padding-top: 25px;
-}
-
-
-.highlight-label {
-    font-size: 10px;
-    font-weight: 900;
-    letter-spacing: 0.12em;
-
-    color: rgba(255, 255, 255, 0.72);
-}
-
-
-.hero-highlight strong {
-    color: var(--yellow);
-
-    font-size:
-        clamp(30px, 5vw, 48px);
-
-    line-height: 1;
-}
-
-
-.highlight-text {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-
-/* =========================================================
-   CONTADORES
-========================================================= */
-
-.counter-section {
-    position: relative;
-
-    margin-top: -35px;
-
-    z-index: 10;
-
-    padding:
-        0 16px;
-}
-
-
-.counter-grid {
-    width: min(
-        100%,
-        var(--max-width)
-    );
-
-    margin: 0 auto;
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(4, 1fr);
-
-    gap: 12px;
-}
-
-
-.counter-card {
-    min-height: 120px;
-
-    background: var(--white);
-
-    border:
-        1px solid var(--gray-100);
-
-    border-radius: var(--radius-md);
-
-    box-shadow: var(--shadow-md);
-
-    padding: 20px;
-
-    display: flex;
-    align-items: center;
-
-    gap: 15px;
-}
-
-
-.counter-icon {
-    width: 46px;
-    height: 46px;
-
-    display: grid;
-    place-items: center;
-
-    border-radius: 13px;
-
-    background: var(--green-light);
-
-    font-size: 21px;
-
-    flex-shrink: 0;
-}
-
-
-.counter-label {
-    display: block;
-
-    color: var(--gray-500);
-
-    font-size: 9px;
-    font-weight: 900;
-
-    letter-spacing: 0.1em;
-}
-
-
-.counter-card strong {
-    display: block;
-
-    margin-top: 3px;
-
-    font-size: 30px;
-
-    letter-spacing: -0.04em;
-
-    color: var(--green-dark);
-}
-
-
-/* =========================================================
-   SEÇÕES
-========================================================= */
-
-.map-section,
-.stats-section,
-.world-section,
-.form-section {
-    width: min(
-        calc(100% - 32px),
-        var(--max-width)
-    );
-
-    margin:
-        0 auto;
-
-    padding:
-        100px 0;
-}
-
-
-.section-heading {
-    display: flex;
-    align-items: end;
-    justify-content: space-between;
-
-    gap: 40px;
-
-    margin-bottom: 35px;
-}
-
-
-.section-heading > div {
-    max-width: 620px;
-}
-
-
-.section-kicker {
-    color: var(--green);
-
-    margin-bottom: 12px;
-}
-
-
-.section-heading h2 {
-    font-size:
-        clamp(34px, 5vw, 58px);
-
-    line-height: 1.02;
-
-    letter-spacing: -0.05em;
-}
-
-
-.section-heading p {
-    max-width: 380px;
-
-    color: var(--gray-500);
-
-    font-size: 15px;
-    line-height: 1.7;
-}
-
-
-.centered {
-    display: block;
-
-    text-align: center;
-
-    max-width: 700px;
-
-    margin-left: auto;
-    margin-right: auto;
-}
-
-
-.centered > p {
-    margin:
-        18px auto 0;
-}
-
-
-/* =========================================================
-   MAPA
-========================================================= */
-
-.map-layout {
-    display: grid;
-
-    grid-template-columns:
-        minmax(0, 1fr)
-        330px;
-
-    gap: 18px;
-}
-
-
-.map-container {
-    position: relative;
-
-    overflow: hidden;
-
-    min-height: 600px;
-
-    border-radius: var(--radius-lg);
-
-    border:
-        1px solid var(--gray-200);
-
-    box-shadow: var(--shadow-sm);
-
-    background: #e8efe9;
-}
-
-
-#map {
-    width: 100%;
-    height: 600px;
-}
-
-
-.map-legend {
-    position: absolute;
-
-    left: 18px;
-    bottom: 18px;
-
-    z-index: 500;
-
-    background:
-        rgba(255, 255, 255, 0.95);
-
-    backdrop-filter: blur(8px);
-
-    padding: 14px 16px;
-
-    border-radius: 12px;
-
-    box-shadow: var(--shadow-md);
-
-    font-size: 11px;
-}
-
-
-.legend-title {
-    display: block;
-
-    margin-bottom: 8px;
-
-    color: var(--gray-500);
-
-    font-size: 9px;
-    font-weight: 900;
-
-    letter-spacing: 0.08em;
-}
-
-
-.legend-item {
-    display: flex;
-    align-items: center;
-
-    gap: 7px;
-
-    margin-top: 5px;
-
-    color: var(--gray-700);
-}
-
-
-.legend-dot {
-    display: inline-block;
-
-    border-radius: 50%;
-
-    background: var(--green);
-
-    border:
-        2px solid rgba(255, 255, 255, 0.8);
-
-    box-shadow:
-        0 1px 4px rgba(0, 0, 0, 0.15);
-}
-
-
-.legend-dot.small {
-    width: 9px;
-    height: 9px;
-}
-
-
-.legend-dot.medium {
-    width: 14px;
-    height: 14px;
-}
-
-
-.legend-dot.large {
-    width: 20px;
-    height: 20px;
-}
-
-
-/* =========================================================
-   PAINEL DA CIDADE
-========================================================= */
-
-.city-panel {
-    min-height: 600px;
-
-    border:
-        1px solid var(--gray-200);
-
-    border-radius: var(--radius-lg);
-
-    background: var(--white);
-
-    overflow: hidden;
-
-    box-shadow: var(--shadow-sm);
-}
-
-
-.empty-city {
-    height: 100%;
-
-    min-height: 600px;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-    justify-content: center;
-
-    text-align: center;
-
-    padding: 30px;
-}
-
-
-.city-panel-icon {
-    width: 64px;
-    height: 64px;
-
-    display: grid;
-    place-items: center;
-
-    background: var(--green-light);
-
-    border-radius: 50%;
-
-    font-size: 26px;
-
-    margin-bottom: 18px;
-}
-
-
-.empty-city h3 {
-    font-size: 20px;
-
-    margin-bottom: 8px;
-}
-
-
-.empty-city p {
-    color: var(--gray-500);
-
-    font-size: 14px;
-
-    line-height: 1.6;
-
-    max-width: 240px;
-}
-
-
-.city-header {
-    padding: 25px;
-
-    background:
-        linear-gradient(
-            135deg,
-            var(--green),
-            var(--green-dark)
-        );
-
-    color: var(--white);
-}
-
-
-.city-header small {
-    display: block;
-
-    font-size: 10px;
-    font-weight: 900;
-
-    letter-spacing: 0.1em;
-
-    opacity: 0.72;
-}
-
-
-.city-header h3 {
-    font-size: 28px;
-
-    line-height: 1.05;
-
-    margin-top: 5px;
-}
-
-
-.city-header strong {
-    display: block;
-
-    margin-top: 12px;
-
-    color: var(--yellow);
-
-    font-size: 14px;
-}
-
-
-.city-members {
-    padding: 18px;
-}
-
-
-.member {
-    padding:
-        13px 0;
-
-    border-bottom:
-        1px solid var(--gray-100);
-}
-
-
-.member:last-child {
-    border-bottom: 0;
-}
-
-
-.member-name {
-    display: block;
-
-    font-weight: 800;
-
-    font-size: 14px;
-}
-
-
-.member-location {
-    display: block;
-
-    margin-top: 2px;
-
-    color: var(--gray-500);
-
-    font-size: 12px;
-}
-
-
-.anonymous-name {
-    color: var(--gray-700);
-}
-
-
-/* =========================================================
-   ESTATÍSTICAS
-========================================================= */
-
-.stats-section {
-    padding-top: 40px;
-}
-
-
-.stats-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
-    gap: 18px;
-
-    margin-top: 45px;
-}
-
-
-.stats-card {
-    border:
-        1px solid var(--gray-200);
-
-    border-radius: var(--radius-lg);
-
-    padding: 30px;
-
-    background: var(--white);
-
-    box-shadow: var(--shadow-sm);
-}
-
-
-.stats-card-header {
-    display: flex;
-
-    align-items: flex-start;
-
-    justify-content: space-between;
-
-    gap: 20px;
-
-    margin-bottom: 35px;
-}
-
-
-.stats-number {
-    display: block;
-
-    color: var(--green-dark);
-
-    font-size: 38px;
-    font-weight: 900;
-
-    letter-spacing: -0.05em;
-}
-
-
-.stats-title {
-    display: block;
-
-    margin-top: 2px;
-
-    color: var(--gray-500);
-
-    font-size: 12px;
-}
-
-
-.stats-icon {
-    width: 48px;
-    height: 48px;
-
-    display: grid;
-    place-items: center;
-
-    background: var(--yellow-light);
-
-    border-radius: 13px;
-
-    font-size: 21px;
-}
-
-
-.stats-card h3 {
-    font-size: 19px;
-
-    margin-bottom: 25px;
-}
-
-
-/* GÊNERO */
-
-.gender-row {
-    margin-bottom: 16px;
-}
-
-
-.gender-label {
-    display: flex;
-
-    justify-content: space-between;
-
-    gap: 20px;
-
-    margin-bottom: 6px;
-
-    font-size: 12px;
-}
-
-
-.gender-label strong {
-    color: var(--green-dark);
-}
-
-
-.progress {
-    height: 8px;
-
-    overflow: hidden;
-
-    border-radius: 20px;
-
-    background: var(--gray-100);
-}
-
-
-.progress span {
-    display: block;
-
-    height: 100%;
-
-    border-radius: inherit;
-
-    background:
-        linear-gradient(
-            90deg,
-            var(--green),
-            var(--blue)
-        );
-}
-
-
-.privacy-note {
-    margin-top: 28px;
-
-    padding: 13px;
-
-    border-radius: 10px;
-
-    background: var(--gray-50);
-
-    color: var(--gray-500);
-
-    font-size: 11px;
-
-    line-height: 1.5;
-}
-
-
-/* ORIGEM */
-
-.origin-chart {
-    display: flex;
-
-    width: 100%;
-    height: 18px;
-
-    overflow: hidden;
-
-    border-radius: 20px;
-
-    background: var(--gray-100);
-
-    margin:
-        35px 0 22px;
-}
-
-
-.origin-brazil {
-    background: var(--green);
-}
-
-
-.origin-world {
-    background: var(--blue);
-}
-
-
-.origin-values {
-    display: grid;
-
-    grid-template-columns: 1fr 1fr;
-
-    gap: 15px;
-}
-
-
-.origin-values > div {
-    display: grid;
-
-    grid-template-columns:
-        auto auto 1fr;
-
-    align-items: center;
-
-    gap: 7px;
-}
-
-
-.origin-dot {
-    width: 9px;
-    height: 9px;
-
-    border-radius: 50%;
-}
-
-
-.origin-dot.brazil {
-    background: var(--green);
-}
-
-
-.origin-dot.world {
-    background: var(--blue);
-}
-
-
-.origin-values strong {
-    font-size: 16px;
-}
-
-
-.origin-values span:last-child {
-    color: var(--gray-500);
-
-    font-size: 11px;
-}
-
-
-.text-link {
-    display: inline-block;
-
-    margin-top: 30px;
-
-    color: var(--green-dark);
-
-    font-size: 11px;
-    font-weight: 900;
-
-    letter-spacing: 0.04em;
-}
-
-
-/* =========================================================
-   MUNDO
-========================================================= */
-
-.world-section {
-    padding-top: 40px;
-}
-
-
-.countries-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 12px;
-
-    margin-top: 40px;
-}
-
-
-.country-card {
-    padding: 20px;
-
-    border:
-        1px solid var(--gray-200);
-
-    border-radius: var(--radius-md);
-
-    background: var(--gray-50);
-
-    display: grid;
-
-    grid-template-columns:
-        auto 1fr;
-
-    column-gap: 12px;
-
-    align-items: center;
-}
-
-
-.country-card > span {
-    grid-row: span 2;
-
-    font-size: 28px;
-}
-
-
-.country-card strong {
-    font-size: 13px;
-}
-
-
-.country-card small {
-    color: var(--gray-500);
-
-    font-size: 11px;
-}
-
-
-/* =========================================================
-   PARTICIPAÇÃO
-========================================================= */
-
-.join-section {
-    width: min(
-        calc(100% - 32px),
-        var(--max-width)
-    );
-
-    margin:
-        20px auto 100px;
-}
-
-
-.join-card {
-    position: relative;
-
-    overflow: hidden;
-
-    min-height: 430px;
-
-    border-radius: var(--radius-lg);
-
-    padding:
-        clamp(35px, 6vw, 70px);
-
-    background:
-        linear-gradient(
-            135deg,
-            var(--green-dark),
-            var(--green)
-        );
-
-    color: var(--white);
-
-    display: grid;
-
-    grid-template-columns:
-        1fr 0.8fr;
-
-    align-items: center;
-}
-
-
-.join-content {
-    position: relative;
-
-    z-index: 2;
-
-    max-width: 560px;
-}
-
-
-.join-content .section-kicker {
-    color: var(--yellow);
-}
-
-
-.join-content h2 {
-    font-size:
-        clamp(38px, 6vw, 65px);
-
-    line-height: 0.98;
-
-    letter-spacing: -0.05em;
-
-    margin:
-        10px 0 20px;
-}
-
-
-.join-content p {
-    max-width: 500px;
-
-    color:
-        rgba(255, 255, 255, 0.82);
-
-    margin-bottom: 28px;
-
-    line-height: 1.7;
-}
-
-
-.join-decoration {
-    position: relative;
-
-    min-height: 300px;
-}
-
-
-.join-circle {
-    position: absolute;
-
-    width: 230px;
-    height: 230px;
-
-    top: 50%;
-    left: 50%;
-
-    transform:
-        translate(-50%, -50%);
-
-    display: grid;
-    place-items: center;
-
-    border-radius: 50%;
-
-    background:
-        rgba(255, 255, 255, 0.09);
-
-    border:
-        1px solid rgba(255, 255, 255, 0.18);
-
-    font-size: 90px;
-
-    box-shadow:
-        0 25px 70px rgba(0, 0, 0, 0.12);
-}
-
-
-.map-pin {
-    position: absolute;
-
-    color: var(--yellow);
-
-    font-size: 22px;
-
-    z-index: 2;
-
-    text-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-
-.pin-one {
-    top: 15%;
-    left: 20%;
-}
-
-
-.pin-two {
-    top: 25%;
-    right: 12%;
-}
-
-
-.pin-three {
-    bottom: 18%;
-    left: 10%;
-}
-
-
-.pin-four {
-    bottom: 12%;
-    right: 28%;
-}
-
-
-/* =========================================================
-   FORMULÁRIO
-========================================================= */
-
-.form-section {
-    max-width: 980px;
-
-    padding-top: 40px;
-}
-
-
-.form-heading {
-    text-align: center;
-
-    max-width: 680px;
-
-    margin:
-        0 auto 45px;
-}
-
-
-.form-heading h2 {
-    font-size:
-        clamp(34px, 5vw, 54px);
-
-    line-height: 1.02;
-
-    letter-spacing: -0.05em;
-
-    margin:
-        8px 0 18px;
-}
-
-
-.form-heading p {
-    color: var(--gray-500);
-
-    line-height: 1.7;
-}
-
-
-.supporter-form {
-    display: grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap: 20px;
-
-    padding:
-        clamp(22px, 5vw, 42px);
-
-    background: var(--white);
-
-    border:
-        1px solid var(--gray-200);
-
-    border-radius: var(--radius-lg);
-
-    box-shadow: var(--shadow-md);
-}
-
-
-.form-group {
-    min-width: 0;
-}
-
-
-.form-group.full-width,
-.location-fields,
-.consent-box,
-.submit-button {
-    grid-column:
-        1 / -1;
-}
-
-
-.form-group label {
-    display: block;
-
-    margin-bottom: 7px;
-
-    font-size: 12px;
-    font-weight: 800;
-}
-
-
-.form-group small {
-    display: block;
-
-    margin-top: 6px;
-
-    color: var(--gray-500);
-
-    font-size: 10px;
-}
-
-
-.form-group input,
-.form-group select {
-    width: 100%;
-
-    height: 48px;
-
-    padding:
-        0 14px;
-
-    border:
-        1px solid var(--gray-200);
-
-    border-radius: 10px;
-
-    outline: none;
-
-    background: var(--white);
-
-    color: var(--gray-900);
-
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-
-.form-group input:focus,
-.form-group select:focus {
-    border-color: var(--green);
-
-    box-shadow:
-        0 0 0 3px var(--green-light);
-}
-
-
-.location-options {
-    display: grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap: 10px;
-}
-
-
-.radio-option {
-    cursor: pointer;
-
-    position: relative;
-
-    display: flex;
-    align-items: center;
-
-    min-height: 48px;
-
-    padding:
-        0 15px;
-
-    border:
-        1px solid var(--gray-200);
-
-    border-radius: 10px;
-
-    transition:
-        border-color 0.2s ease,
-        background 0.2s ease;
-}
-
-
-.radio-option:hover {
-    border-color: var(--green);
-}
-
-
-.radio-option input {
-    margin-right: 9px;
-
-    accent-color: var(--green);
-}
-
-
-.radio-option span {
-    font-size: 12px;
-    font-weight: 700;
-}
-
-
-.location-fields {
-    display: grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap: 20px;
-
-    padding:
-        20px;
-
-    border-radius: 14px;
-
-    background: var(--gray-50);
-}
-
-
-.hidden {
-    display: none !important;
-}
-
-
-/* CONSENTIMENTO */
-
-.consent-box {
-    padding: 18px;
-
-    border-radius: 12px;
-
-    background: var(--green-light);
-
-    border:
-        1px solid rgba(0, 151, 57, 0.12);
-}
-
-
-.checkbox-option {
-    display: flex;
-
-    align-items: flex-start;
-
-    gap: 10px;
-
-    cursor: pointer;
-}
-
-
-.checkbox-option input {
-    width: 17px;
-    height: 17px;
-
-    margin-top: 2px;
-
-    accent-color: var(--green);
-
-    flex-shrink: 0;
-}
-
-
-.checkbox-option span {
-    font-size: 12px;
-    font-weight: 700;
-
-    line-height: 1.5;
-}
-
-
-.consent-box p {
-    margin:
-        8px 0 0 27px;
-
-    color: var(--gray-500);
-
-    font-size: 10px;
-
-    line-height: 1.5;
-}
-
-
-.submit-button {
-    min-height: 54px;
-
-    border: 0;
-
-    border-radius: 12px;
-
-    background: var(--green);
-
-    color: var(--white);
-
-    cursor: pointer;
-
-    font-size: 12px;
-    font-weight: 900;
-
-    letter-spacing: 0.06em;
-
-    transition:
-        transform 0.2s ease,
-        background 0.2s ease;
-}
-
-
-.submit-button:hover {
-    background: var(--green-dark);
-
-    transform: translateY(-1px);
-}
-
-
-/* SUCESSO */
-
-.success-message {
-    padding:
-        clamp(30px, 7vw, 70px);
-
-    border-radius: var(--radius-lg);
-
-    text-align: center;
-
-    background:
-        linear-gradient(
-            135deg,
-            var(--green-light),
-            var(--white)
-        );
-
-    border:
-        1px solid rgba(0, 151, 57, 0.15);
-}
-
-
-.success-icon {
-    width: 70px;
-    height: 70px;
-
-    margin:
-        0 auto 22px;
-
-    display: grid;
-    place-items: center;
-
-    border-radius: 50%;
-
-    background: var(--green);
-
-    color: var(--white);
-
-    font-size: 30px;
-    font-weight: 900;
-}
-
-
-.success-message h2 {
-    margin:
-        8px 0 12px;
-
-    font-size:
-        clamp(32px, 5vw, 50px);
-
-    letter-spacing: -0.04em;
-}
-
-
-.success-message p {
-    color: var(--gray-500);
-
-    margin-bottom: 25px;
-}
-
-
-/* =========================================================
-   RODAPÉ
-========================================================= */
-
-.site-footer {
-    background: var(--gray-900);
-
-    color: var(--white);
-
-    padding:
-        45px 20px;
-}
-
-
-.footer-content {
-    width: min(
-        100%,
-        var(--max-width)
-    );
-
-    margin: 0 auto;
-
-    display: flex;
-
-    justify-content: space-between;
-
-    gap: 40px;
-}
-
-
-.footer-brand {
-    display: flex;
-
-    align-items: center;
-
-    gap: 12px;
-}
-
-
-.footer-brand strong {
-    display: block;
-
-    font-size: 12px;
-}
-
-
-.footer-brand p {
-    margin-top: 3px;
-
-    color:
-        rgba(255, 255, 255, 0.55);
-
-    font-size: 10px;
-}
-
-
-.footer-note {
-    max-width: 330px;
-
-    text-align: right;
-
-    color:
-        rgba(255, 255, 255, 0.55);
-
-    font-size: 10px;
-}
-
-
-.footer-note span {
-    display: block;
-
-    margin-top: 6px;
-
-    color: var(--yellow);
-
-    font-weight: 700;
-}
-
-
-/* =========================================================
-   LEAFLET
-========================================================= */
-
-.leaflet-control-attribution {
-    font-size: 8px !important;
-}
-
-
-.custom-marker {
-    display: grid;
-    place-items: center;
-
-    border-radius: 50%;
-
-    background: var(--green);
-
-    border:
-        3px solid var(--white);
-
-    color: var(--white);
-
-    font-weight: 900;
-
-    box-shadow:
-        0 4px 14px rgba(0, 0, 0, 0.25);
-}
-
-
-.custom-marker span {
-    font-size: 11px;
-}
-
-
-/* =========================================================
-   TABLET
-========================================================= */
-
-@media (max-width: 900px) {
-
-    .desktop-nav {
-        display: none;
+(async function () {
+
+    const { createClient } = await import(
+        "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"
+    )
+
+    const SUPABASE_URL = "https://yesrkhgvlxsbvhgumzxs.supabase.co"
+
+    const SUPABASE_KEY =
+        "sb_publishable_CfwYZzY99TFrJLcMe7ZsLw_m1LhD2Cy"
+
+    const COORDINATES_URL =
+        "https://raw.githubusercontent.com/GusFurtado/dab_assets/main/data/coordenadas.csv"
+
+    const supabase = createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    )
+
+
+    const form = document.getElementById("supporterForm")
+
+    const stateSelect = document.getElementById("state")
+    const citySelect = document.getElementById("city")
+    const countrySelect = document.getElementById("country")
+
+    const brazilFields = document.getElementById("brazilFields")
+    const exteriorFields = document.getElementById("exteriorFields")
+
+    const successMessage = document.getElementById("successMessage")
+    const successText = document.getElementById("successText")
+
+    const cityPanel = document.getElementById("cityPanel")
+    const countriesGrid = document.getElementById("countriesGrid")
+
+    let map = null
+    let coordinateData = {}
+    let mapMarkers = []
+
+
+    const stateCodes = {
+        AC: 12,
+        AL: 27,
+        AP: 16,
+        AM: 13,
+        BA: 29,
+        CE: 23,
+        DF: 53,
+        ES: 32,
+        GO: 52,
+        MA: 21,
+        MT: 51,
+        MS: 50,
+        MG: 31,
+        PA: 15,
+        PB: 25,
+        PR: 41,
+        PE: 26,
+        PI: 22,
+        RJ: 33,
+        RN: 24,
+        RS: 43,
+        RO: 11,
+        RR: 14,
+        SC: 42,
+        SP: 35,
+        SE: 28,
+        TO: 17
     }
 
 
-    .counter-grid {
-        grid-template-columns:
-            repeat(2, 1fr);
+    function normalizeGender(value) {
+
+        const genders = {
+            "feminino": "Feminino",
+            "masculino": "Masculino",
+            "nao-binario": "Não binário",
+            "não-binário": "Não binário",
+            "não binario": "Não binário",
+            "nao binario": "Não binário",
+            "outro": "Outro",
+            "prefiro-nao-informar": "Prefiro não me identificar",
+            "prefiro não informar": "Prefiro não me identificar",
+            "prefiro não me identificar": "Prefiro não me identificar"
+        }
+
+        return genders[value] || value
     }
 
 
-    .map-layout {
-        grid-template-columns: 1fr;
+    function normalizeDisplay(value) {
+
+        if (
+            value === "nome" ||
+            value === "name" ||
+            value === "identificado"
+        ) {
+            return "nome"
+        }
+
+        return "anonimo"
     }
 
 
-    .city-panel {
-        min-height: auto;
+    function parseCSV(text) {
+
+        const lines = text
+            .split(/\r?\n/)
+            .filter(line => line.trim())
+
+        if (lines.length < 2) {
+            return {}
+        }
+
+        const headers = lines[0]
+            .split(";")
+            .map(header => header.trim())
+
+        const result = {}
+
+        for (let i = 1; i < lines.length; i++) {
+
+            const values = lines[i]
+                .split(";")
+                .map(value => value.trim())
+
+            const row = {}
+
+            headers.forEach((header, index) => {
+                row[header] = values[index] || ""
+            })
+
+            const code =
+                row.CD_GEOCODMU ||
+                row.codigo_ibge ||
+                row.CODIGO_IBGE ||
+                row.cod_municipio
+
+            const lat =
+                row.LAT ||
+                row.latitude ||
+                row.LATITUDE
+
+            const lng =
+                row.LONG ||
+                row.longitude ||
+                row.LONGITUDE ||
+                row.LON
+
+            if (
+                code &&
+                lat &&
+                lng
+            ) {
+
+                result[String(code)] = {
+                    lat: Number(
+                        String(lat).replace(",", ".")
+                    ),
+                    lng: Number(
+                        String(lng).replace(",", ".")
+                    )
+                }
+
+            }
+
+        }
+
+        return result
     }
 
 
-    .empty-city {
-        min-height: 250px;
+    async function loadCoordinates() {
+
+        try {
+
+            const response = await fetch(
+                COORDINATES_URL
+            )
+
+            if (!response.ok) {
+                throw new Error(
+                    "Não foi possível carregar as coordenadas."
+                )
+            }
+
+            const text = await response.text()
+
+            coordinateData = parseCSV(text)
+
+        } catch (error) {
+
+            console.error(
+                "Erro ao carregar coordenadas:",
+                error
+            )
+
+        }
+
     }
 
 
-    #map {
-        height: 520px;
+    function initializeMap() {
+
+        const mapElement =
+            document.getElementById("map")
+
+        if (!mapElement) {
+            return
+        }
+
+        map = L.map(
+            mapElement,
+            {
+                scrollWheelZoom: true
+            }
+        ).setView(
+            [-14.235, -51.9253],
+            4
+        )
+
+
+        L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                attribution:
+                    "&copy; OpenStreetMap contributors"
+            }
+        ).addTo(map)
+
     }
 
 
-    .stats-grid {
-        grid-template-columns: 1fr;
+    function markerRadius(quantity) {
+
+        if (quantity <= 10) {
+            return 8
+        }
+
+        if (quantity <= 50) {
+            return 14
+        }
+
+        return 21
     }
 
 
-    .join-card {
-        grid-template-columns: 1fr;
+    function clearMarkers() {
+
+        mapMarkers.forEach(marker => {
+
+            if (map) {
+                map.removeLayer(marker)
+            }
+
+        })
+
+        mapMarkers = []
+
     }
 
 
-    .join-decoration {
-        min-height: 250px;
+    function showCityPanel(
+        city,
+        uf,
+        participants,
+        quantity
+    ) {
+
+        const title =
+            `${city}, ${uf}`
+
+        let peopleHTML = ""
+
+        participants.forEach(person => {
+
+            peopleHTML += `
+                <div class="city-person">
+                    <strong>
+                        ${escapeHTML(person.nome_exibicao)}
+                    </strong>
+
+                    <span>
+                        ${person.idade} anos
+                    </span>
+                </div>
+            `
+
+        })
+
+
+        cityPanel.innerHTML = `
+            <div class="city-details">
+
+                <span class="section-kicker">
+                    CIDADE
+                </span>
+
+                <h3>
+                    ${escapeHTML(title)}
+                </h3>
+
+                <p class="city-total">
+                    ${quantity}
+                    ${quantity === 1 ? "torcedor" : "torcedores"}
+                </p>
+
+                <div class="city-people">
+                    ${peopleHTML}
+                </div>
+
+            </div>
+        `
+
     }
 
 
-    .countries-grid {
-        grid-template-columns:
-            repeat(2, 1fr);
-    }
+    function escapeHTML(value) {
 
-}
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;")
 
-
-/* =========================================================
-   CELULAR
-========================================================= */
-
-@media (max-width: 620px) {
-
-    .header-content {
-        min-height: 64px;
     }
 
 
-    .logo-text {
-        font-size: 11px;
+    async function loadMapData() {
+
+        if (!map) {
+            return
+        }
+
+        clearMarkers()
+
+        const {
+            data,
+            error
+        } = await supabase.rpc(
+            "dados_mapa"
+        )
+
+        if (error) {
+
+            console.error(
+                "Erro ao carregar mapa:",
+                error
+            )
+
+            return
+        }
+
+
+        if (!data || data.length === 0) {
+            return
+        }
+
+
+        const cities = {}
+
+
+        data.forEach(person => {
+
+            const code =
+                String(person.codigo_ibge)
+
+            if (!cities[code]) {
+
+                cities[code] = {
+                    cidade: person.cidade,
+                    estado_uf: person.estado_uf,
+                    codigo_ibge: code,
+                    participantes: []
+                }
+
+            }
+
+            cities[code].participantes.push(
+                person
+            )
+
+        })
+
+
+        Object.values(cities).forEach(city => {
+
+            const coordinates =
+                coordinateData[
+                    city.codigo_ibge
+                ]
+
+            if (!coordinates) {
+
+                console.warn(
+                    "Coordenada não encontrada:",
+                    city.codigo_ibge,
+                    city.cidade
+                )
+
+                return
+            }
+
+
+            const quantity =
+                city.participantes.length
+
+
+            const marker =
+                L.circleMarker(
+                    [
+                        coordinates.lat,
+                        coordinates.lng
+                    ],
+                    {
+                        radius:
+                            markerRadius(quantity),
+
+                        weight: 2,
+
+                        fillOpacity: 0.75
+                    }
+                )
+
+
+            marker.bindTooltip(
+                `${city.cidade}, ${city.estado_uf} — ${quantity} ${
+                    quantity === 1
+                        ? "torcedor"
+                        : "torcedores"
+                }`
+            )
+
+
+            marker.on(
+                "click",
+                function () {
+
+                    showCityPanel(
+                        city.cidade,
+                        city.estado_uf,
+                        city.participantes,
+                        quantity
+                    )
+
+                }
+            )
+
+
+            marker.addTo(map)
+
+            mapMarkers.push(marker)
+
+        })
+
     }
 
 
-    .logo-mark {
-        width: 34px;
-        height: 34px;
+    function percentage(
+        value,
+        total
+    ) {
+
+        if (!total) {
+            return 0
+        }
+
+        return Math.round(
+            (value / total) * 100
+        )
+
     }
 
 
-    .header-button {
-        min-height: 38px;
+    function setGenderRow(
+        percentId,
+        barId,
+        value,
+        total
+    ) {
 
-        padding:
-            0 12px;
+        const percent =
+            percentage(value, total)
 
-        font-size: 10px;
+        const percentElement =
+            document.getElementById(percentId)
+
+        const barElement =
+            document.getElementById(barId)
+
+        if (percentElement) {
+            percentElement.textContent =
+                `${percent}%`
+        }
+
+        if (barElement) {
+            barElement.style.width =
+                `${percent}%`
+        }
+
     }
 
 
-    .hero {
-        padding-top: 65px;
-        padding-bottom: 80px;
+    async function loadStatistics() {
+
+        const {
+            data,
+            error
+        } = await supabase.rpc(
+            "estatisticas_mapa"
+        )
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao carregar estatísticas:",
+                error
+            )
+
+            return
+        }
+
+
+        if (!data) {
+            return
+        }
+
+
+        const total =
+            Number(data.total || 0)
+
+        const brazil =
+            Number(data.brasil || 0)
+
+        const exterior =
+            Number(data.exterior || 0)
+
+        const cities =
+            Number(data.cidades || 0)
+
+        const states =
+            Number(data.estados || 0)
+
+
+        const heroCounter =
+            document.getElementById(
+                "heroCounter"
+            )
+
+        const totalSupporters =
+            document.getElementById(
+                "totalSupporters"
+            )
+
+        const totalCities =
+            document.getElementById(
+                "totalCities"
+            )
+
+        const totalStates =
+            document.getElementById(
+                "totalStates"
+            )
+
+        const foreignSupporters =
+            document.getElementById(
+                "foreignSupporters"
+            )
+
+
+        if (heroCounter) {
+            heroCounter.textContent =
+                total.toLocaleString("pt-BR")
+        }
+
+        if (totalSupporters) {
+            totalSupporters.textContent =
+                total.toLocaleString("pt-BR")
+        }
+
+        if (totalCities) {
+            totalCities.textContent =
+                cities.toLocaleString("pt-BR")
+        }
+
+        if (totalStates) {
+            totalStates.textContent =
+                states.toLocaleString("pt-BR")
+        }
+
+        if (foreignSupporters) {
+            foreignSupporters.textContent =
+                exterior.toLocaleString("pt-BR")
+        }
+
+
+        const genderTotal =
+            document.getElementById(
+                "genderTotal"
+            )
+
+        if (genderTotal) {
+            genderTotal.textContent =
+                total.toLocaleString("pt-BR")
+        }
+
+
+        setGenderRow(
+            "genderFemalePercent",
+            "genderFemaleBar",
+            Number(data.genero_feminino || 0),
+            total
+        )
+
+        setGenderRow(
+            "genderMalePercent",
+            "genderMaleBar",
+            Number(data.genero_masculino || 0),
+            total
+        )
+
+        setGenderRow(
+            "genderNonBinaryPercent",
+            "genderNonBinaryBar",
+            Number(data.genero_nao_binario || 0),
+            total
+        )
+
+        setGenderRow(
+            "genderOtherPercent",
+            "genderOtherBar",
+            Number(data.genero_outro || 0),
+            total
+        )
+
+        setGenderRow(
+            "genderPrivatePercent",
+            "genderPrivateBar",
+            Number(data.genero_nao_informado || 0),
+            total
+        )
+
+
+        const brazilPercent =
+            percentage(
+                brazil,
+                total
+            )
+
+        const worldPercent =
+            total > 0
+                ? 100 - brazilPercent
+                : 0
+
+
+        const brazilPercentage =
+            document.getElementById(
+                "brazilPercentage"
+            )
+
+        const brazilCount =
+            document.getElementById(
+                "brazilCount"
+            )
+
+        const worldCount =
+            document.getElementById(
+                "worldCount"
+            )
+
+        const originBrazilBar =
+            document.getElementById(
+                "originBrazilBar"
+            )
+
+        const originWorldBar =
+            document.getElementById(
+                "originWorldBar"
+            )
+
+
+        if (brazilPercentage) {
+            brazilPercentage.textContent =
+                `${brazilPercent}%`
+        }
+
+        if (brazilCount) {
+            brazilCount.textContent =
+                brazil.toLocaleString("pt-BR")
+        }
+
+        if (worldCount) {
+            worldCount.textContent =
+                exterior.toLocaleString("pt-BR")
+        }
+
+        if (originBrazilBar) {
+            originBrazilBar.style.width =
+                `${brazilPercent}%`
+        }
+
+        if (originWorldBar) {
+            originWorldBar.style.width =
+                `${worldPercent}%`
+        }
+
     }
 
 
-    .hero h1 {
-        font-size:
-            clamp(40px, 13vw, 60px);
+    function countryFlag(country) {
+
+        const flags = {
+            "Argentina": "🇦🇷",
+            "Austrália": "🇦🇺",
+            "Canadá": "🇨🇦",
+            "Chile": "🇨🇱",
+            "Colômbia": "🇨🇴",
+            "Espanha": "🇪🇸",
+            "Estados Unidos": "🇺🇸",
+            "França": "🇫🇷",
+            "Itália": "🇮🇹",
+            "Japão": "🇯🇵",
+            "México": "🇲🇽",
+            "Portugal": "🇵🇹",
+            "Reino Unido": "🇬🇧",
+            "Uruguai": "🇺🇾"
+        }
+
+        return flags[country] || "🌎"
+
     }
 
 
-    .hero-actions {
-        flex-direction: column;
+    async function loadCountries() {
+
+        if (!countriesGrid) {
+            return
+        }
+
+
+        const {
+            data,
+            error
+        } = await supabase.rpc(
+            "torcida_por_pais"
+        )
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao carregar países:",
+                error
+            )
+
+            return
+        }
+
+
+        countriesGrid.innerHTML = ""
+
+
+        if (!data || data.length === 0) {
+
+            countriesGrid.innerHTML = `
+                <div class="country-card">
+                    <span>🌎</span>
+
+                    <strong>
+                        Ainda não há registros
+                    </strong>
+
+                    <small>
+                        0 torcedores
+                    </small>
+                </div>
+            `
+
+            return
+        }
+
+
+        data.forEach(item => {
+
+            const card =
+                document.createElement("div")
+
+            card.className =
+                "country-card"
+
+            card.innerHTML = `
+                <span>
+                    ${countryFlag(item.pais)}
+                </span>
+
+                <strong>
+                    ${escapeHTML(item.pais)}
+                </strong>
+
+                <small>
+                    ${Number(item.quantidade).toLocaleString("pt-BR")}
+                    ${
+                        Number(item.quantidade) === 1
+                            ? "torcedor"
+                            : "torcedores"
+                    }
+                </small>
+            `
+
+            countriesGrid.appendChild(card)
+
+        })
+
     }
 
 
-    .primary-button,
-    .secondary-button {
-        width: 100%;
+    async function loadCities(uf) {
+
+        citySelect.innerHTML = `
+            <option value="">
+                Carregando cidades...
+            </option>
+        `
+
+        citySelect.disabled = true
+
+
+        if (!uf) {
+
+            citySelect.innerHTML = `
+                <option value="">
+                    Primeiro selecione o estado
+                </option>
+            `
+
+            return
+        }
+
+
+        const stateCode =
+            stateCodes[uf]
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${stateCode}/municipios`
+                )
+
+
+            if (!response.ok) {
+                throw new Error(
+                    "Erro ao consultar municípios."
+                )
+            }
+
+
+            const cities =
+                await response.json()
+
+
+            cities.sort(
+                (a, b) =>
+                    a.nome.localeCompare(
+                        b.nome,
+                        "pt-BR"
+                    )
+            )
+
+
+            citySelect.innerHTML = `
+                <option value="">
+                    Selecione a cidade
+                </option>
+            `
+
+
+            cities.forEach(city => {
+
+                const option =
+                    document.createElement("option")
+
+                option.value =
+                    String(city.id)
+
+                option.textContent =
+                    city.nome
+
+                option.dataset.name =
+                    city.nome
+
+                citySelect.appendChild(
+                    option
+                )
+
+            })
+
+
+            citySelect.disabled = false
+
+
+        } catch (error) {
+
+            console.error(
+                "Erro ao carregar cidades:",
+                error
+            )
+
+            citySelect.innerHTML = `
+                <option value="">
+                    Erro ao carregar cidades
+                </option>
+            `
+
+        }
+
     }
 
 
-    .hero-highlight {
-        flex-wrap: wrap;
+    function updateLocationFields() {
+
+        const selected =
+            document.querySelector(
+                'input[name="locationType"]:checked'
+            )
+
+
+        const isBrazil =
+            selected?.value === "brasil"
+
+
+        if (isBrazil) {
+
+            brazilFields.classList.remove(
+                "hidden"
+            )
+
+            exteriorFields.classList.add(
+                "hidden"
+            )
+
+            stateSelect.required = true
+            citySelect.required = true
+
+            countrySelect.required = false
+            countrySelect.disabled = true
+
+        } else {
+
+            brazilFields.classList.add(
+                "hidden"
+            )
+
+            exteriorFields.classList.remove(
+                "hidden"
+            )
+
+            stateSelect.required = false
+            citySelect.required = false
+
+            stateSelect.value = ""
+            citySelect.innerHTML = `
+                <option value="">
+                    Primeiro selecione o estado
+                </option>
+            `
+            citySelect.disabled = true
+
+            countrySelect.required = true
+            countrySelect.disabled = false
+
+        }
+
     }
 
 
-    .counter-section {
-        margin-top: -25px;
+    document
+        .querySelectorAll(
+            'input[name="locationType"]'
+        )
+        .forEach(radio => {
+
+            radio.addEventListener(
+                "change",
+                updateLocationFields
+            )
+
+        })
+
+
+    stateSelect.addEventListener(
+        "change",
+        async function () {
+
+            await loadCities(
+                this.value
+            )
+
+        }
+    )
+
+
+    form.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault()
+
+
+            const name =
+                document.getElementById(
+                    "name"
+                ).value.trim()
+
+
+            const age =
+                Number(
+                    document.getElementById(
+                        "age"
+                    ).value
+                )
+
+
+            const locationType =
+                document.querySelector(
+                    'input[name="locationType"]:checked'
+                )?.value
+
+
+            const gender =
+                normalizeGender(
+                    document.getElementById(
+                        "gender"
+                    ).value
+                )
+
+
+            const display =
+                normalizeDisplay(
+                    document.getElementById(
+                        "visibility"
+                    ).value
+                )
+
+
+            const consent =
+                document.getElementById(
+                    "consent"
+                ).checked
+
+
+            if (!name) {
+
+                alert(
+                    "Preencha seu nome."
+                )
+
+                return
+            }
+
+
+            if (
+                !age ||
+                age < 1 ||
+                age > 120
+            ) {
+
+                alert(
+                    "Informe uma idade válida."
+                )
+
+                return
+            }
+
+
+            if (!gender) {
+
+                alert(
+                    "Selecione seu gênero."
+                )
+
+                return
+            }
+
+
+            if (!display) {
+
+                alert(
+                    "Escolha como você quer aparecer."
+                )
+
+                return
+            }
+
+
+            if (!consent) {
+
+                alert(
+                    "É necessário autorizar a utilização das informações."
+                )
+
+                return
+            }
+
+
+            let estadoUF = null
+            let cidade = null
+            let codigoIBGE = null
+            let pais = null
+
+
+            if (
+                locationType === "brasil"
+            ) {
+
+                estadoUF =
+                    stateSelect.value
+
+                const selectedCity =
+                    citySelect.options[
+                        citySelect.selectedIndex
+                    ]
+
+
+                cidade =
+                    selectedCity?.dataset.name ||
+                    selectedCity?.textContent ||
+                    null
+
+
+                codigoIBGE =
+                    citySelect.value
+
+
+                if (
+                    !estadoUF ||
+                    !cidade ||
+                    !codigoIBGE
+                ) {
+
+                    alert(
+                        "Selecione seu estado e sua cidade."
+                    )
+
+                    return
+                }
+
+            } else {
+
+                pais =
+                    countrySelect.value
+
+
+                if (!pais) {
+
+                    alert(
+                        "Selecione seu país."
+                    )
+
+                    return
+                }
+
+            }
+
+
+            const submitButton =
+                form.querySelector(
+                    'button[type="submit"]'
+                )
+
+
+            submitButton.disabled = true
+
+            submitButton.textContent =
+                "REGISTRANDO..."
+
+
+            try {
+
+                const {
+                    data,
+                    error
+                } = await supabase.rpc(
+                    "cadastrar_participante",
+                    {
+                        p_nome: name,
+                        p_idade: age,
+                        p_local_tipo:
+                            locationType === "brasil"
+                                ? "Brasil"
+                                : "Exterior",
+                        p_estado_uf: estadoUF,
+                        p_cidade: cidade,
+                        p_codigo_ibge: codigoIBGE,
+                        p_pais: pais,
+                        p_genero: gender,
+                        p_exibicao: display,
+                        p_consentimento: consent
+                    }
+                )
+
+
+                if (error) {
+                    throw error
+                }
+
+
+                form.classList.add(
+                    "hidden"
+                )
+
+                successMessage.classList.remove(
+                    "hidden"
+                )
+
+
+                if (
+                    locationType === "brasil"
+                ) {
+
+                    successText.textContent =
+                        `${cidade}, ${estadoUF} foi adicionada ao mapa. A torcida foi atualizada.`
+
+                } else {
+
+                    successText.textContent =
+                        `Sua torcida de ${pais} foi registrada. A torcida foi atualizada.`
+
+                }
+
+
+                await reloadEverything()
+
+
+            } catch (error) {
+
+                console.error(
+                    "Erro ao cadastrar participante:",
+                    error
+                )
+
+                alert(
+                    error.message ||
+                    "Não foi possível registrar sua participação."
+                )
+
+            } finally {
+
+                submitButton.disabled = false
+
+                submitButton.textContent =
+                    "ENTRAR NO MAPA"
+
+            }
+
+        }
+    )
+
+
+    async function reloadEverything() {
+
+        await Promise.all([
+            loadMapData(),
+            loadStatistics(),
+            loadCountries()
+        ])
+
     }
 
 
-    .counter-grid {
-        grid-template-columns:
-            1fr 1fr;
+    function subscribeRealtime() {
 
-        gap: 8px;
+        supabase
+            .channel(
+                "mapa-da-torcida"
+            )
+            .on(
+                "broadcast",
+                {
+                    event: "atualizacao"
+                },
+                async function () {
+
+                    await reloadEverything()
+
+                }
+            )
+            .subscribe(
+                function (status) {
+
+                    console.log(
+                        "Realtime:",
+                        status
+                    )
+
+                }
+            )
+
     }
 
 
-    .counter-card {
-        min-height: 105px;
+    updateLocationFields()
 
-        padding: 14px;
+    initializeMap()
 
-        gap: 9px;
-    }
+    await loadCoordinates()
 
+    await reloadEverything()
 
-    .counter-icon {
-        width: 36px;
-        height: 36px;
+    subscribeRealtime()
 
-        font-size: 16px;
-    }
-
-
-    .counter-card strong {
-        font-size: 24px;
-    }
-
-
-    .counter-label {
-        font-size: 8px;
-    }
-
-
-    .map-section,
-    .stats-section,
-    .world-section,
-    .form-section {
-        width:
-            calc(100% - 24px);
-
-        padding:
-            70px 0;
-    }
-
-
-    .section-heading {
-        display: block;
-    }
-
-
-    .section-heading p {
-        margin-top: 18px;
-    }
-
-
-    .map-container {
-        min-height: 420px;
-
-        border-radius: 18px;
-    }
-
-
-    #map {
-        height: 420px;
-    }
-
-
-    .map-legend {
-        left: 10px;
-        bottom: 10px;
-
-        padding: 10px 12px;
-    }
-
-
-    .stats-card {
-        padding: 22px;
-    }
-
-
-    .stats-number {
-        font-size: 32px;
-    }
-
-
-    .countries-grid {
-        grid-template-columns: 1fr;
-    }
-
-
-    .join-section {
-        width:
-            calc(100% - 24px);
-
-        margin-bottom: 70px;
-    }
-
-
-    .join-card {
-        padding: 32px 24px;
-
-        border-radius: 20px;
-    }
-
-
-    .join-decoration {
-        min-height: 220px;
-    }
-
-
-    .join-circle {
-        width: 175px;
-        height: 175px;
-
-        font-size: 65px;
-    }
-
-
-    .supporter-form {
-        grid-template-columns: 1fr;
-
-        padding: 20px;
-
-        border-radius: 18px;
-    }
-
-
-    .form-group,
-    .form-group.full-width,
-    .location-fields,
-    .consent-box,
-    .submit-button {
-        grid-column:
-            1 / -1;
-    }
-
-
-    .location-fields {
-        grid-template-columns: 1fr;
-
-        gap: 15px;
-
-        padding: 15px;
-    }
-
-
-    .location-options {
-        grid-template-columns: 1fr;
-    }
-
-
-    .footer-content {
-        flex-direction: column;
-    }
-
-
-    .footer-note {
-        text-align: left;
-    }
-
-}
+})()
