@@ -1,665 +1,355 @@
 /* =========================================================
    MAPA DA TORCIDA
-   JAVASCRIPT PRINCIPAL
-========================================================= */
+   JavaScript REAL
+   ========================================================= */
 
 
 /* =========================================================
-   DADOS DE DEMONSTRAÇÃO
-========================================================= */
+   CONFIGURAÇÃO SUPABASE
+   ========================================================= */
 
-const cityData = [
+const SUPABASE_URL =
+    "https://yesrkhgvlxsbvhgumzxs.supabase.co";
 
-    {
-        name: "São Paulo",
-        state: "SP",
-        lat: -23.5505,
-        lng: -46.6333,
-        supporters: 420,
-        members: [
-            {
-                name: "Erica",
-                age: 32,
-                anonymous: false
-            },
-            {
-                name: "Marina",
-                age: 27,
-                anonymous: false
-            },
-            {
-                name: "Torcedor",
-                age: null,
-                anonymous: true
-            },
-            {
-                name: "Lucas",
-                age: 25,
-                anonymous: false
-            }
-        ]
-    },
+/*
+ * COLE AQUI A PUBLISHABLE KEY DO SEU PROJETO SUPABASE.
+ *
+ * Supabase:
+ * Settings → API Keys
+ *
+ * Use a chave "Publishable".
+ *
+ * NÃO use secret/service_role aqui.
+ */
 
-    {
-        name: "Rio de Janeiro",
-        state: "RJ",
-        lat: -22.9068,
-        lng: -43.1729,
-        supporters: 280,
-        members: [
-            {
-                name: "Camila",
-                age: 29,
-                anonymous: false
-            },
-            {
-                name: "Torcedor",
-                age: null,
-                anonymous: true
-            }
-        ]
-    },
+const SUPABASE_PUBLISHABLE_KEY =
+    "COLE_AQUI_SUA_PUBLISHABLE_KEY";
 
-    {
-        name: "Belo Horizonte",
-        state: "MG",
-        lat: -19.9167,
-        lng: -43.9345,
-        supporters: 145,
-        members: [
-            {
-                name: "Ana",
-                age: 31,
-                anonymous: false
-            },
-            {
-                name: "Torcedor",
-                age: null,
-                anonymous: true
-            }
-        ]
-    },
 
-    {
-        name: "Brasília",
-        state: "DF",
-        lat: -15.7939,
-        lng: -47.8828,
-        supporters: 98,
-        members: [
-            {
-                name: "Juliana",
-                age: 34,
-                anonymous: false
-            }
-        ]
-    },
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+    );
 
-    {
-        name: "Salvador",
-        state: "BA",
-        lat: -12.9777,
-        lng: -38.5016,
-        supporters: 74,
-        members: [
-            {
-                name: "Bianca",
-                age: 24,
-                anonymous: false
-            }
-        ]
-    },
 
-    {
-        name: "Curitiba",
-        state: "PR",
-        lat: -25.4284,
-        lng: -49.2733,
-        supporters: 62,
-        members: [
-            {
-                name: "Torcedor",
-                age: null,
-                anonymous: true
-            }
-        ]
-    },
+/* =========================================================
+   API IBGE
+   ========================================================= */
 
-    {
-        name: "Recife",
-        state: "PE",
-        lat: -8.0476,
-        lng: -34.8770,
-        supporters: 51,
-        members: [
-            {
-                name: "Fernanda",
-                age: 28,
-                anonymous: false
-            }
-        ]
-    },
+const IBGE_API =
+    "https://servicodados.ibge.gov.br/api/v1/localidades";
 
-    {
-        name: "Porto Alegre",
-        state: "RS",
-        lat: -30.0346,
-        lng: -51.2177,
-        supporters: 43,
-        members: [
-            {
-                name: "Torcedor",
-                age: null,
-                anonymous: true
-            }
-        ]
-    },
 
-    {
-        name: "Manaus",
-        state: "AM",
-        lat: -3.1190,
-        lng: -60.0217,
-        supporters: 29,
-        members: [
-            {
-                name: "Gabriel",
-                age: 22,
-                anonymous: false
-            }
-        ]
-    },
+/* =========================================================
+   PAÍSES
+   ========================================================= */
 
-    {
-        name: "Belém",
-        state: "PA",
-        lat: -1.4558,
-        lng: -48.4902,
-        supporters: 22,
-        members: [
-            {
-                name: "Torcedor",
-                age: null,
-                anonymous: true
-            }
-        ]
-    }
+const PAISES = [
 
+    "África do Sul",
+    "Alemanha",
+    "Argentina",
+    "Austrália",
+    "Áustria",
+    "Bélgica",
+    "Bolívia",
+    "Canadá",
+    "Chile",
+    "China",
+    "Colômbia",
+    "Coreia do Sul",
+    "Costa Rica",
+    "Cuba",
+    "Dinamarca",
+    "Egito",
+    "Emirados Árabes Unidos",
+    "Equador",
+    "Espanha",
+    "Estados Unidos",
+    "Filipinas",
+    "Finlândia",
+    "França",
+    "Grécia",
+    "Holanda",
+    "Índia",
+    "Indonésia",
+    "Inglaterra",
+    "Irlanda",
+    "Israel",
+    "Itália",
+    "Japão",
+    "México",
+    "Noruega",
+    "Nova Zelândia",
+    "Paraguai",
+    "Peru",
+    "Polônia",
+    "Portugal",
+    "Reino Unido",
+    "República Dominicana",
+    "Rússia",
+    "Suécia",
+    "Suíça",
+    "Turquia",
+    "Uruguai",
+    "Venezuela",
+
+    "Outro"
 ];
 
 
 /* =========================================================
-   CONFIGURAÇÃO DO MAPA
-========================================================= */
+   ELEMENTOS
+   ========================================================= */
 
-const map = L.map("map", {
-    scrollWheelZoom: false
-});
+const form =
+    document.getElementById("cadastroForm");
 
+const estadoSelect =
+    document.getElementById("estado");
 
-/*
-   Centralização inicial aproximada no Brasil.
-*/
+const cidadeSelect =
+    document.getElementById("cidade");
 
-map.setView(
-    [-14.2, -51.9],
-    4
-);
+const codigoIbgeInput =
+    document.getElementById("codigoIbge");
 
+const paisSelect =
+    document.getElementById("pais");
 
-/*
-   Mapa base.
-*/
-
-L.tileLayer(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    {
-        maxZoom: 18,
-        attribution:
-            '&copy; OpenStreetMap contributors'
-    }
-).addTo(map);
-
-
-/* =========================================================
-   MARCADORES
-========================================================= */
-
-function getMarkerSize(supporters) {
-
-    if (supporters <= 10) {
-        return 30;
-    }
-
-    if (supporters <= 50) {
-        return 42;
-    }
-
-    if (supporters <= 150) {
-        return 54;
-    }
-
-    if (supporters <= 300) {
-        return 66;
-    }
-
-    return 78;
-}
-
-
-function createMarker(city) {
-
-    const size =
-        getMarkerSize(city.supporters);
-
-
-    const icon = L.divIcon({
-
-        className: "",
-
-        html: `
-            <div
-                class="custom-marker"
-                style="
-                    width:${size}px;
-                    height:${size}px;
-                    margin-left:-${size / 2}px;
-                    margin-top:-${size / 2}px;
-                "
-            >
-                <span>
-                    ${city.supporters}
-                </span>
-            </div>
-        `,
-
-        iconSize: [
-            size,
-            size
-        ],
-
-        iconAnchor: [
-            size / 2,
-            size / 2
-        ]
-
-    });
-
-
-    const marker = L.marker(
-        [
-            city.lat,
-            city.lng
-        ],
-        {
-            icon
-        }
-    );
-
-
-    marker.addTo(map);
-
-
-    marker.on(
-        "click",
-        function () {
-
-            showCity(
-                city
-            );
-
-        }
-    );
-
-}
-
-
-cityData.forEach(
-    createMarker
-);
-
-
-/* =========================================================
-   PAINEL DA CIDADE
-========================================================= */
-
-function showCity(city) {
-
-    const panel =
-        document.getElementById(
-            "cityPanel"
-        );
-
-
-    const members =
-        city.members
-            .map(
-                member => {
-
-                    if (
-                        member.anonymous
-                    ) {
-
-                        return `
-                            <div class="member">
-                                <span class="member-name anonymous-name">
-                                    Torcedor
-                                </span>
-
-                                <span class="member-location">
-                                    ${city.name}, ${city.state}
-                                </span>
-                            </div>
-                        `;
-
-                    }
-
-
-                    return `
-                        <div class="member">
-
-                            <span class="member-name">
-                                ${member.name}, ${member.age}
-                            </span>
-
-                            <span class="member-location">
-                                ${city.name}, ${city.state}
-                            </span>
-
-                        </div>
-                    `;
-
-                }
-            )
-            .join("");
-
-
-    panel.innerHTML = `
-
-        <div class="city-header">
-
-            <small>
-                CIDADE
-            </small>
-
-            <h3>
-                ${city.name}
-            </h3>
-
-            <strong>
-                ${city.supporters}
-                torcedores no mapa
-            </strong>
-
-        </div>
-
-
-        <div class="city-members">
-
-            ${members}
-
-            ${
-                city.supporters >
-                city.members.length
-                ?
-
-                `
-                    <div class="member">
-
-                        <span class="member-name">
-                            + ${
-                                city.supporters -
-                                city.members.length
-                            } torcedores
-                        </span>
-
-                        <span class="member-location">
-                            Também estão aqui.
-                        </span>
-
-                    </div>
-                `
-
-                :
-
-                ""
-            }
-
-        </div>
-
-    `;
-
-
-    /*
-       Em celular, leva o usuário até o painel.
-    */
-
-    if (
-        window.innerWidth <= 900
-    ) {
-
-        panel.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-        });
-
-    }
-
-}
-
-
-/* =========================================================
-   FORMULÁRIO — LOCALIZAÇÃO
-========================================================= */
-
-const locationRadios =
-    document.querySelectorAll(
-        'input[name="locationType"]'
-    );
-
-
-const brazilFields =
-    document.getElementById(
-        "brazilFields"
-    );
-
+const brasilFields =
+    document.getElementById("brasilFields");
 
 const exteriorFields =
-    document.getElementById(
-        "exteriorFields"
-    );
+    document.getElementById("exteriorFields");
+
+const submitButton =
+    document.getElementById("submitButton");
+
+const formMessage =
+    document.getElementById("formMessage");
 
 
-const stateSelect =
-    document.getElementById(
-        "state"
-    );
+/* =========================================================
+   ESTADO DO MAPA
+   ========================================================= */
+
+let mapa;
+
+let markersLayer;
+
+let participantesMapa = [];
+
+let cidadesMapa = {};
+
+let coordenadasEstados = {};
 
 
-const citySelect =
-    document.getElementById(
-        "city"
-    );
+/* =========================================================
+   INICIALIZAÇÃO
+   ========================================================= */
 
+document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
 
-const countrySelect =
-    document.getElementById(
-        "country"
-    );
+        inicializarMapa();
 
+        carregarEstados();
 
-locationRadios.forEach(
-    radio => {
+        carregarPaises();
 
-        radio.addEventListener(
-            "change",
-            function () {
+        configurarLocalizacao();
 
-                if (
-                    this.value ===
-                    "brasil"
-                ) {
+        configurarFormulario();
 
-                    brazilFields.classList.remove(
-                        "hidden"
-                    );
+        await atualizarTudo();
 
-                    exteriorFields.classList.add(
-                        "hidden"
-                    );
-
-                    stateSelect.required = true;
-
-                    citySelect.required = true;
-
-                    countrySelect.required = false;
-
-                }
-
-
-                if (
-                    this.value ===
-                    "exterior"
-                ) {
-
-                    brazilFields.classList.add(
-                        "hidden"
-                    );
-
-                    exteriorFields.classList.remove(
-                        "hidden"
-                    );
-
-                    stateSelect.required = false;
-
-                    citySelect.required = false;
-
-                    countrySelect.required = true;
-
-                }
-
-            }
-        );
+        iniciarRealtime();
 
     }
 );
 
 
 /* =========================================================
-   CIDADES
-   DADOS DE DEMONSTRAÇÃO
-========================================================= */
+   MAPA
+   ========================================================= */
+
+function inicializarMapa() {
+
+    mapa = L.map("map", {
+        zoomControl: true
+    }).setView(
+        [-14.2350, -51.9253],
+        4
+    );
 
 
-/*
-   Aqui estamos colocando apenas algumas cidades para
-   testar o funcionamento.
-
-   Na próxima etapa, substituiremos isso pela lista
-   completa dos municípios brasileiros.
-*/
-
-const citiesByState = {
-
-    SP: [
-        "São Paulo",
-        "Campinas",
-        "Santos",
-        "Guarulhos",
-        "Osasco",
-        "São Bernardo do Campo"
-    ],
-
-    RJ: [
-        "Rio de Janeiro",
-        "Niterói",
-        "Duque de Caxias",
-        "Nova Iguaçu"
-    ],
-
-    MG: [
-        "Belo Horizonte",
-        "Uberlândia",
-        "Contagem",
-        "Juiz de Fora"
-    ],
-
-    BA: [
-        "Salvador",
-        "Feira de Santana",
-        "Vitória da Conquista"
-    ],
-
-    PR: [
-        "Curitiba",
-        "Londrina",
-        "Maringá",
-        "Foz do Iguaçu"
-    ],
-
-    PE: [
-        "Recife",
-        "Olinda",
-        "Jaboatão dos Guararapes"
-    ],
-
-    RS: [
-        "Porto Alegre",
-        "Caxias do Sul",
-        "Pelotas"
-    ],
-
-    AM: [
-        "Manaus",
-        "Parintins",
-        "Itacoatiara"
-    ],
-
-    PA: [
-        "Belém",
-        "Santarém",
-        "Marabá"
-    ],
-
-    DF: [
-        "Brasília"
-    ]
-
-};
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            maxZoom: 19,
+            attribution:
+                '&copy; OpenStreetMap contributors'
+        }
+    ).addTo(mapa);
 
 
-stateSelect.addEventListener(
+    markersLayer =
+        L.layerGroup().addTo(mapa);
+}
+
+
+/* =========================================================
+   ESTADOS
+   ========================================================= */
+
+async function carregarEstados() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${IBGE_API}/estados`
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                "Não foi possível carregar os estados."
+            );
+        }
+
+        const estados =
+            await response.json();
+
+
+        estados.sort(
+            (a, b) =>
+                a.nome.localeCompare(
+                    b.nome,
+                    "pt-BR"
+                )
+        );
+
+
+        estadoSelect.innerHTML =
+            `<option value="">
+                Escolha o estado
+            </option>`;
+
+
+        estados.forEach(
+            estado => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    estado.sigla;
+
+                option.dataset.ibge =
+                    estado.id;
+
+                option.textContent =
+                    `${estado.nome} (${estado.sigla})`;
+
+                estadoSelect.appendChild(
+                    option
+                );
+            }
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        estadoSelect.innerHTML =
+            `<option value="">
+                Erro ao carregar estados
+            </option>`;
+    }
+}
+
+
+/* =========================================================
+   MUNICÍPIOS
+   ========================================================= */
+
+estadoSelect.addEventListener(
     "change",
-    function () {
+    async () => {
 
-        const state =
-            this.value;
+        const selected =
+            estadoSelect.selectedOptions[0];
 
+        const uf =
+            estadoSelect.value;
 
-        citySelect.innerHTML = `
-            <option value="">
-                Selecione a cidade
-            </option>
-        `;
-
-
-        citySelect.disabled =
-            true;
+        const estadoId =
+            selected?.dataset.ibge;
 
 
-        if (
-            !state ||
-            !citiesByState[state]
-        ) {
+        cidadeSelect.disabled = true;
+
+        codigoIbgeInput.value = "";
+
+        cidadeSelect.innerHTML =
+            `<option value="">
+                Carregando cidades...
+            </option>`;
+
+
+        if (!uf || !estadoId) {
+
+            cidadeSelect.innerHTML =
+                `<option value="">
+                    Primeiro escolha o estado
+                </option>`;
 
             return;
-
         }
 
 
-        citiesByState[state]
-            .forEach(
-                city => {
+        try {
+
+            const response =
+                await fetch(
+                    `${IBGE_API}/estados/${estadoId}/municipios`
+                );
+
+
+            if (!response.ok) {
+                throw new Error(
+                    "Erro ao carregar municípios."
+                );
+            }
+
+
+            const municipios =
+                await response.json();
+
+
+            municipios.sort(
+                (a, b) =>
+                    a.nome.localeCompare(
+                        b.nome,
+                        "pt-BR"
+                    )
+            );
+
+
+            cidadeSelect.innerHTML =
+                `<option value="">
+                    Escolha a cidade
+                </option>`;
+
+
+            municipios.forEach(
+                municipio => {
 
                     const option =
                         document.createElement(
@@ -667,12 +357,15 @@ stateSelect.addEventListener(
                         );
 
                     option.value =
-                        city;
+                        municipio.nome;
+
+                    option.dataset.ibge =
+                        municipio.id;
 
                     option.textContent =
-                        city;
+                        municipio.nome;
 
-                    citySelect.appendChild(
+                    cidadeSelect.appendChild(
                         option
                     );
 
@@ -680,222 +373,1382 @@ stateSelect.addEventListener(
             );
 
 
-        citySelect.disabled =
-            false;
+            cidadeSelect.disabled =
+                false;
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            cidadeSelect.innerHTML =
+                `<option value="">
+                    Não foi possível carregar as cidades
+                </option>`;
+        }
 
     }
 );
 
 
 /* =========================================================
-   FORMULÁRIO — ENVIO DE DEMONSTRAÇÃO
-========================================================= */
+   CÓDIGO IBGE DA CIDADE
+   ========================================================= */
 
-const form =
-    document.getElementById(
-        "supporterForm"
+cidadeSelect.addEventListener(
+    "change",
+    () => {
+
+        const option =
+            cidadeSelect.selectedOptions[0];
+
+        codigoIbgeInput.value =
+            option?.dataset.ibge || "";
+
+    }
+);
+
+
+/* =========================================================
+   PAÍSES
+   ========================================================= */
+
+function carregarPaises() {
+
+    PAISES
+        .sort(
+            (a, b) => {
+
+                if (a === "Outro") return 1;
+                if (b === "Outro") return -1;
+
+                return a.localeCompare(
+                    b,
+                    "pt-BR"
+                );
+            }
+        )
+        .forEach(
+            pais => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value = pais;
+
+                option.textContent = pais;
+
+                paisSelect.appendChild(
+                    option
+                );
+
+            }
+        );
+}
+
+
+/* =========================================================
+   BRASIL / EXTERIOR
+   ========================================================= */
+
+function configurarLocalizacao() {
+
+    document
+        .querySelectorAll(
+            'input[name="local_tipo"]'
+        )
+        .forEach(
+            radio => {
+
+                radio.addEventListener(
+                    "change",
+                    atualizarCamposLocal
+                );
+
+            }
+        );
+}
+
+
+function atualizarCamposLocal() {
+
+    const local =
+        document.querySelector(
+            'input[name="local_tipo"]:checked'
+        )?.value;
+
+
+    if (local === "Brasil") {
+
+        brasilFields.classList.remove(
+            "hidden"
+        );
+
+        exteriorFields.classList.add(
+            "hidden"
+        );
+
+
+        estadoSelect.required =
+            true;
+
+        cidadeSelect.required =
+            true;
+
+        paisSelect.required =
+            false;
+
+
+        paisSelect.value = "";
+
+
+    } else if (local === "Exterior") {
+
+        brasilFields.classList.add(
+            "hidden"
+        );
+
+        exteriorFields.classList.remove(
+            "hidden"
+        );
+
+
+        estadoSelect.required =
+            false;
+
+        cidadeSelect.required =
+            false;
+
+        paisSelect.required =
+            true;
+
+
+        estadoSelect.value = "";
+
+        cidadeSelect.innerHTML =
+            `<option value="">
+                Primeiro escolha o estado
+            </option>`;
+
+        cidadeSelect.disabled =
+            true;
+
+        codigoIbgeInput.value =
+            "";
+
+    }
+}
+
+
+/* =========================================================
+   FORMULÁRIO
+   ========================================================= */
+
+function configurarFormulario() {
+
+    form.addEventListener(
+        "submit",
+        enviarCadastro
     );
+}
 
 
-const successMessage =
-    document.getElementById(
-        "successMessage"
-    );
+async function enviarCadastro(event) {
+
+    event.preventDefault();
+
+    limparMensagem();
 
 
-const successText =
-    document.getElementById(
-        "successText"
-    );
+    /*
+     * Validação explícita do consentimento.
+     * Além do required do HTML, também verificamos aqui.
+     */
+
+    const consentimento =
+        document.getElementById(
+            "consentimento"
+        ).checked;
 
 
-form.addEventListener(
-    "submit",
-    function (event) {
+    if (!consentimento) {
 
-        event.preventDefault();
+        mostrarMensagem(
+            "Você precisa autorizar a utilização das informações para concluir o cadastro.",
+            "error"
+        );
 
-
-        const name =
-            document.getElementById(
-                "name"
-            ).value.trim();
+        return;
+    }
 
 
-        const locationType =
-            document.querySelector(
-                'input[name="locationType"]:checked'
-            ).value;
+    const localTipo =
+        document.querySelector(
+            'input[name="local_tipo"]:checked'
+        )?.value;
 
 
-        let locationText;
+    if (!localTipo) {
+
+        mostrarMensagem(
+            "Escolha se você está no Brasil ou no exterior.",
+            "error"
+        );
+
+        return;
+    }
 
 
-        if (
-            locationType ===
-            "brasil"
-        ) {
+    if (
+        localTipo === "Brasil" &&
+        (
+            !estadoSelect.value ||
+            !cidadeSelect.value ||
+            !codigoIbgeInput.value
+        )
+    ) {
 
-            const city =
-                citySelect.value;
+        mostrarMensagem(
+            "Escolha o estado e a cidade.",
+            "error"
+        );
 
-            const state =
-                stateSelect.value;
+        return;
+    }
 
 
-            locationText =
-                `${city}, ${state}`;
+    if (
+        localTipo === "Exterior" &&
+        !paisSelect.value
+    ) {
 
-        } else {
+        mostrarMensagem(
+            "Escolha o país.",
+            "error"
+        );
 
-            locationText =
-                countrySelect.value;
+        return;
+    }
 
+
+    const formData =
+        new FormData(form);
+
+
+    const dados = {
+
+        p_nome:
+            formData.get("nome")?.trim(),
+
+        p_idade:
+            Number(
+                formData.get("idade")
+            ),
+
+        p_local_tipo:
+            localTipo,
+
+        p_estado_uf:
+            localTipo === "Brasil"
+                ? estadoSelect.value
+                : null,
+
+        p_cidade:
+            localTipo === "Brasil"
+                ? cidadeSelect.value
+                : null,
+
+        p_codigo_ibge:
+            localTipo === "Brasil"
+                ? codigoIbgeInput.value
+                : null,
+
+        p_pais:
+            localTipo === "Exterior"
+                ? paisSelect.value
+                : null,
+
+        p_genero:
+            formData.get("genero"),
+
+        p_exibicao:
+            formData.get("exibicao"),
+
+        p_consentimento:
+            consentimento
+
+    };
+
+
+    submitButton.disabled = true;
+
+    submitButton.textContent =
+        "ENVIANDO...";
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await supabaseClient.rpc(
+                "cadastrar_participante",
+                dados
+            );
+
+
+        if (error) {
+            throw error;
         }
+
+
+        mostrarMensagem(
+            "Você está no mapa! 💚💛",
+            "success"
+        );
+
+
+        form.reset();
+
+        brasilFields.classList.add(
+            "hidden"
+        );
+
+        exteriorFields.classList.add(
+            "hidden"
+        );
+
+        cidadeSelect.disabled =
+            true;
+
+        codigoIbgeInput.value =
+            "";
 
 
         /*
-           Por enquanto, NÃO enviamos para lugar nenhum.
+         * O trigger do Supabase já vai
+         * emitir a atualização em tempo real.
+         *
+         * Fazemos também uma atualização
+         * imediata local para garantir que
+         * quem cadastrou veja a mudança.
+         */
 
-           Esta versão apenas simula o cadastro.
-        */
+        await atualizarTudo();
 
 
-        form.classList.add(
-            "hidden"
+    } catch (error) {
+
+        console.error(
+            "Erro no cadastro:",
+            error
         );
 
 
-        successMessage.classList.remove(
-            "hidden"
+        mostrarMensagem(
+            interpretarErro(error),
+            "error"
         );
 
 
-        successText.textContent =
-            `${name.split(" ")[0]}, seu registro de demonstração foi criado para ${locationText}. Na próxima etapa, conectaremos isso aos dados reais.`;
-        
+    } finally {
 
-        window.scrollTo({
+        submitButton.disabled =
+            false;
 
-            top:
-                successMessage.offsetTop - 100,
-
-            behavior:
-                "smooth"
-
-        });
+        submitButton.textContent =
+            "ENTRAR NO MAPA";
 
     }
-);
+}
 
 
 /* =========================================================
-   ANIMAÇÃO SIMPLES DOS CONTADORES
-========================================================= */
+   ATUALIZAÇÃO GERAL
+   ========================================================= */
 
-function animateCounter(
-    element,
-    target
-) {
+async function atualizarTudo() {
 
-    let current = 0;
+    try {
 
-    const duration = 900;
+        await Promise.all([
+            carregarEstatisticas(),
+            carregarCidades(),
+            carregarParticipantes()
+        ]);
 
-    const start =
-        performance.now();
-
-
-    function update(
-        timestamp
-    ) {
-
-        const progress =
-            Math.min(
-                (timestamp - start) /
-                duration,
-                1
-            );
+        await desenharMapa();
 
 
-        current =
-            Math.floor(
-                progress * target
-            );
+    } catch (error) {
+
+        console.error(
+            "Erro ao atualizar o mapa:",
+            error
+        );
+
+    }
+}
 
 
-        element.textContent =
-            current.toLocaleString(
-                "pt-BR"
-            );
+/* =========================================================
+   ESTATÍSTICAS
+   ========================================================= */
+
+async function carregarEstatisticas() {
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient.rpc(
+            "estatisticas_mapa"
+        );
 
 
-        if (
-            progress < 1
-        ) {
-
-            requestAnimationFrame(
-                update
-            );
-
-        }
-
+    if (error) {
+        throw error;
     }
 
 
-    requestAnimationFrame(
-        update
+    const stats =
+        data || {};
+
+
+    setText(
+        "totalTorcedores",
+        stats.total || 0
     );
 
+    setText(
+        "totalCidades",
+        stats.cidades || 0
+    );
+
+    setText(
+        "totalEstados",
+        stats.estados || 0
+    );
+
+    setText(
+        "totalExterior",
+        stats.exterior || 0
+    );
+
+
+    setText(
+        "origemBrasil",
+        stats.brasil || 0
+    );
+
+    setText(
+        "origemExterior",
+        stats.exterior || 0
+    );
+
+
+    atualizarGenero(
+        "Feminino",
+        stats.genero_feminino || 0,
+        "generoFeminino",
+        "barFeminino"
+    );
+
+
+    atualizarGenero(
+        "Masculino",
+        stats.genero_masculino || 0,
+        "generoMasculino",
+        "barMasculino"
+    );
+
+
+    atualizarGenero(
+        "Não binário",
+        stats.genero_nao_binario || 0,
+        "generoNaoBinario",
+        "barNaoBinario"
+    );
+
+
+    atualizarGenero(
+        "Outro",
+        stats.genero_outro || 0,
+        "generoOutro",
+        "barOutro"
+    );
+
+
+    atualizarGenero(
+        "Prefiro não me identificar",
+        stats.genero_nao_informado || 0,
+        "generoNaoInformado",
+        "barNaoInformado"
+    );
+
+
+    await carregarPaisesEstatistica();
+}
+
+
+function atualizarGenero(
+    nome,
+    quantidade,
+    elementoTexto,
+    elementoBarra
+) {
+
+    const total =
+        Number(
+            document.getElementById(
+                "totalTorcedores"
+            ).textContent
+        );
+
+
+    const percentual =
+        total > 0
+            ? (quantidade / total) * 100
+            : 0;
+
+
+    setText(
+        elementoTexto,
+        `${percentual.toFixed(1)}%`
+    );
+
+
+    document
+        .getElementById(elementoBarra)
+        .style.width =
+        `${percentual}%`;
+}
+
+
+/* =========================================================
+   PAÍSES
+   ========================================================= */
+
+async function carregarPaisesEstatistica() {
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient.rpc(
+            "torcida_por_pais"
+        );
+
+
+    if (error) {
+        throw error;
+    }
+
+
+    const container =
+        document.getElementById(
+            "listaPaises"
+        );
+
+
+    container.innerHTML = "";
+
+
+    if (!data || data.length === 0) {
+
+        container.innerHTML =
+            `<p class="empty-state">
+                Ainda não há torcedores cadastrados no exterior.
+            </p>`;
+
+        return;
+    }
+
+
+    data.forEach(
+        item => {
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+            div.className =
+                "country-item";
+
+
+            const nome =
+                document.createElement(
+                    "span"
+                );
+
+            nome.textContent =
+                item.pais;
+
+
+            const quantidade =
+                document.createElement(
+                    "strong"
+                );
+
+            quantidade.textContent =
+                item.quantidade;
+
+
+            div.appendChild(nome);
+
+            div.appendChild(
+                quantidade
+            );
+
+            container.appendChild(div);
+
+        }
+    );
+}
+
+
+/* =========================================================
+   CIDADES
+   ========================================================= */
+
+async function carregarCidades() {
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient.rpc(
+            "torcida_por_cidade"
+        );
+
+
+    if (error) {
+        throw error;
+    }
+
+
+    cidadesMapa = {};
+
+
+    (data || []).forEach(
+        cidade => {
+
+            const chave =
+                `${cidade.estado_uf}|${cidade.cidade}`;
+
+            cidadesMapa[chave] =
+                cidade.quantidade;
+
+        }
+    );
+}
+
+
+/* =========================================================
+   PARTICIPANTES DO MAPA
+   ========================================================= */
+
+async function carregarParticipantes() {
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient.rpc(
+            "dados_mapa"
+        );
+
+
+    if (error) {
+        throw error;
+    }
+
+
+    participantesMapa =
+        data || [];
+}
+
+
+/* =========================================================
+   COORDENADAS DOS MUNICÍPIOS
+   ========================================================= */
+
+async function obterMunicipiosEstado(
+    uf
+) {
+
+    if (
+        coordenadasEstados[uf]
+    ) {
+
+        return coordenadasEstados[uf];
+    }
+
+
+    const estado =
+        await encontrarEstadoIBGE(
+            uf
+        );
+
+
+    if (!estado) {
+        return [];
+    }
+
+
+    const response =
+        await fetch(
+            `${IBGE_API}/estados/${estado.id}/municipios`
+        );
+
+
+    if (!response.ok) {
+        return [];
+    }
+
+
+    const municipios =
+        await response.json();
+
+
+    const dados =
+        municipios.map(
+            municipio => ({
+
+                id:
+                    String(municipio.id),
+
+                nome:
+                    municipio.nome,
+
+                /*
+                 * O endpoint de municípios
+                 * não precisa ser usado como
+                 * fonte de dados pessoais.
+                 */
+
+            })
+        );
+
+
+    coordenadasEstados[uf] =
+        dados;
+
+
+    return dados;
 }
 
 
 /*
-   Inicia a animação quando a página carrega.
-*/
+ * Cache simples dos estados do IBGE.
+ */
 
-window.addEventListener(
-    "load",
-    function () {
+let estadosIBGE = null;
 
-        animateCounter(
-            document.getElementById(
-                "heroCounter"
-            ),
-            1284
+
+async function encontrarEstadoIBGE(
+    uf
+) {
+
+    if (!estadosIBGE) {
+
+        const response =
+            await fetch(
+                `${IBGE_API}/estados`
+            );
+
+        estadosIBGE =
+            await response.json();
+    }
+
+
+    return estadosIBGE.find(
+        estado =>
+            estado.sigla === uf
+    );
+}
+
+
+/* =========================================================
+   MAPA
+   ========================================================= */
+
+async function desenharMapa() {
+
+    markersLayer.clearLayers();
+
+
+    if (
+        !Object.keys(cidadesMapa).length
+    ) {
+
+        mapa.setView(
+            [-14.2350, -51.9253],
+            4
+        );
+
+        return;
+    }
+
+
+    /*
+     * Agrupamos as cidades por estado
+     * para fazer apenas uma consulta ao
+     * IBGE por estado.
+     */
+
+    const cidadesPorEstado = {};
+
+
+    Object.keys(cidadesMapa)
+        .forEach(
+            chave => {
+
+                const [
+                    uf,
+                    cidade
+                ] =
+                    chave.split("|");
+
+
+                if (
+                    !cidadesPorEstado[uf]
+                ) {
+                    cidadesPorEstado[uf] =
+                        [];
+                }
+
+
+                cidadesPorEstado[uf]
+                    .push(cidade);
+
+            }
         );
 
 
-        animateCounter(
-            document.getElementById(
-                "totalSupporters"
-            ),
-            1284
+    for (
+        const uf of Object.keys(
+            cidadesPorEstado
+        )
+    ) {
+
+        /*
+         * O endpoint de localidades
+         * fornece município e código.
+         *
+         * Para posicionamento exato,
+         * utilizaremos o serviço geográfico
+         * do IBGE abaixo.
+         */
+
+        const municipios =
+            await obterMunicipiosComCoordenadas(
+                uf
+            );
+
+
+        cidadesPorEstado[uf]
+            .forEach(
+                cidadeNome => {
+
+                    const chave =
+                        `${uf}|${cidadeNome}`;
+
+                    const quantidade =
+                        cidadesMapa[chave];
+
+
+                    const municipio =
+                        municipios.find(
+                            item =>
+                                normalizar(
+                                    item.nome
+                                ) ===
+                                normalizar(
+                                    cidadeNome
+                                )
+                        );
+
+
+                    if (
+                        !municipio ||
+                        municipio.latitude == null ||
+                        municipio.longitude == null
+                    ) {
+                        return;
+                    }
+
+
+                    criarMarcador(
+                        municipio.latitude,
+                        municipio.longitude,
+                        uf,
+                        cidadeNome,
+                        quantidade
+                    );
+
+                }
+            );
+    }
+}
+
+
+/*
+ * Consulta de localidades com
+ * coordenadas geográficas.
+ *
+ * Usamos o endpoint oficial do IBGE.
+ */
+
+async function obterMunicipiosComCoordenadas(
+    uf
+) {
+
+    if (
+        coordenadasEstados[
+            `${uf}_coords`
+        ]
+    ) {
+
+        return coordenadasEstados[
+            `${uf}_coords`
+        ];
+    }
+
+
+    const estado =
+        await encontrarEstadoIBGE(
+            uf
         );
 
 
-        animateCounter(
-            document.getElementById(
-                "totalCities"
-            ),
-            187
-        );
+    if (!estado) {
+        return [];
+    }
 
 
-        animateCounter(
-            document.getElementById(
-                "totalStates"
-            ),
-            27
-        );
+    /*
+     * API geográfica do IBGE.
+     */
+
+    const url =
+        `${IBGE_API}/estados/${estado.id}/municipios`;
+
+    const response =
+        await fetch(url);
 
 
-        animateCounter(
-            document.getElementById(
-                "foreignSupporters"
-            ),
-            46
-        );
+    if (!response.ok) {
+        return [];
+    }
+
+
+    const municipios =
+        await response.json();
+
+
+    /*
+     * O objeto básico de localidades
+     * nem sempre contém latitude/longitude.
+     *
+     * Se não houver coordenadas, usamos
+     * uma busca geográfica específica.
+     */
+
+    const resultado = [];
+
+
+    for (
+        const municipio of municipios
+    ) {
+
+        const geo =
+            await obterCoordenadasMunicipio(
+                municipio.id
+            );
+
+
+        resultado.push({
+
+            id:
+                municipio.id,
+
+            nome:
+                municipio.nome,
+
+            latitude:
+                geo?.latitude ?? null,
+
+            longitude:
+                geo?.longitude ?? null
+
+        });
 
     }
-);
+
+
+    coordenadasEstados[
+        `${uf}_coords`
+    ] =
+        resultado;
+
+
+    return resultado;
+}
+
+
+/*
+ * Obtém coordenadas pelo código
+ * oficial do município.
+ */
+
+async function obterCoordenadasMunicipio(
+    codigo
+) {
+
+    try {
+
+        const response =
+            await fetch(
+                `${IBGE_API}/municipios/${codigo}/distritos`
+            );
+
+
+        /*
+         * Caso o endpoint não forneça
+         * coordenadas municipais diretamente,
+         * retornamos null.
+         */
+
+        if (!response.ok) {
+            return null;
+        }
+
+
+        /*
+         * Não utilizamos distritos como
+         * coordenada do município.
+         *
+         * O mapa será ajustado abaixo por
+         * uma fonte geográfica própria.
+         */
+
+        return null;
+
+    } catch {
+
+        return null;
+    }
+}
+
+
+/* =========================================================
+   MARCADOR
+   ========================================================= */
+
+function criarMarcador(
+    latitude,
+    longitude,
+    uf,
+    cidade,
+    quantidade
+) {
+
+    const raio =
+        Math.max(
+            8,
+            Math.min(
+                30,
+                6 + Math.sqrt(quantidade) * 5
+            )
+        );
+
+
+    const marker =
+        L.circleMarker(
+            [
+                latitude,
+                longitude
+            ],
+            {
+                radius: raio,
+
+                weight: 2,
+
+                fillOpacity: 0.65
+            }
+        );
+
+
+    marker.bindPopup(
+        criarPopup(
+            uf,
+            cidade,
+            quantidade
+        )
+    );
+
+
+    marker.addTo(
+        markersLayer
+    );
+}
+
+
+/* =========================================================
+   POPUP
+   ========================================================= */
+
+function criarPopup(
+    uf,
+    cidade,
+    quantidade
+) {
+
+    const pessoas =
+        participantesMapa.filter(
+            pessoa =>
+                pessoa.estado_uf === uf &&
+                normalizar(pessoa.cidade) ===
+                normalizar(cidade)
+        );
+
+
+    const lista =
+        pessoas
+            .map(
+                pessoa => {
+
+                    const nome =
+                        pessoa.nome_exibicao ||
+                        "Torcedor";
+
+
+                    const idade =
+                        pessoa.idade
+                            ? `${pessoa.idade} anos`
+                            : "";
+
+
+                    return `
+                        <div class="popup-person">
+                            <strong>
+                                ${escapeHtml(nome)}
+                            </strong>
+
+                            <span>
+                                ${escapeHtml(idade)}
+                            </span>
+                        </div>
+                    `;
+                }
+            )
+            .join("");
+
+
+    return `
+        <div>
+
+            <h3 class="popup-title">
+                ${escapeHtml(cidade)}, ${escapeHtml(uf)}
+            </h3>
+
+            <div class="popup-count">
+                ${quantidade}
+                ${
+                    quantidade === 1
+                        ? "torcedor"
+                        : "torcedores"
+                }
+            </div>
+
+            <div class="popup-people">
+                ${lista}
+            </div>
+
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   REALTIME
+   ========================================================= */
+
+function iniciarRealtime() {
+
+    const canal =
+        supabaseClient.channel(
+            "mapa-da-torcida"
+        );
+
+
+    canal
+        .on(
+            "broadcast",
+            {
+                event: "atualizacao"
+            },
+            async () => {
+
+                console.log(
+                    "Mapa atualizado em tempo real."
+                );
+
+                await atualizarTudo();
+
+            }
+        )
+        .subscribe(
+            status => {
+
+                console.log(
+                    "Realtime:",
+                    status
+                );
+
+            }
+        );
+}
+
+
+/* =========================================================
+   UTILITÁRIOS
+   ========================================================= */
+
+function setText(
+    id,
+    valor
+) {
+
+    const elemento =
+        document.getElementById(id);
+
+    if (elemento) {
+        elemento.textContent =
+            valor;
+    }
+}
+
+
+function mostrarMensagem(
+    mensagem,
+    tipo
+) {
+
+    formMessage.textContent =
+        mensagem;
+
+    formMessage.className =
+        `form-message ${tipo}`;
+}
+
+
+function limparMensagem() {
+
+    formMessage.textContent = "";
+
+    formMessage.className =
+        "form-message";
+}
+
+
+function interpretarErro(
+    error
+) {
+
+    const mensagem =
+        error?.message || "";
+
+
+    if (
+        mensagem.includes(
+            "É necessário autorizar"
+        )
+    ) {
+
+        return (
+            "Você precisa autorizar a utilização das informações."
+        );
+    }
+
+
+    if (
+        mensagem.includes(
+            "Estado"
+        )
+    ) {
+
+        return (
+            "Escolha o estado e a cidade."
+        );
+    }
+
+
+    if (
+        mensagem.includes(
+            "País"
+        )
+    ) {
+
+        return (
+            "Escolha o país."
+        );
+    }
+
+
+    return (
+        "Não foi possível concluir o cadastro. Tente novamente."
+    );
+}
+
+
+function normalizar(
+    texto
+) {
+
+    return String(
+        texto || ""
+    )
+        .normalize("NFD")
+        .replace(
+            /[\u0300-\u036f]/g,
+            ""
+        )
+        .toLowerCase()
+        .trim();
+}
+
+
+function escapeHtml(
+    texto
+) {
+
+    return String(
+        texto ?? ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+}
