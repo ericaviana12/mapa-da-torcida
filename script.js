@@ -1,113 +1,38 @@
-/* =========================================================
-   MAPA DA TORCIDA
-   JAVASCRIPT PRINCIPAL
-========================================================= */
-
 (async function () {
+    const { createClient } = await import(
+        "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"
+    )
 
-    "use strict"
-
-
-    /* =====================================================
-       CONFIGURAÇÃO
-    ===================================================== */
-
-    const SUPABASE_URL =
-        "https://yesrkhgvlxsbvhgumzxs.supabase.co"
-
-    const SUPABASE_PUBLISHABLE_KEY =
-        "sb_publishable_CfwYZzY99TFrJLcMe7ZsLw_m1LhD2Cy"
-
-
-    /*
-       Base de coordenadas dos municípios.
-    */
+    const SUPABASE_URL = "https://yesrkhgvlxsbvhgumzxs.supabase.co"
+    const SUPABASE_KEY = "sb_publishable_CfwYZzY99TFrJLcMe7ZsLw_m1LhD2Cy"
 
     const COORDINATES_URL =
         "https://raw.githubusercontent.com/GusFurtado/dab_assets/main/data/coordenadas.csv"
 
+    const supabase = createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    )
 
-    /* =====================================================
-       SUPABASE
-    ===================================================== */
+    const map = L.map("map", {
+        zoomControl: true,
+        scrollWheelZoom: true
+    }).setView([-14.235, -51.9253], 4)
 
-    let supabase
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            attribution: "&copy; OpenStreetMap contributors"
+        }
+    ).addTo(map)
 
-    try {
+    const markerLayer = L.layerGroup().addTo(map)
 
-        const module =
-            await import(
-                "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"
-            )
-
-        supabase =
-            module.createClient(
-                SUPABASE_URL,
-                SUPABASE_PUBLISHABLE_KEY
-            )
-
-    } catch (error) {
-
-        console.error(
-            "Não foi possível carregar o Supabase:",
-            error
-        )
-
-        return
-    }
-
-
-    /* =====================================================
-       ELEMENTOS
-    ===================================================== */
-
-    const form =
-        document.getElementById(
-            "supporterForm"
-        )
-
-    const successMessage =
-        document.getElementById(
-            "successMessage"
-        )
-
-    const successText =
-        document.getElementById(
-            "successText"
-        )
-
-    const brazilFields =
-        document.getElementById(
-            "brazilFields"
-        )
-
-    const exteriorFields =
-        document.getElementById(
-            "exteriorFields"
-        )
-
-    const stateSelect =
-        document.getElementById(
-            "state"
-        )
-
-    const citySelect =
-        document.getElementById(
-            "city"
-        )
-
-    const countrySelect =
-        document.getElementById(
-            "country"
-        )
-
-
-    /* =====================================================
-       ESTADOS — CÓDIGOS IBGE
-    ===================================================== */
+    let coordinateData = {}
+    let mapData = []
+    let currentCity = null
 
     const stateCodes = {
-
         AC: 12,
         AL: 27,
         AP: 16,
@@ -135,1213 +60,622 @@
         SP: 35,
         SE: 28,
         TO: 17
-
     }
 
+    function formatNumber(value) {
+        return Number(value || 0).toLocaleString("pt-BR")
+    }
 
-    /* =====================================================
-       MAPA
-    ===================================================== */
-
-    const map =
-        L.map(
-            "map",
-            {
-                scrollWheelZoom: false
-            }
-        )
-
-
-    map.setView(
-        [-14.2, -51.9],
-        4
-    )
-
-
-    L.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        {
-            maxZoom: 18,
-            attribution:
-                "&copy; OpenStreetMap contributors"
-        }
-    ).addTo(map)
-
-
-    /* =====================================================
-       DADOS
-    ===================================================== */
-
-    let cityData = []
-
-    const coordinateData =
-        new Map()
-
-
-    /* =====================================================
-       CSV — LEITURA
-    ===================================================== */
+    function escapeHTML(value) {
+        const div = document.createElement("div")
+        div.textContent = value ?? ""
+        return div.innerHTML
+    }
 
     function parseCSV(text) {
+        const lines = text
+            .split(/\r?\n/)
+            .map(line => line.trim())
+            .filter(Boolean)
 
-        const rows = []
-
-        let row = []
-
-        let field = ""
-
-        let insideQuotes = false
-
-
-        for (
-            let i = 0;
-            i < text.length;
-            i++
-        ) {
-
-            const char =
-                text[i]
-
-            const next =
-                text[i + 1]
-
-
-            if (
-                char === '"'
-            ) {
-
-                if (
-                    insideQuotes &&
-                    next === '"'
-                ) {
-
-                    field += '"'
-
-                    i++
-
-                } else {
-
-                    insideQuotes =
-                        !insideQuotes
-
-                }
-
-                continue
-            }
-
-
-            if (
-                char === ";" &&
-                !insideQuotes
-            ) {
-
-                row.push(
-                    field
-                )
-
-                field = ""
-
-                continue
-            }
-
-
-            if (
-                (
-                    char === "\n" ||
-                    char === "\r"
-                ) &&
-                !insideQuotes
-            ) {
-
-                if (
-                    char === "\r" &&
-                    next === "\n"
-                ) {
-
-                    i++
-
-                }
-
-
-                row.push(
-                    field
-                )
-
-                field = ""
-
-
-                if (
-                    row.some(
-                        value =>
-                            value.trim() !== ""
-                    )
-                ) {
-
-                    rows.push(
-                        row
-                    )
-
-                }
-
-
-                row = []
-
-                continue
-            }
-
-
-            field += char
-
+        if (!lines.length) {
+            return []
         }
 
+        const delimiter = lines[0].includes(";") ? ";" : ","
 
-        if (
-            field !== "" ||
-            row.length > 0
-        ) {
-
-            row.push(
-                field
-            )
-
-            if (
-                row.some(
-                    value =>
-                        value.trim() !== ""
-                )
-            ) {
-
-                rows.push(
-                    row
-                )
-
-            }
-
-        }
-
-
-        return rows
-
-    }
-
-
-    /* =====================================================
-       COORDENADAS DOS MUNICÍPIOS
-    ===================================================== */
-
-    async function loadCoordinates() {
-
-        try {
-
-            const response =
-                await fetch(
-                    COORDINATES_URL
-                )
-
-
-            if (
-                !response.ok
-            ) {
-
-                throw new Error(
-                    "Não foi possível carregar a base de coordenadas."
-                )
-
-            }
-
-
-            const text =
-                await response.text()
-
-
-            const rows =
-                parseCSV(
-                    text
-                )
-
-
-            if (
-                rows.length < 2
-            ) {
-
-                throw new Error(
-                    "Base de coordenadas vazia."
-                )
-
-            }
-
-
-            const headers =
-                rows[0].map(
-                    header =>
-                        header
-                            .trim()
-                            .toUpperCase()
-                )
-
-
-            const indexOf =
-                function (names) {
-
-                    for (
-                        const name of names
-                    ) {
-
-                        const index =
-                            headers.indexOf(
-                                name
-                            )
-
-                        if (
-                            index !== -1
-                        ) {
-
-                            return index
-
-                        }
-
-                    }
-
-                    return -1
-
-                }
-
-
-            const municipalityCodeIndex =
-                indexOf([
-                    "CD_GEOCODMU",
-                    "CD_GEOCODM"
-                ])
-
-
-            const localityNameIndex =
-                indexOf([
-                    "NM_LOCALIDADE",
-                    "NM_LOCALID"
-                ])
-
-
-            const municipalityNameIndex =
-                indexOf([
-                    "NM_MUNICIPIO",
-                    "NM_MUNICIP"
-                ])
-
-
-            const latitudeIndex =
-                indexOf([
-                    "LAT",
-                    "LATITUDE"
-                ])
-
-
-            const longitudeIndex =
-                indexOf([
-                    "LONG",
-                    "LONGITUDE"
-                ])
-
-
-            if (
-                municipalityCodeIndex === -1 ||
-                latitudeIndex === -1 ||
-                longitudeIndex === -1
-            ) {
-
-                throw new Error(
-                    "Colunas necessárias não encontradas na base de coordenadas."
-                )
-
-            }
-
-
-            const fallback =
-                new Map()
-
-
-            for (
-                let i = 1;
-                i < rows.length;
-                i++
-            ) {
-
-                const row =
-                    rows[i]
-
-
-                const code =
-                    String(
-                        row[
-                            municipalityCodeIndex
-                        ] || ""
-                    )
+        const headers = lines[0]
+            .split(delimiter)
+            .map(header =>
+                header
                     .trim()
+                    .replace(/^"|"$/g, "")
+            )
 
+        return lines.slice(1).map(line => {
+            const values = []
+            let current = ""
+            let insideQuotes = false
 
-                if (
-                    !code
-                ) {
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i]
 
+                if (char === '"') {
+                    insideQuotes = !insideQuotes
                     continue
-
                 }
 
-
-                const lat =
-                    Number(
-                        String(
-                            row[
-                                latitudeIndex
-                            ] || ""
-                        )
-                        .replace(
-                            ",",
-                            "."
-                        )
-                    )
-
-
-                const lng =
-                    Number(
-                        String(
-                            row[
-                                longitudeIndex
-                            ] || ""
-                        )
-                        .replace(
-                            ",",
-                            "."
-                        )
-                    )
-
-
-                if (
-                    !Number.isFinite(lat) ||
-                    !Number.isFinite(lng)
-                ) {
-
+                if (char === delimiter && !insideQuotes) {
+                    values.push(current.trim())
+                    current = ""
                     continue
-
                 }
 
-
-                const municipalityName =
-                    municipalityNameIndex !== -1
-                        ? String(
-                            row[
-                                municipalityNameIndex
-                            ] || ""
-                        )
-                        .trim()
-                        .toLowerCase()
-                        : ""
-
-
-                const localityName =
-                    localityNameIndex !== -1
-                        ? String(
-                            row[
-                                localityNameIndex
-                            ] || ""
-                        )
-                        .trim()
-                        .toLowerCase()
-                        : ""
-
-
-                const coordinate = {
-                    lat,
-                    lng
-                }
-
-
-                if (
-                    !fallback.has(code)
-                ) {
-
-                    fallback.set(
-                        code,
-                        coordinate
-                    )
-
-                }
-
-
-                if (
-                    municipalityName &&
-                    localityName &&
-                    municipalityName === localityName
-                ) {
-
-                    coordinateData.set(
-                        code,
-                        coordinate
-                    )
-
-                }
-
+                current += char
             }
 
+            values.push(current.trim())
 
-            fallback.forEach(
-                (
-                    coordinate,
-                    code
-                ) => {
+            const row = {}
 
-                    if (
-                        !coordinateData.has(code)
-                    ) {
-
-                        coordinateData.set(
-                            code,
-                            coordinate
-                        )
-
-                    }
-
-                }
-            )
-
-
-            console.log(
-                `Coordenadas carregadas: ${coordinateData.size}`
-            )
-
-        } catch (error) {
-
-            console.error(
-                "Erro ao carregar coordenadas:",
-                error
-            )
-
-        }
-
-    }
-
-
-    /* =====================================================
-       TAMANHO DOS MARCADORES
-    ===================================================== */
-
-    function getMarkerSize(
-        supporters
-    ) {
-
-        if (
-            supporters <= 10
-        ) {
-
-            return 30
-
-        }
-
-        if (
-            supporters <= 50
-        ) {
-
-            return 42
-
-        }
-
-        if (
-            supporters <= 150
-        ) {
-
-            return 54
-
-        }
-
-        if (
-            supporters <= 300
-        ) {
-
-            return 66
-
-        }
-
-        return 78
-
-    }
-
-
-    /* =====================================================
-       MARCADOR
-    ===================================================== */
-
-    function createMarker(
-        city
-    ) {
-
-        const size =
-            getMarkerSize(
-                city.supporters
-            )
-
-
-        const icon =
-            L.divIcon({
-
-                className: "",
-
-                html: `
-                    <div
-                        class="custom-marker"
-                        style="
-                            width:${size}px;
-                            height:${size}px;
-                            margin-left:-${size / 2}px;
-                            margin-top:-${size / 2}px;
-                        "
-                    >
-                        <span>
-                            ${city.supporters}
-                        </span>
-                    </div>
-                `,
-
-                iconSize: [
-                    size,
-                    size
-                ],
-
-                iconAnchor: [
-                    size / 2,
-                    size / 2
-                ]
-
+            headers.forEach((header, index) => {
+                row[header] = values[index] ?? ""
             })
 
+            return row
+        })
+    }
 
-        const marker =
-            L.marker(
-                [
-                    city.lat,
-                    city.lng
-                ],
-                {
-                    icon
+    async function loadCoordinates() {
+        try {
+            const response = await fetch(COORDINATES_URL)
+
+            if (!response.ok) {
+                throw new Error("Não foi possível carregar as coordenadas")
+            }
+
+            const text = await response.text()
+            const rows = parseCSV(text)
+
+            coordinateData = {}
+
+            rows.forEach(row => {
+                const code =
+                    row.CD_GEOCODMU ||
+                    row.codigo_ibge ||
+                    row.CODIGO_IBGE ||
+                    row.code
+
+                const lat =
+                    row.LAT ||
+                    row.latitude ||
+                    row.LATITUDE
+
+                const lng =
+                    row.LONG ||
+                    row.longitude ||
+                    row.LONGITUDE ||
+                    row.LON
+
+                if (!code || !lat || !lng) {
+                    return
                 }
+
+                coordinateData[String(code).padStart(7, "0")] = {
+                    lat: Number(String(lat).replace(",", ".")),
+                    lng: Number(String(lng).replace(",", "."))
+                }
+            })
+
+            console.log(
+                "Coordenadas carregadas:",
+                Object.keys(coordinateData).length
+            )
+        } catch (error) {
+            console.error("Erro ao carregar coordenadas:", error)
+
+            coordinateData = {}
+        }
+    }
+
+    function markerRadius(quantity) {
+        if (quantity <= 10) {
+            return 7
+        }
+
+        if (quantity <= 50) {
+            return 11
+        }
+
+        return Math.min(
+            24,
+            11 + Math.log(quantity) * 2
+        )
+    }
+
+    function createMarker(city) {
+        const coordinates =
+            coordinateData[String(city.codigo_ibge).padStart(7, "0")]
+
+        if (!coordinates) {
+            console.warn(
+                "Coordenada não encontrada:",
+                city.codigo_ibge,
+                city.cidade
             )
 
+            return
+        }
 
-        marker.addTo(
-            map
-        )
-
-
-        marker.on(
-            "click",
-            function () {
-
-                showCity(
-                    city
-                )
-
+        const marker = L.circleMarker(
+            [
+                coordinates.lat,
+                coordinates.lng
+            ],
+            {
+                radius: markerRadius(city.quantidade),
+                color: "#ffffff",
+                weight: 2,
+                fillColor: "#009739",
+                fillOpacity: 0.78
             }
         )
 
+        marker.bindTooltip(
+            `${escapeHTML(city.cidade)}, ${escapeHTML(city.estado_uf)}<br><strong>${formatNumber(city.quantidade)} torcedores</strong>`,
+            {
+                direction: "top",
+                offset: [0, -8]
+            }
+        )
+
+        marker.on("click", function () {
+            showCityPanel(city)
+        })
+
+        marker.addTo(markerLayer)
     }
 
+    function showCityPanel(city) {
+        currentCity = city
 
-    /* =====================================================
-       PAINEL DA CIDADE
-    ===================================================== */
+        const panel = document.getElementById("cityPanel")
 
-    function showCity(
-        city
-    ) {
-
-        const panel =
-            document.getElementById(
-                "cityPanel"
-            )
-
-
-        if (
-            !panel
-        ) {
-
+        if (!panel) {
             return
-
         }
 
+        const people = mapData.filter(person =>
+            String(person.codigo_ibge).padStart(7, "0") ===
+            String(city.codigo_ibge).padStart(7, "0")
+        )
 
-        const members =
-            city.members
-                .map(
-                    member => {
+        people.sort((a, b) => {
+            const nameA = String(a.nome_exibicao || "")
+            const nameB = String(b.nome_exibicao || "")
 
-                        if (
-                            member.anonymous
-                        ) {
+            return nameA.localeCompare(
+                nameB,
+                "pt-BR"
+            )
+        })
 
-                            return `
-                                <div class="member">
+        const membersHTML = people.map(person => {
+            const isAnonymous =
+                person.nome_exibicao === "Torcedor"
 
-                                    <span class="member-name anonymous-name">
-                                        Torcedor
-                                    </span>
+            const nameClass = isAnonymous
+                ? "member-name anonymous-name"
+                : "member-name"
 
-                                    <span class="member-location">
-                                        ${city.name}, ${city.state}
-                                    </span>
+            const name = escapeHTML(
+                person.nome_exibicao
+            )
 
-                                </div>
-                            `
+            const age = Number(person.idade)
 
-                        }
+            return `
+                <div class="member">
+                    <span class="${nameClass}">
+                        ${name}
+                    </span>
 
-
-                        return `
-                            <div class="member">
-
-                                <span class="member-name">
-                                    ${member.name}, ${member.age}
-                                </span>
-
-                                <span class="member-location">
-                                    ${city.name}, ${city.state}
-                                </span>
-
-                            </div>
-                        `
-
-                    }
-                )
-                .join("")
-
+                    <span class="member-location">
+                        ${Number.isFinite(age) ? `${age} anos` : ""}
+                    </span>
+                </div>
+            `
+        }).join("")
 
         panel.innerHTML = `
-
             <div class="city-header">
-
-                <small>
-                    CIDADE
-                </small>
+                <small>CIDADE</small>
 
                 <h3>
-                    ${city.name}
+                    ${escapeHTML(city.cidade)}, ${escapeHTML(city.estado_uf)}
                 </h3>
 
                 <strong>
-                    ${city.supporters}
-                    torcedores no mapa
+                    ${formatNumber(city.quantidade)}
+                    ${city.quantidade === 1 ? "torcedor" : "torcedores"}
                 </strong>
-
             </div>
 
             <div class="city-members">
-
-                ${members}
-
+                ${membersHTML}
             </div>
-
         `
-
-
-        if (
-            window.innerWidth <= 900
-        ) {
-
-            panel.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            })
-
-        }
-
     }
 
+    function clearCityPanel() {
+        currentCity = null
 
-    /* =====================================================
-       CARREGAR DADOS DO MAPA
-    ===================================================== */
+        const panel = document.getElementById("cityPanel")
+
+        if (!panel) {
+            return
+        }
+
+        panel.innerHTML = `
+            <div class="empty-city">
+                <span class="city-panel-icon">
+                    📍
+                </span>
+
+                <h3>
+                    Explore o mapa
+                </h3>
+
+                <p>
+                    Clique em uma cidade para descobrir
+                    quem está torcendo de lá.
+                </p>
+            </div>
+        `
+    }
 
     async function loadMapData() {
-
         const {
             data,
             error
-        } =
-            await supabase.rpc(
-                "dados_mapa"
-            )
+        } = await supabase.rpc("dados_mapa")
 
-
-        if (
-            error
-        ) {
-
+        if (error) {
             console.error(
-                "Erro ao carregar mapa:",
+                "Erro ao carregar dados do mapa:",
                 error
             )
 
             return
-
         }
 
+        mapData = data || []
 
-        const grouped =
-            new Map()
+        markerLayer.clearLayers()
 
+        const cities = {}
 
-        data.forEach(
-            participant => {
+        mapData.forEach(person => {
+            const code = String(
+                person.codigo_ibge
+            ).padStart(7, "0")
 
-                const code =
-                    String(
-                        participant.codigo_ibge
-                    )
-
-
-                if (
-                    !grouped.has(code)
-                ) {
-
-                    grouped.set(
-                        code,
-                        {
-                            name:
-                                participant.cidade,
-
-                            state:
-                                participant.estado_uf,
-
-                            code,
-
-                            supporters: 0,
-
-                            members: []
-                        }
-                    )
-
+            if (!cities[code]) {
+                cities[code] = {
+                    codigo_ibge: code,
+                    cidade: person.cidade,
+                    estado_uf: person.estado_uf,
+                    quantidade: 0
                 }
-
-
-                const city =
-                    grouped.get(
-                        code
-                    )
-
-
-                city.supporters++
-
-
-                city.members.push({
-
-                    name:
-                        participant.nome_exibicao,
-
-                    age:
-                        participant.idade,
-
-                    anonymous:
-                        participant.nome_exibicao ===
-                        "Torcedor"
-
-                })
-
-            }
-        )
-
-
-        cityData =
-            Array.from(
-                grouped.values()
-            )
-
-
-        cityData.forEach(
-            city => {
-
-                const coordinates =
-                    coordinateData.get(
-                        city.code
-                    )
-
-
-                if (
-                    !coordinates
-                ) {
-
-                    console.warn(
-                        "Coordenada não encontrada para:",
-                        city.name,
-                        city.code
-                    )
-
-                    return
-
-                }
-
-
-                city.lat =
-                    coordinates.lat
-
-                city.lng =
-                    coordinates.lng
-
-
-                createMarker(
-                    city
-                )
-
-            }
-        )
-
-    }
-
-
-    /* =====================================================
-       CONTADORES
-    ===================================================== */
-
-    function animateCounter(
-        element,
-        target
-    ) {
-
-        if (
-            !element
-        ) {
-
-            return
-
-        }
-
-
-        let current = 0
-
-        const duration = 900
-
-        const start =
-            performance.now()
-
-
-        function update(
-            timestamp
-        ) {
-
-            const progress =
-                Math.min(
-                    (
-                        timestamp -
-                        start
-                    ) /
-                    duration,
-                    1
-                )
-
-
-            current =
-                Math.floor(
-                    progress *
-                    target
-                )
-
-
-            element.textContent =
-                current.toLocaleString(
-                    "pt-BR"
-                )
-
-
-            if (
-                progress < 1
-            ) {
-
-                requestAnimationFrame(
-                    update
-                )
-
             }
 
+            cities[code].quantidade++
+        })
+
+        Object.values(cities).forEach(createMarker)
+
+        if (currentCity) {
+            const updatedCity =
+                Object.values(cities).find(city =>
+                    city.codigo_ibge === currentCity.codigo_ibge
+                )
+
+            if (updatedCity) {
+                showCityPanel(updatedCity)
+            } else {
+                clearCityPanel()
+            }
         }
-
-
-        requestAnimationFrame(
-            update
-        )
-
     }
 
+    function setElementText(id, value) {
+        const element = document.getElementById(id)
 
-    function updateElement(
-        id,
-        value
-    ) {
-
-        const element =
-            document.getElementById(
-                id
-            )
-
-
-        if (
-            !element
-        ) {
-
-            return
-
+        if (element) {
+            element.textContent = value
         }
-
-
-        animateCounter(
-            element,
-            Number(value) || 0
-        )
-
     }
 
+    function setBar(id, percentage) {
+        const element = document.getElementById(id)
 
-    /* =====================================================
-       ESTATÍSTICAS
-    ===================================================== */
+        if (element) {
+            element.style.width = `${percentage}%`
+        }
+    }
 
     async function loadStatistics() {
-
         const {
             data,
             error
-        } =
-            await supabase.rpc(
-                "estatisticas_mapa"
-            )
+        } = await supabase.rpc("estatisticas_mapa")
 
-
-        if (
-            error
-        ) {
-
+        if (error) {
             console.error(
                 "Erro ao carregar estatísticas:",
                 error
             )
 
             return
-
         }
 
+        const stats = data || {}
 
-        const stats =
-            typeof data === "string"
-                ? JSON.parse(data)
-                : data
+        const total = Number(stats.total || 0)
+        const brasil = Number(stats.brasil || 0)
+        const exterior = Number(stats.exterior || 0)
 
+        const brazilPercentage =
+            total > 0
+                ? Math.round((brasil / total) * 100)
+                : 0
 
-        updateElement(
+        const worldPercentage =
+            total > 0
+                ? 100 - brazilPercentage
+                : 0
+
+        setElementText(
             "heroCounter",
-            stats.total
+            formatNumber(total)
         )
 
-        updateElement(
+        setElementText(
             "totalSupporters",
-            stats.total
+            formatNumber(total)
         )
 
-        updateElement(
+        setElementText(
             "totalCities",
-            stats.cidades
+            formatNumber(stats.cidades)
         )
 
-        updateElement(
+        setElementText(
             "totalStates",
-            stats.estados
+            formatNumber(stats.estados)
         )
 
-        updateElement(
+        setElementText(
             "foreignSupporters",
-            stats.exterior
+            formatNumber(exterior)
         )
 
-
-        updateElement(
-            "genderFemale",
-            stats.genero_feminino
+        setElementText(
+            "genderTotal",
+            formatNumber(total)
         )
 
-        updateElement(
-            "genderMale",
-            stats.genero_masculino
-        )
+        const female =
+            Number(stats.genero_feminino || 0)
 
-        updateElement(
-            "genderNonBinary",
-            stats.genero_nao_binario
-        )
+        const male =
+            Number(stats.genero_masculino || 0)
 
-        updateElement(
-            "genderOther",
-            stats.genero_outro
-        )
+        const nonBinary =
+            Number(stats.genero_nao_binario || 0)
 
-        updateElement(
-            "genderNoAnswer",
-            stats.genero_nao_informado
-        )
+        const other =
+            Number(stats.genero_outro || 0)
 
-    }
+        const privateGender =
+            Number(stats.genero_nao_informado || 0)
 
-
-    /* =====================================================
-       RECARREGAR MAPA
-    ===================================================== */
-
-    async function reloadEverything() {
-
-        cityData.length = 0
-
-
-        map.eachLayer(
-            layer => {
-
-                if (
-                    layer instanceof
-                    L.Marker
-                ) {
-
-                    map.removeLayer(
-                        layer
-                    )
-
-                }
-
+        const percentage = value => {
+            if (!total) {
+                return 0
             }
+
+            return Math.round(
+                (value / total) * 100
+            )
+        }
+
+        const femalePercent = percentage(female)
+        const malePercent = percentage(male)
+        const nonBinaryPercent = percentage(nonBinary)
+        const otherPercent = percentage(other)
+        const privatePercent = percentage(privateGender)
+
+        setElementText(
+            "genderFemalePercent",
+            `${femalePercent}%`
         )
 
+        setElementText(
+            "genderMalePercent",
+            `${malePercent}%`
+        )
 
-        await Promise.all([
-            loadMapData(),
-            loadStatistics()
-        ])
+        setElementText(
+            "genderNonBinaryPercent",
+            `${nonBinaryPercent}%`
+        )
 
+        setElementText(
+            "genderOtherPercent",
+            `${otherPercent}%`
+        )
+
+        setElementText(
+            "genderPrivatePercent",
+            `${privatePercent}%`
+        )
+
+        setBar(
+            "genderFemaleBar",
+            femalePercent
+        )
+
+        setBar(
+            "genderMaleBar",
+            malePercent
+        )
+
+        setBar(
+            "genderNonBinaryBar",
+            nonBinaryPercent
+        )
+
+        setBar(
+            "genderOtherBar",
+            otherPercent
+        )
+
+        setBar(
+            "genderPrivateBar",
+            privatePercent
+        )
+
+        setElementText(
+            "brazilPercentage",
+            `${brazilPercentage}%`
+        )
+
+        setElementText(
+            "brazilCount",
+            formatNumber(brasil)
+        )
+
+        setElementText(
+            "worldCount",
+            formatNumber(exterior)
+        )
+
+        setBar(
+            "originBrazilBar",
+            brazilPercentage
+        )
+
+        setBar(
+            "originWorldBar",
+            worldPercentage
+        )
     }
 
-
-    /* =====================================================
-       LOCALIZAÇÃO — BRASIL / EXTERIOR
-    ===================================================== */
-
-    const locationRadios =
-        document.querySelectorAll(
-            'input[name="locationType"]'
+    async function loadCountries() {
+        const {
+            data,
+            error
+        } = await supabase.rpc(
+            "torcida_por_pais"
         )
 
-
-    locationRadios.forEach(
-        radio => {
-
-            radio.addEventListener(
-                "change",
-                function () {
-
-                    if (
-                        this.value ===
-                        "brasil"
-                    ) {
-
-                        brazilFields.classList.remove(
-                            "hidden"
-                        )
-
-                        exteriorFields.classList.add(
-                            "hidden"
-                        )
-
-
-                        if (
-                            stateSelect
-                        ) {
-
-                            stateSelect.required =
-                                true
-
-                        }
-
-
-                        if (
-                            citySelect
-                        ) {
-
-                            citySelect.required =
-                                true
-
-                        }
-
-
-                        if (
-                            countrySelect
-                        ) {
-
-                            countrySelect.required =
-                                false
-
-                        }
-
-                    }
-
-
-                    if (
-                        this.value ===
-                        "exterior"
-                    ) {
-
-                        brazilFields.classList.add(
-                            "hidden"
-                        )
-
-                        exteriorFields.classList.remove(
-                            "hidden"
-                        )
-
-
-                        if (
-                            stateSelect
-                        ) {
-
-                            stateSelect.required =
-                                false
-
-                        }
-
-
-                        if (
-                            citySelect
-                        ) {
-
-                            citySelect.required =
-                                false
-
-                        }
-
-
-                        if (
-                            countrySelect
-                        ) {
-
-                            countrySelect.required =
-                                true
-
-                        }
-
-                    }
-
-                }
+        if (error) {
+            console.error(
+                "Erro ao carregar países:",
+                error
             )
 
+            return
         }
-    )
 
+        const grid =
+            document.getElementById("countriesGrid")
 
-    /* =====================================================
-       MUNICÍPIOS — IBGE
-    ===================================================== */
+        if (!grid) {
+            return
+        }
 
-    async function loadCities(
-        uf
-    ) {
+        const countries = data || []
+
+        if (!countries.length) {
+            grid.innerHTML = `
+                <div class="country-card">
+                    <span>🌎</span>
+
+                    <strong>
+                        Ainda não há registros
+                    </strong>
+
+                    <small>
+                        0 torcedores
+                    </small>
+                </div>
+            `
+
+            return
+        }
+
+        const countryEmojis = {
+            Argentina: "🇦🇷",
+            Austrália: "🇦🇺",
+            Canadá: "🇨🇦",
+            Chile: "🇨🇱",
+            Colômbia: "🇨🇴",
+            Espanha: "🇪🇸",
+            "Estados Unidos": "🇺🇸",
+            França: "🇫🇷",
+            Itália: "🇮🇹",
+            Japão: "🇯🇵",
+            México: "🇲🇽",
+            Portugal: "🇵🇹",
+            "Reino Unido": "🇬🇧",
+            Uruguai: "🇺🇾",
+            Outro: "🌎"
+        }
+
+        grid.innerHTML = countries.map(country => {
+            const emoji =
+                countryEmojis[country.pais] || "🌎"
+
+            return `
+                <div class="country-card">
+                    <span>${emoji}</span>
+
+                    <strong>
+                        ${escapeHTML(country.pais)}
+                    </strong>
+
+                    <small>
+                        ${formatNumber(country.quantidade)}
+                        ${country.quantidade === 1 ? "torcedor" : "torcedores"}
+                    </small>
+                </div>
+            `
+        }).join("")
+    }
+
+    async function reloadEverything() {
+        await Promise.all([
+            loadMapData(),
+            loadStatistics(),
+            loadCountries()
+        ])
+
+        setTimeout(() => {
+            map.invalidateSize()
+        }, 100)
+    }
+
+    async function loadCities(uf) {
+        const citySelect =
+            document.getElementById("city")
+
+        if (!citySelect) {
+            return
+        }
+
+        citySelect.disabled = true
 
         citySelect.innerHTML = `
             <option value="">
@@ -1349,54 +683,37 @@
             </option>
         `
 
+        const stateCode = stateCodes[uf]
 
-        citySelect.disabled =
-            true
-
-
-        const stateCode =
-            stateCodes[
-                uf
-            ]
-
-
-        if (
-            !stateCode
-        ) {
-
+        if (!stateCode) {
             citySelect.innerHTML = `
                 <option value="">
-                    Selecione a cidade
+                    Primeiro selecione o estado
                 </option>
             `
 
             return
-
         }
 
-
         try {
+            const response = await fetch(
+                `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${stateCode}/municipios`
+            )
 
-            const response =
-                await fetch(
-                    `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${stateCode}/municipios`
-                )
-
-
-            if (
-                !response.ok
-            ) {
-
+            if (!response.ok) {
                 throw new Error(
-                    "Erro ao consultar municípios do IBGE."
+                    "Erro ao consultar municípios"
                 )
-
             }
 
+            const cities = await response.json()
 
-            const cities =
-                await response.json()
-
+            cities.sort((a, b) =>
+                a.nome.localeCompare(
+                    b.nome,
+                    "pt-BR"
+                )
+            )
 
             citySelect.innerHTML = `
                 <option value="">
@@ -1404,609 +721,441 @@
                 </option>
             `
 
+            cities.forEach(city => {
+                const option =
+                    document.createElement("option")
 
-            cities
-                .sort(
-                    (
-                        a,
-                        b
-                    ) =>
-                        a.nome.localeCompare(
-                            b.nome,
-                            "pt-BR"
-                        )
-                )
-                .forEach(
-                    city => {
+                option.value = String(city.id)
+                    .padStart(7, "0")
 
-                        const option =
-                            document.createElement(
-                                "option"
-                            )
+                option.textContent = city.nome
 
+                option.dataset.name =
+                    city.nome
 
-                        option.value =
-                            city.id
+                citySelect.appendChild(option)
+            })
 
-
-                        option.textContent =
-                            city.nome
-
-
-                        option.dataset.name =
-                            city.nome
-
-
-                        citySelect.appendChild(
-                            option
-                        )
-
-                    }
-                )
-
-
-            citySelect.disabled =
-                false
-
+            citySelect.disabled = false
         } catch (error) {
-
             console.error(
-                "Erro ao carregar municípios:",
+                "Erro ao carregar cidades:",
                 error
             )
-
 
             citySelect.innerHTML = `
                 <option value="">
                     Não foi possível carregar as cidades
                 </option>
             `
-
         }
-
     }
 
+    function updateLocationFields() {
+        const locationType =
+            document.querySelector(
+                'input[name="locationType"]:checked'
+            )?.value
 
-    if (
-        stateSelect
-    ) {
+        const brazilFields =
+            document.getElementById(
+                "brazilFields"
+            )
 
-        stateSelect.addEventListener(
-            "change",
-            function () {
+        const exteriorFields =
+            document.getElementById(
+                "exteriorFields"
+            )
 
-                loadCities(
-                    this.value
-                )
+        const state =
+            document.getElementById("state")
 
-            }
+        const city =
+            document.getElementById("city")
+
+        const country =
+            document.getElementById("country")
+
+        const isBrazil =
+            locationType === "brasil"
+
+        brazilFields.classList.toggle(
+            "hidden",
+            !isBrazil
         )
 
+        exteriorFields.classList.toggle(
+            "hidden",
+            isBrazil
+        )
+
+        state.disabled = !isBrazil
+        city.disabled = !isBrazil
+        country.disabled = isBrazil
+
+        state.required = isBrazil
+        city.required = isBrazil
+        country.required = !isBrazil
+
+        if (isBrazil) {
+            country.value = ""
+        } else {
+            state.value = ""
+
+            city.innerHTML = `
+                <option value="">
+                    Primeiro selecione o estado
+                </option>
+            `
+
+            city.disabled = true
+        }
     }
 
+    function normalizeGender(value) {
+        const map = {
+            "feminino": "Feminino",
+            "masculino": "Masculino",
+            "nao-binario": "Não binário",
+            "não-binário": "Não binário",
+            "outro": "Outro",
+            "prefiro-nao-informar":
+                "Prefiro não me identificar",
+            "prefiro não me identificar":
+                "Prefiro não me identificar"
+        }
 
-    /* =====================================================
-       FORMULÁRIO — VALORES AUXILIARES
-    ===================================================== */
+        return map[value] || value
+    }
 
-    function getCheckedValue(
-        selectors
-    ) {
+    function normalizeDisplay(value) {
+        if (value === "nome") {
+            return "nome"
+        }
 
-        for (
-            const selector of selectors
+        if (value === "anonimo") {
+            return "anonimo"
+        }
+
+        return value
+    }
+
+    async function submitForm(event) {
+        event.preventDefault()
+
+        const form =
+            document.getElementById(
+                "supporterForm"
+            )
+
+        const submitButton =
+            form.querySelector(
+                ".submit-button"
+            )
+
+        const name =
+            document.getElementById(
+                "name"
+            ).value.trim()
+
+        const age =
+            Number(
+                document.getElementById(
+                    "age"
+                ).value
+            )
+
+        const locationType =
+            document.querySelector(
+                'input[name="locationType"]:checked'
+            )?.value
+
+        const state =
+            document.getElementById(
+                "state"
+            ).value
+
+        const citySelect =
+            document.getElementById(
+                "city"
+            )
+
+        const city =
+            citySelect.selectedOptions[0]
+                ?.dataset.name || ""
+
+        const codigoIbge =
+            citySelect.value || ""
+
+        const country =
+            document.getElementById(
+                "country"
+            ).value
+
+        const gender =
+            normalizeGender(
+                document.getElementById(
+                    "gender"
+                ).value
+            )
+
+        const display =
+            normalizeDisplay(
+                document.getElementById(
+                    "visibility"
+                ).value
+            )
+
+        const consent =
+            document.getElementById(
+                "consent"
+            ).checked
+
+        if (!name) {
+            alert("Digite seu nome.")
+            return
+        }
+
+        if (
+            !Number.isInteger(age) ||
+            age < 13 ||
+            age > 120
         ) {
+            alert(
+                "Informe uma idade válida entre 13 e 120 anos."
+            )
 
-            const element =
-                document.querySelector(
-                    `${selector}:checked`
+            return
+        }
+
+        if (!locationType) {
+            alert(
+                "Selecione onde você está torcendo."
+            )
+
+            return
+        }
+
+        if (locationType === "brasil") {
+            if (!state) {
+                alert(
+                    "Selecione seu estado."
                 )
 
-
-            if (
-                element
-            ) {
-
-                return element.value
-
+                return
             }
 
+            if (!city || !codigoIbge) {
+                alert(
+                    "Selecione sua cidade."
+                )
+
+                return
+            }
         }
 
+        if (locationType === "exterior") {
+            if (!country) {
+                alert(
+                    "Selecione seu país."
+                )
 
-        return ""
+                return
+            }
+        }
 
+        if (!gender) {
+            alert(
+                "Selecione seu gênero."
+            )
+
+            return
+        }
+
+        if (!display) {
+            alert(
+                "Escolha como você quer aparecer."
+            )
+
+            return
+        }
+
+        if (!consent) {
+            alert(
+                "É necessário autorizar a utilização das informações."
+            )
+
+            return
+        }
+
+        submitButton.disabled = true
+        submitButton.textContent =
+            "REGISTRANDO..."
+
+        try {
+            const {
+                data,
+                error
+            } = await supabase.rpc(
+                "cadastrar_participante",
+                {
+                    p_nome: name,
+                    p_idade: age,
+                    p_local_tipo:
+                        locationType === "brasil"
+                            ? "Brasil"
+                            : "Exterior",
+                    p_estado_uf:
+                        locationType === "brasil"
+                            ? state
+                            : null,
+                    p_cidade:
+                        locationType === "brasil"
+                            ? city
+                            : null,
+                    p_codigo_ibge:
+                        locationType === "brasil"
+                            ? codigoIbge
+                            : null,
+                    p_pais:
+                        locationType === "exterior"
+                            ? country
+                            : null,
+                    p_genero: gender,
+                    p_exibicao: display,
+                    p_consentimento: consent
+                }
+            )
+
+            if (error) {
+                console.error(
+                    "Erro ao cadastrar:",
+                    error
+                )
+
+                throw error
+            }
+
+            const successMessage =
+                document.getElementById(
+                    "successMessage"
+                )
+
+            const successText =
+                document.getElementById(
+                    "successText"
+                )
+
+            const firstName =
+                name.split(/\s+/)[0]
+
+            if (locationType === "brasil") {
+                successText.textContent =
+                    `${firstName}, sua participação foi registrada em ${city}, ${state}.`
+            } else {
+                successText.textContent =
+                    `${firstName}, sua participação foi registrada como torcida pelo ${country}.`
+            }
+
+            form.classList.add("hidden")
+            successMessage.classList.remove(
+                "hidden"
+            )
+
+            form.reset()
+
+            document.querySelector(
+                'input[name="locationType"][value="brasil"]'
+            ).checked = true
+
+            updateLocationFields()
+
+            await reloadEverything()
+        } catch (error) {
+            alert(
+                "Não foi possível registrar sua participação. Tente novamente."
+            )
+
+            console.error(error)
+        } finally {
+            submitButton.disabled = false
+            submitButton.textContent =
+                "ENTRAR NO MAPA"
+        }
     }
 
+    function setupForm() {
+        const state =
+            document.getElementById("state")
 
-    function normalizeDisplay(
-        value
-    ) {
-
-        const normalized =
-            String(
-                value || ""
+        const form =
+            document.getElementById(
+                "supporterForm"
             )
-            .trim()
-            .toLowerCase()
 
-
-        if (
-            [
-                "nome",
-                "identificado",
-                "name"
-            ].includes(
-                normalized
+        document
+            .querySelectorAll(
+                'input[name="locationType"]'
             )
-        ) {
+            .forEach(input => {
+                input.addEventListener(
+                    "change",
+                    updateLocationFields
+                )
+            })
 
-            return "nome"
-
-        }
-
-
-        if (
-            [
-                "anonimo",
-                "anônimo",
-                "anonymous"
-            ].includes(
-                normalized
-            )
-        ) {
-
-            return "anonimo"
-
-        }
-
-
-        return normalized
-
-    }
-
-
-    /* =====================================================
-       FORMULÁRIO — ENVIO REAL
-    ===================================================== */
-
-    if (
-        form
-    ) {
+        state.addEventListener(
+            "change",
+            event => {
+                loadCities(
+                    event.target.value
+                )
+            }
+        )
 
         form.addEventListener(
             "submit",
-            async function (event) {
-
-                event.preventDefault()
-
-
-                const submitButton =
-                    form.querySelector(
-                        'button[type="submit"]'
-                    )
-
-
-                if (
-                    submitButton
-                ) {
-
-                    submitButton.disabled =
-                        true
-
-                }
-
-
-                try {
-
-                    const name =
-                        document.getElementById(
-                            "name"
-                        )
-                        .value
-                        .trim()
-
-
-                    const age =
-                        Number(
-                            document.getElementById(
-                                "age"
-                            )
-                            .value
-                        )
-
-
-                    const locationType =
-                        document.querySelector(
-                            'input[name="locationType"]:checked'
-                        )
-
-
-                    if (
-                        !locationType
-                    ) {
-
-                        throw new Error(
-                            "Selecione Brasil ou Exterior."
-                        )
-
-                    }
-
-
-                    const locationValue =
-                        locationType.value
-
-
-                    const gender =
-                        getCheckedValue([
-                            'input[name="gender"]',
-                            'input[name="genero"]'
-                        ])
-
-
-                    const display =
-                        normalizeDisplay(
-                            getCheckedValue([
-                                'input[name="display"]',
-                                'input[name="exibicao"]'
-                            ])
-                        )
-
-
-                    const consent =
-                        document.querySelector(
-                            '#consent, #consentimento, input[name="consent"], input[name="consentimento"]'
-                        )
-
-
-                    const consentValue =
-                        consent
-                            ? consent.checked
-                            : false
-
-
-                    let state = null
-
-                    let city = null
-
-                    let cityCode = null
-
-                    let country = null
-
-
-                    if (
-                        locationValue ===
-                        "brasil"
-                    ) {
-
-                        state =
-                            stateSelect.value
-
-
-                        const selectedCity =
-                            citySelect
-                                .selectedOptions[0]
-
-
-                        if (
-                            selectedCity
-                        ) {
-
-                            city =
-                                selectedCity.dataset.name ||
-                                selectedCity.textContent
-
-                            cityCode =
-                                selectedCity.value
-
-                        }
-
-                    } else {
-
-                        country =
-                            countrySelect.value
-
-                    }
-
-
-                    if (
-                        !name
-                    ) {
-
-                        throw new Error(
-                            "Informe seu nome."
-                        )
-
-                    }
-
-
-                    if (
-                        !Number.isInteger(age) ||
-                        age < 13 ||
-                        age > 120
-                    ) {
-
-                        throw new Error(
-                            "Informe uma idade válida."
-                        )
-
-                    }
-
-
-                    if (
-                        !gender
-                    ) {
-
-                        throw new Error(
-                            "Selecione uma opção de gênero."
-                        )
-
-                    }
-
-
-                    if (
-                        !display
-                    ) {
-
-                        throw new Error(
-                            "Escolha como deseja aparecer no mapa."
-                        )
-
-                    }
-
-
-                    if (
-                        !consentValue
-                    ) {
-
-                        throw new Error(
-                            "É necessário autorizar o uso das informações para as estatísticas do mapa."
-                        )
-
-                    }
-
-
-                    if (
-                        locationValue ===
-                        "brasil" &&
-                        (
-                            !state ||
-                            !city ||
-                            !cityCode
-                        )
-                    ) {
-
-                        throw new Error(
-                            "Selecione o estado e a cidade."
-                        )
-
-                    }
-
-
-                    if (
-                        locationValue ===
-                        "exterior" &&
-                        !country
-                    ) {
-
-                        throw new Error(
-                            "Selecione o país."
-                        )
-
-                    }
-
-
-                    const {
-                        data,
-                        error
-                    } =
-                        await supabase.rpc(
-                            "cadastrar_participante",
-                            {
-                                p_nome:
-                                    name,
-
-                                p_idade:
-                                    age,
-
-                                p_local_tipo:
-                                    locationValue ===
-                                    "brasil"
-                                        ? "Brasil"
-                                        : "Exterior",
-
-                                p_estado_uf:
-                                    state,
-
-                                p_cidade:
-                                    city,
-
-                                p_codigo_ibge:
-                                    cityCode,
-
-                                p_pais:
-                                    country,
-
-                                p_genero:
-                                    gender,
-
-                                p_exibicao:
-                                    display,
-
-                                p_consentimento:
-                                    consentValue
-                            }
-                        )
-
-
-                    if (
-                        error
-                    ) {
-
-                        console.error(
-                            "Erro retornado pelo Supabase:",
-                            error
-                        )
-
-                        throw new Error(
-                            error.message ||
-                            "Não foi possível realizar o cadastro."
-                        )
-
-                    }
-
-
-                    form.classList.add(
-                        "hidden"
-                    )
-
-
-                    if (
-                        successMessage
-                    ) {
-
-                        successMessage.classList.remove(
-                            "hidden"
-                        )
-
-                    }
-
-
-                    const firstName =
-                        name
-                            .split(
-                                /\s+/
-                            )[0]
-
-
-                    const locationText =
-                        locationValue ===
-                        "brasil"
-
-                            ? `${city}, ${state}`
-
-                            : country
-
-
-                    if (
-                        successText
-                    ) {
-
-                        successText.textContent =
-                            `${firstName}, você está no mapa! Seu registro foi incluído em ${locationText}.`
-
-                    }
-
-
-                    await reloadEverything()
-
-
-                    if (
-                        successMessage
-                    ) {
-
-                        window.scrollTo({
-
-                            top:
-                                successMessage.offsetTop -
-                                100,
-
-                            behavior:
-                                "smooth"
-
-                        })
-
-                    }
-
-
-                } catch (error) {
-
-                    console.error(
-                        error
-                    )
-
-
-                    alert(
-                        error.message ||
-                        "Não foi possível concluir o cadastro."
-                    )
-
-
-                } finally {
-
-                    if (
-                        submitButton
-                    ) {
-
-                        submitButton.disabled =
-                            false
-
-                    }
-
-                }
-
-            }
+            submitForm
         )
 
+        updateLocationFields()
     }
 
+    function setupRealtime() {
+        supabase
+            .channel("mapa-da-torcida")
+            .on(
+                "broadcast",
+                {
+                    event: "atualizacao"
+                },
+                async () => {
+                    console.log(
+                        "Mapa atualizado em tempo real"
+                    )
 
-    /* =====================================================
-       TEMPO REAL
-    ===================================================== */
-
-    supabase
-        .channel(
-            "mapa-da-torcida"
-        )
-        .on(
-            "broadcast",
-            {
-                event:
-                    "atualizacao"
-            },
-            async function () {
-
-                console.log(
-                    "Mapa atualizado em tempo real."
-                )
-
-                await reloadEverything()
-
-            }
-        )
-        .subscribe(
-            function (status) {
-
+                    await reloadEverything()
+                }
+            )
+            .subscribe(status => {
                 console.log(
                     "Realtime:",
                     status
                 )
-
-            }
-        )
-
-
-    /* =====================================================
-       INICIALIZAÇÃO
-    ===================================================== */
-
-    try {
-
-        await loadCoordinates()
-
-        await Promise.all([
-            loadMapData(),
-            loadStatistics()
-        ])
-
-    } catch (error) {
-
-        console.error(
-            "Erro durante a inicialização:",
-            error
-        )
-
+            })
     }
 
+    async function initialize() {
+        setupForm()
+        setupRealtime()
+
+        await loadCoordinates()
+        await reloadEverything()
+
+        setTimeout(() => {
+            map.invalidateSize()
+        }, 300)
+    }
+
+    initialize()
 })()
