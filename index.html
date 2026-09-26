@@ -5,579 +5,575 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Mapa da Torcida</title>
+
     <meta
         name="description"
         content="Uma torcida. Milhares de lugares. Uma só paixão."
     >
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-        rel="stylesheet"
-    >
-
+    <!-- Leaflet -->
     <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        crossorigin=""
     >
 
+    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <header class="hero">
-        <div class="hero-content">
+<header class="hero">
 
-            <div class="hero-badge">
-                TORCIDA PELO BRASIL
-            </div>
+    <div class="hero-content">
 
-            <h1>MAPA DA TORCIDA</h1>
+        <span class="eyebrow">MAPA DA TORCIDA</span>
 
-            <p class="hero-subtitle">
-                Uma torcida. Milhares de lugares. Uma só paixão.
-            </p>
+        <h1>
+            Uma torcida.<br>
+            Milhares de lugares.<br>
+            <strong>Uma só paixão.</strong>
+        </h1>
 
-            <a href="#cadastro" class="hero-button">
-                FAÇA PARTE DO MAPA
-            </a>
+        <p>
+            Descubra de onde nossa torcida está acompanhando
+            o Corinthians Feminino e faça parte desse mapa.
+        </p>
 
+        <a href="#cadastro" class="btn btn-yellow">
+            FAÇA PARTE DO MAPA
+        </a>
+
+    </div>
+
+</header>
+
+
+<main>
+
+    <!-- =====================================================
+         CONTADORES
+    ====================================================== -->
+
+    <section class="stats-section">
+
+        <div class="stat-card">
+            <span class="stat-number" id="totalTorcedores">0</span>
+            <span class="stat-label">Torcedores</span>
         </div>
-    </header>
+
+        <div class="stat-card">
+            <span class="stat-number" id="totalCidades">0</span>
+            <span class="stat-label">Cidades</span>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-number" id="totalEstados">0</span>
+            <span class="stat-label">Estados</span>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-number" id="totalExterior">0</span>
+            <span class="stat-label">No exterior</span>
+        </div>
+
+    </section>
 
 
-    <main>
+    <!-- =====================================================
+         MAPA
+    ====================================================== -->
 
-        <!-- ESTATÍSTICAS PRINCIPAIS -->
-        <section class="stats-section">
-            <div class="container">
+    <section class="map-section">
 
-                <div class="section-heading">
-                    <span class="section-kicker">A TORCIDA ESTÁ AQUI</span>
-                    <h2>De onde estamos torcendo?</h2>
+        <div class="section-heading">
+            <span class="section-kicker">A TORCIDA PELO BRASIL</span>
+
+            <h2>
+                Onde nossa torcida está?
+            </h2>
+
+            <p>
+                Cada círculo representa uma cidade.
+                Quanto maior o círculo, maior a quantidade de torcedores.
+            </p>
+        </div>
+
+        <div id="map"></div>
+
+        <div class="map-legend">
+            <span class="legend-dot small"></span>
+            <span>Menos torcedores</span>
+
+            <span class="legend-dot medium"></span>
+            <span>Média concentração</span>
+
+            <span class="legend-dot large"></span>
+            <span>Maior concentração</span>
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ESTATÍSTICAS
+    ====================================================== -->
+
+    <section class="statistics-section">
+
+        <div class="section-heading">
+            <span class="section-kicker">NÚMEROS DA TORCIDA</span>
+
+            <h2>
+                Quem está no mapa?
+            </h2>
+        </div>
+
+
+        <div class="statistics-grid">
+
+            <article class="stats-box">
+
+                <h3>Gênero</h3>
+
+                <div class="gender-row">
+                    <span>Feminino</span>
+                    <strong id="generoFeminino">0%</strong>
                 </div>
 
-                <div class="stats-grid">
-
-                    <article class="stat-card">
-                        <span class="stat-number" id="totalTorcedores">0</span>
-                        <span class="stat-label">TORCEDORES</span>
-                    </article>
-
-                    <article class="stat-card">
-                        <span class="stat-number" id="totalCidades">0</span>
-                        <span class="stat-label">CIDADES</span>
-                    </article>
-
-                    <article class="stat-card">
-                        <span class="stat-number" id="totalEstados">0</span>
-                        <span class="stat-label">ESTADOS</span>
-                    </article>
-
-                    <article class="stat-card">
-                        <span class="stat-number" id="totalExterior">0</span>
-                        <span class="stat-label">NO EXTERIOR</span>
-                    </article>
-
+                <div class="progress">
+                    <span id="barFeminino"></span>
                 </div>
 
-            </div>
-        </section>
+
+                <div class="gender-row">
+                    <span>Masculino</span>
+                    <strong id="generoMasculino">0%</strong>
+                </div>
+
+                <div class="progress">
+                    <span id="barMasculino"></span>
+                </div>
 
 
-        <!-- MAPA -->
-        <section class="map-section">
-            <div class="container">
+                <div class="gender-row">
+                    <span>Não binário</span>
+                    <strong id="generoNaoBinario">0%</strong>
+                </div>
 
-                <div class="section-heading">
-                    <span class="section-kicker">A TORCIDA NO MAPA</span>
-                    <h2>Onde a nossa paixão está</h2>
+                <div class="progress">
+                    <span id="barNaoBinario"></span>
+                </div>
 
-                    <p>
-                        Cada ponto representa uma cidade com torcedores.
-                        Quanto maior o ponto, maior a quantidade de pessoas
-                        naquela cidade.
+
+                <div class="gender-row">
+                    <span>Outros</span>
+                    <strong id="generoOutro">0%</strong>
+                </div>
+
+                <div class="progress">
+                    <span id="barOutro"></span>
+                </div>
+
+
+                <div class="gender-row">
+                    <span>Prefiro não informar</span>
+                    <strong id="generoNaoInformado">0%</strong>
+                </div>
+
+                <div class="progress">
+                    <span id="barNaoInformado"></span>
+                </div>
+
+            </article>
+
+
+            <article class="stats-box">
+
+                <h3>De onde vem a nossa torcida?</h3>
+
+                <div class="origin-card">
+                    <span>🇧🇷 Brasil</span>
+                    <strong id="origemBrasil">0</strong>
+                </div>
+
+                <div class="origin-card">
+                    <span>🌎 Exterior</span>
+                    <strong id="origemExterior">0</strong>
+                </div>
+
+            </article>
+
+
+            <article class="stats-box">
+
+                <h3>Torcida pelo mundo</h3>
+
+                <div id="listaPaises" class="country-list">
+                    <p class="empty-state">
+                        Ainda não há torcedores cadastrados no exterior.
                     </p>
                 </div>
 
-                <div class="map-wrapper">
+            </article>
 
-                    <div id="map"></div>
+        </div>
 
-                    <div id="mapLoading" class="map-message">
-                        <div class="loading-spinner"></div>
-                        <p>Carregando o mapa...</p>
-                    </div>
+    </section>
 
-                    <div id="mapError" class="map-message hidden">
-                        <strong>Não foi possível carregar o mapa.</strong>
-                        <p>Tente atualizar a página.</p>
-                    </div>
+
+    <!-- =====================================================
+         CADASTRO
+    ====================================================== -->
+
+    <section id="cadastro" class="form-section">
+
+        <div class="section-heading">
+
+            <span class="section-kicker">
+                FAÇA PARTE
+            </span>
+
+            <h2>
+                Conte pra gente de onde você está torcendo.
+            </h2>
+
+            <p>
+                Seu nome completo não será exibido publicamente.
+            </p>
+
+        </div>
+
+
+        <form id="cadastroForm" class="registration-form">
+
+            <!-- Nome -->
+
+            <div class="field">
+
+                <label for="nome">
+                    Nome
+                </label>
+
+                <input
+                    type="text"
+                    id="nome"
+                    name="nome"
+                    placeholder="Digite seu nome completo"
+                    maxlength="120"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Idade -->
+
+            <div class="field">
+
+                <label for="idade">
+                    Idade
+                </label>
+
+                <input
+                    type="number"
+                    id="idade"
+                    name="idade"
+                    min="13"
+                    max="120"
+                    placeholder="Sua idade"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Local -->
+
+            <div class="field">
+
+                <label>
+                    Onde você está torcendo?
+                </label>
+
+                <div class="location-options">
+
+                    <label class="radio-option">
+
+                        <input
+                            type="radio"
+                            name="local_tipo"
+                            value="Brasil"
+                            required
+                        >
+
+                        <span>🇧🇷 Brasil</span>
+
+                    </label>
+
+
+                    <label class="radio-option">
+
+                        <input
+                            type="radio"
+                            name="local_tipo"
+                            value="Exterior"
+                        >
+
+                        <span>🌎 Exterior</span>
+
+                    </label>
 
                 </div>
 
             </div>
-        </section>
 
 
-        <!-- ESTATÍSTICAS DETALHADAS -->
-        <section class="details-section">
-            <div class="container">
+            <!-- Brasil -->
 
-                <div class="section-heading">
-                    <span class="section-kicker">A NOSSA TORCIDA</span>
-                    <h2>Mais números da torcida</h2>
-                </div>
+            <div
+                id="brasilFields"
+                class="conditional-fields hidden"
+            >
 
-                <div class="details-grid">
+                <div class="field">
 
-                    <article class="detail-card">
+                    <label for="estado">
+                        Estado
+                    </label>
 
-                        <div class="detail-card-header">
-                            <h3>Gênero</h3>
-                            <span>Torcedores cadastrados</span>
-                        </div>
+                    <select id="estado" name="estado_uf">
 
-                        <div id="genderStats" class="stats-list">
-                            <p class="empty-state">Carregando...</p>
-                        </div>
+                        <option value="">
+                            Escolha o estado
+                        </option>
 
-                    </article>
-
-
-                    <article class="detail-card">
-
-                        <div class="detail-card-header">
-                            <h3>Origem</h3>
-                            <span>Brasil x Exterior</span>
-                        </div>
-
-                        <div class="origin-chart">
-
-                            <div class="origin-item">
-                                <div class="origin-info">
-                                    <span>Brasil</span>
-                                    <strong id="brasilPercent">0%</strong>
-                                </div>
-
-                                <div class="progress-bar">
-                                    <span id="brasilBar"></span>
-                                </div>
-                            </div>
-
-                            <div class="origin-item">
-                                <div class="origin-info">
-                                    <span>Exterior</span>
-                                    <strong id="exteriorPercent">0%</strong>
-                                </div>
-
-                                <div class="progress-bar blue">
-                                    <span id="exteriorBar"></span>
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </article>
-
-
-                    <article class="detail-card country-card">
-
-                        <div class="detail-card-header">
-                            <h3>Torcida pelo mundo</h3>
-                            <span>Países</span>
-                        </div>
-
-                        <div id="countryStats" class="stats-list">
-                            <p class="empty-state">Carregando...</p>
-                        </div>
-
-                    </article>
+                    </select>
 
                 </div>
 
-            </div>
-        </section>
 
+                <div class="field">
 
-        <!-- CADASTRO -->
-        <section class="register-section" id="cadastro">
+                    <label for="cidade">
+                        Cidade
+                    </label>
 
-            <div class="container">
-
-                <div class="register-box">
-
-                    <div class="register-intro">
-
-                        <span class="section-kicker">
-                            FAÇA PARTE
-                        </span>
-
-                        <h2>Faça parte do mapa</h2>
-
-                        <p>
-                            Conte pra gente de onde você está torcendo.
-                            Seu cadastro ajuda a mostrar a força dessa
-                            torcida espalhada pelo Brasil e pelo mundo.
-                        </p>
-
-                    </div>
-
-
-                    <form id="participantForm">
-
-                        <div class="form-grid">
-
-                            <div class="form-group full-width">
-
-                                <label for="nome">
-                                    Nome
-                                </label>
-
-                                <input
-                                    type="text"
-                                    id="nome"
-                                    name="nome"
-                                    maxlength="120"
-                                    placeholder="Digite seu nome"
-                                    required
-                                >
-
-                            </div>
-
-
-                            <div class="form-group">
-
-                                <label for="idade">
-                                    Idade
-                                </label>
-
-                                <input
-                                    type="number"
-                                    id="idade"
-                                    name="idade"
-                                    min="13"
-                                    max="120"
-                                    placeholder="Sua idade"
-                                    required
-                                >
-
-                            </div>
-
-
-                            <div class="form-group">
-
-                                <label for="localTipo">
-                                    Você está em
-                                </label>
-
-                                <select id="localTipo" name="localTipo" required>
-
-                                    <option value="">
-                                        Selecione
-                                    </option>
-
-                                    <option value="Brasil">
-                                        Brasil
-                                    </option>
-
-                                    <option value="Exterior">
-                                        Exterior
-                                    </option>
-
-                                </select>
-
-                            </div>
-
-
-                            <!-- CAMPOS DO BRASIL -->
-
-                            <div
-                                id="brasilFields"
-                                class="conditional-fields full-width hidden"
-                            >
-
-                                <div class="form-grid">
-
-                                    <div class="form-group">
-
-                                        <label for="estado">
-                                            Estado
-                                        </label>
-
-                                        <select id="estado" name="estado">
-                                            <option value="">
-                                                Selecione o estado
-                                            </option>
-                                        </select>
-
-                                    </div>
-
-
-                                    <div class="form-group">
-
-                                        <label for="cidade">
-                                            Cidade
-                                        </label>
-
-                                        <select
-                                            id="cidade"
-                                            name="cidade"
-                                            disabled
-                                        >
-                                            <option value="">
-                                                Selecione primeiro o estado
-                                            </option>
-                                        </select>
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- CAMPOS DO EXTERIOR -->
-
-                            <div
-                                id="exteriorFields"
-                                class="conditional-fields full-width hidden"
-                            >
-
-                                <div class="form-group">
-
-                                    <label for="pais">
-                                        País
-                                    </label>
-
-                                    <select id="pais" name="pais">
-
-                                        <option value="">
-                                            Selecione o país
-                                        </option>
-
-                                    </select>
-
-                                </div>
-
-                            </div>
-
-
-                            <div class="form-group">
-
-                                <label for="genero">
-                                    Gênero
-                                </label>
-
-                                <select id="genero" name="genero" required>
-
-                                    <option value="">
-                                        Selecione
-                                    </option>
-
-                                    <option value="Feminino">
-                                        Feminino
-                                    </option>
-
-                                    <option value="Masculino">
-                                        Masculino
-                                    </option>
-
-                                    <option value="Não binário">
-                                        Não binário
-                                    </option>
-
-                                    <option value="Outro">
-                                        Outro
-                                    </option>
-
-                                    <option value="Prefiro não me identificar">
-                                        Prefiro não me identificar
-                                    </option>
-
-                                </select>
-
-                            </div>
-
-
-                            <div class="form-group">
-
-                                <label for="exibicao">
-                                    Como aparecerá no mapa?
-                                </label>
-
-                                <select id="exibicao" name="exibicao" required>
-
-                                    <option value="">
-                                        Selecione
-                                    </option>
-
-                                    <option value="nome">
-                                        Meu primeiro nome
-                                    </option>
-
-                                    <option value="anonimo">
-                                        Torcedor
-                                    </option>
-
-                                </select>
-
-                            </div>
-
-
-                            <div class="consent-group full-width">
-
-                                <label class="checkbox-label">
-
-                                    <input
-                                        type="checkbox"
-                                        id="consentimento"
-                                        name="consentimento"
-                                        required
-                                    >
-
-                                    <span>
-                                        Autorizo a utilização dos dados
-                                        informados para participação no
-                                        Mapa da Torcida, conforme as
-                                        informações apresentadas nesta página.
-                                    </span>
-
-                                </label>
-
-                            </div>
-
-
-                            <div
-                                id="formMessage"
-                                class="form-message full-width hidden"
-                            ></div>
-
-
-                            <div class="full-width">
-
-                                <button
-                                    type="submit"
-                                    id="submitButton"
-                                    class="submit-button"
-                                >
-                                    ENTRAR NO MAPA
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                    </form>
-
-
-                    <div
-                        id="successBox"
-                        class="success-box hidden"
+                    <select
+                        id="cidade"
+                        name="cidade"
+                        disabled
                     >
 
-                        <div class="success-icon">
-                            ✓
-                        </div>
+                        <option value="">
+                            Primeiro escolha o estado
+                        </option>
 
-                        <h3>Você está no mapa! 💚💛</h3>
+                    </select>
 
-                        <p>
-                            Seu cadastro foi registrado com sucesso.
-                            Obrigada por fazer parte dessa torcida!
-                        </p>
+                </div>
 
-                        <button
-                            type="button"
-                            id="newRegistration"
-                            class="secondary-button"
-                        >
-                            CADASTRAR OUTRA PESSOA
-                        </button>
+                <input
+                    type="hidden"
+                    id="codigoIbge"
+                    name="codigo_ibge"
+                >
 
-                    </div>
+            </div>
+
+
+            <!-- Exterior -->
+
+            <div
+                id="exteriorFields"
+                class="conditional-fields hidden"
+            >
+
+                <div class="field">
+
+                    <label for="pais">
+                        País
+                    </label>
+
+                    <select
+                        id="pais"
+                        name="pais"
+                    >
+
+                        <option value="">
+                            Escolha o país
+                        </option>
+
+                    </select>
 
                 </div>
 
             </div>
 
-        </section>
 
-    </main>
+            <!-- Gênero -->
+
+            <div class="field">
+
+                <label for="genero">
+                    Gênero
+                </label>
+
+                <select
+                    id="genero"
+                    name="genero"
+                    required
+                >
+
+                    <option value="">
+                        Escolha uma opção
+                    </option>
+
+                    <option value="Feminino">
+                        Feminino
+                    </option>
+
+                    <option value="Masculino">
+                        Masculino
+                    </option>
+
+                    <option value="Não binário">
+                        Não binário
+                    </option>
+
+                    <option value="Outro">
+                        Outro
+                    </option>
+
+                    <option value="Prefiro não me identificar">
+                        Prefiro não me identificar
+                    </option>
+
+                </select>
+
+                <small>
+                    Essa informação será utilizada apenas nas estatísticas gerais.
+                </small>
+
+            </div>
 
 
-    <!-- MODAL DA CIDADE -->
+            <!-- Exibição -->
 
-    <div
-        id="cityModal"
-        class="modal-overlay hidden"
-    >
+            <div class="field">
 
-        <div class="city-modal">
+                <label>
+                    Como você quer aparecer no mapa?
+                </label>
 
-            <button
-                id="closeModal"
-                class="modal-close"
-                aria-label="Fechar"
-            >
-                ×
-            </button>
+                <label class="radio-option">
 
-            <div class="modal-header">
+                    <input
+                        type="radio"
+                        name="exibicao"
+                        value="nome"
+                        required
+                    >
 
-                <span class="modal-kicker">
-                    TORCIDA
-                </span>
+                    <span>
+                        Quero aparecer com meu primeiro nome
+                    </span>
 
-                <h2 id="modalCityName">
-                    Cidade
-                </h2>
+                </label>
 
-                <p id="modalCityCount">
-                    0 torcedores
+
+                <label class="radio-option">
+
+                    <input
+                        type="radio"
+                        name="exibicao"
+                        value="anonimo"
+                    >
+
+                    <span>
+                        Prefiro aparecer anonimamente
+                    </span>
+
+                </label>
+
+            </div>
+
+
+            <!-- Consentimento -->
+
+            <div class="consent-box">
+
+                <label class="checkbox-option">
+
+                    <input
+                        type="checkbox"
+                        id="consentimento"
+                        name="consentimento"
+                        required
+                    >
+
+                    <span>
+                        Autorizo a utilização dessas informações
+                        para compor as estatísticas do Mapa da Torcida.
+                    </span>
+
+                </label>
+
+                <p>
+                    Seus dados individuais não serão utilizados para
+                    exibir informações de gênero no mapa.
                 </p>
 
             </div>
 
+
+            <button
+                type="submit"
+                class="btn btn-green"
+                id="submitButton"
+            >
+                ENTRAR NO MAPA
+            </button>
+
+
             <div
-                id="modalSupporters"
-                class="modal-supporters"
+                id="formMessage"
+                class="form-message"
+                role="status"
             ></div>
 
-        </div>
+        </form>
 
-    </div>
+    </section>
 
-
-    <footer>
-
-        <div class="container">
-
-            <p>
-                MAPA DA TORCIDA
-            </p>
-
-            <span>
-                Uma torcida. Milhares de lugares. Uma só paixão. 💚💛
-            </span>
-
-        </div>
-
-    </footer>
+</main>
 
 
-    <script
-        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    ></script>
+<footer>
 
-    <script
-        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-    ></script>
+    <strong>MAPA DA TORCIDA</strong>
 
-    <script src="script.js"></script>
+    <span>
+        Uma torcida. Milhares de lugares. Uma só paixão. 💚💛
+    </span>
+
+</footer>
+
+
+<!-- Leaflet -->
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    crossorigin=""
+></script>
+
+
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+<!-- Código do projeto -->
+<script src="script.js"></script>
 
 </body>
 </html>
