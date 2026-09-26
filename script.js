@@ -1682,6 +1682,28 @@ function abrirPainelEstado(
         "12px 0 0 12px";
 
     // ----------------------------------------
+    // IMPEDIR O MAPA DE RECEBER EVENTOS
+    // ----------------------------------------
+
+    if (typeof L !== "undefined" && L.DomEvent) {
+
+        L.DomEvent.disableClickPropagation(
+            painel
+        );
+
+        L.DomEvent.disableScrollPropagation(
+            painel
+        );
+
+        L.DomEvent.on(
+            painel,
+            "mousedown touchstart pointerdown",
+            L.DomEvent.stopPropagation
+        );
+
+    }
+
+    // ----------------------------------------
     // CABEÇALHO
     // ----------------------------------------
 
@@ -1825,11 +1847,44 @@ function abrirPainelEstado(
         corpo.style.overflowY =
             "auto";
 
+        corpo.style.overflowX =
+            "hidden";
+
         corpo.style.flex =
             "1";
 
+        corpo.style.minHeight =
+            "0";
+
         corpo.style.boxSizing =
             "border-box";
+
+        corpo.style.webkitOverflowScrolling =
+            "touch";
+
+        corpo.style.touchAction =
+            "pan-y";
+
+        if (
+            typeof L !== "undefined" &&
+            L.DomEvent
+        ) {
+
+            L.DomEvent.disableScrollPropagation(
+                corpo
+            );
+
+            L.DomEvent.disableClickPropagation(
+                corpo
+            );
+
+            L.DomEvent.on(
+                corpo,
+                "mousedown touchstart pointerdown",
+                L.DomEvent.stopPropagation
+            );
+
+        }
 
     }
 
