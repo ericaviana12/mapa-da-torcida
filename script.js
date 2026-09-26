@@ -1362,18 +1362,23 @@ async function enviarCadastro(
         await carregarTudo();
 
 
-    } catch (error) {
+} catch (error) {
 
-        console.error(
-            "Erro no cadastro:",
-            error
-        );
+    console.error("ERRO COMPLETO DO CADASTRO:", error);
 
-        mostrarMensagem(
-            traduzirErro(
-                error
-            )
-        );
+    const detalhes = [
+        error?.message,
+        error?.details,
+        error?.hint,
+        error?.code
+    ]
+        .filter(Boolean)
+        .join(" | ");
+
+    mostrarMensagem(
+        detalhes ||
+        "O Supabase retornou um erro sem detalhes."
+    );
 
     } finally {
 
