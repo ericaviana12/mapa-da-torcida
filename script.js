@@ -3,107 +3,102 @@
 // script.js
 // ============================================
 
-
 // ============================================
 // SUPABASE
 // ============================================
 
 const SUPABASE_URL =
-    "https://yesrkhgvlxsbvhgumzxs.supabase.co";
+"https://yesrkhgvlxsbvhgumzxs.supabase.co";
 
 const SUPABASE_KEY =
-    "sb_publishable_CfwYZzY99TFrJLcMe7ZsLw_m1LhD2Cy";
+"sb_publishable_CfwYZzY99TFrJLcMe7ZsLw_m1LhD2Cy";
 
 const db = supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
+SUPABASE_URL,
+SUPABASE_KEY
 );
-
 
 // ============================================
 // ESTADOS
 // ============================================
 
 const estados = {
-    AC: "Acre",
-    AL: "Alagoas",
-    AP: "Amapá",
-    AM: "Amazonas",
-    BA: "Bahia",
-    CE: "Ceará",
-    DF: "Distrito Federal",
-    ES: "Espírito Santo",
-    GO: "Goiás",
-    MA: "Maranhão",
-    MT: "Mato Grosso",
-    MS: "Mato Grosso do Sul",
-    MG: "Minas Gerais",
-    PA: "Pará",
-    PB: "Paraíba",
-    PR: "Paraná",
-    PE: "Pernambuco",
-    PI: "Piauí",
-    RJ: "Rio de Janeiro",
-    RN: "Rio Grande do Norte",
-    RS: "Rio Grande do Sul",
-    RO: "Rondônia",
-    RR: "Roraima",
-    SC: "Santa Catarina",
-    SP: "São Paulo",
-    SE: "Sergipe",
-    TO: "Tocantins"
+AC: "Acre",
+AL: "Alagoas",
+AP: "Amapá",
+AM: "Amazonas",
+BA: "Bahia",
+CE: "Ceará",
+DF: "Distrito Federal",
+ES: "Espírito Santo",
+GO: "Goiás",
+MA: "Maranhão",
+MT: "Mato Grosso",
+MS: "Mato Grosso do Sul",
+MG: "Minas Gerais",
+PA: "Pará",
+PB: "Paraíba",
+PR: "Paraná",
+PE: "Pernambuco",
+PI: "Piauí",
+RJ: "Rio de Janeiro",
+RN: "Rio Grande do Norte",
+RS: "Rio Grande do Sul",
+RO: "Rondônia",
+RR: "Roraima",
+SC: "Santa Catarina",
+SP: "São Paulo",
+SE: "Sergipe",
+TO: "Tocantins"
 };
-
 
 // ============================================
 // PAÍSES
 // ============================================
 
 const paises = [
-    "Argentina",
-    "Bolívia",
-    "Canadá",
-    "Chile",
-    "Colômbia",
-    "Estados Unidos",
-    "França",
-    "Alemanha",
-    "Itália",
-    "Japão",
-    "México",
-    "Paraguai",
-    "Peru",
-    "Portugal",
-    "Reino Unido",
-    "Uruguai",
-    "Outro"
+"Argentina",
+"Bolívia",
+"Canadá",
+"Chile",
+"Colômbia",
+"Estados Unidos",
+"França",
+"Alemanha",
+"Itália",
+"Japão",
+"México",
+"Paraguai",
+"Peru",
+"Portugal",
+"Reino Unido",
+"Uruguai",
+"Outro"
 ];
-
 
 // ============================================
 // BANDEIRAS
 // ============================================
 
 const bandeirasPaises = {
-    "Argentina": "🇦🇷",
-    "Bolívia": "🇧🇴",
-    "Canadá": "🇨🇦",
-    "Chile": "🇨🇱",
-    "Colômbia": "🇨🇴",
-    "Estados Unidos": "🇺🇸",
-    "França": "🇫🇷",
-    "Alemanha": "🇩🇪",
-    "Itália": "🇮🇹",
-    "Japão": "🇯🇵",
-    "México": "🇲🇽",
-    "Paraguai": "🇵🇾",
-    "Peru": "🇵🇪",
-    "Portugal": "🇵🇹",
-    "Reino Unido": "🇬🇧",
-    "Uruguai": "🇺🇾",
-    "Outro": "🌎"
+"Argentina": "🇦🇷",
+"Bolívia": "🇧🇴",
+"Canadá": "🇨🇦",
+"Chile": "🇨🇱",
+"Colômbia": "🇨🇴",
+"Estados Unidos": "🇺🇸",
+"França": "🇫🇷",
+"Alemanha": "🇩🇪",
+"Itália": "🇮🇹",
+"Japão": "🇯🇵",
+"México": "🇲🇽",
+"Paraguai": "🇵🇾",
+"Peru": "🇵🇪",
+"Portugal": "🇵🇹",
+"Reino Unido": "🇬🇧",
+"Uruguai": "🇺🇾",
+"Outro": "🌎"
 };
-
 
 // ============================================
 // VARIÁVEIS
@@ -117,41 +112,36 @@ let dadosMapa = [];
 
 let estatisticasAtuais = {};
 
-let nivelMarcadoresAtual = null;
-
-
 // ============================================
 // INICIALIZAÇÃO
 // ============================================
 
 document.addEventListener(
-    "DOMContentLoaded",
-    iniciar
+"DOMContentLoaded",
+iniciar
 );
-
 
 async function iniciar() {
 
-    console.log(
-        "Mapa da Torcida iniciado."
-    );
+console.log(  
+    "Mapa da Torcida iniciado."  
+);  
 
-    preencherEstados();
+preencherEstados();  
 
-    preencherPaises();
+preencherPaises();  
 
-    configurarLocal();
+configurarLocal();  
 
-    configurarFormulario();
+configurarFormulario();  
 
-    inicializarMapa();
+inicializarMapa();  
 
-    await carregarDados();
+await carregarDados();  
 
-    iniciarRealtime();
+iniciarRealtime();
 
 }
-
 
 // ============================================
 // PREENCHER ESTADOS
@@ -159,55 +149,54 @@ async function iniciar() {
 
 function preencherEstados() {
 
-    const select =
-        document.getElementById(
-            "estado"
-        );
+const select =  
+    document.getElementById(  
+        "estado"  
+    );  
 
-    if (!select) {
-        return;
-    }
+if (!select) {  
+    return;  
+}  
 
-    select.innerHTML = `
-        <option value="">
-            Escolha o estado
-        </option>
-    `;
-
-
-    Object.entries(estados)
-        .sort(
-            (a, b) =>
-                a[1].localeCompare(b[1])
-        )
-        .forEach(
-            ([uf, nome]) => {
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
-
-                option.value = uf;
-
-                option.textContent =
-                    `${nome} (${uf})`;
-
-                select.appendChild(
-                    option
-                );
-
-            }
-        );
+select.innerHTML = `  
+    <option value="">  
+        Escolha o estado  
+    </option>  
+`;  
 
 
-    select.addEventListener(
-        "change",
-        carregarCidades
-    );
+Object.entries(estados)  
+    .sort(  
+        (a, b) =>  
+            a[1].localeCompare(b[1])  
+    )  
+    .forEach(  
+        ([uf, nome]) => {  
+
+            const option =  
+                document.createElement(  
+                    "option"  
+                );  
+
+            option.value = uf;  
+
+            option.textContent =  
+                `${nome} (${uf})`;  
+
+            select.appendChild(  
+                option  
+            );  
+
+        }  
+    );  
+
+
+select.addEventListener(  
+    "change",  
+    carregarCidades  
+);
 
 }
-
 
 // ============================================
 // PREENCHER PAÍSES
@@ -215,44 +204,43 @@ function preencherEstados() {
 
 function preencherPaises() {
 
-    const select =
-        document.getElementById(
-            "pais"
-        );
+const select =  
+    document.getElementById(  
+        "pais"  
+    );  
 
-    if (!select) {
-        return;
-    }
+if (!select) {  
+    return;  
+}  
 
-    select.innerHTML = `
-        <option value="">
-            Escolha o país
-        </option>
-    `;
+select.innerHTML = `  
+    <option value="">  
+        Escolha o país  
+    </option>  
+`;  
 
 
-    paises.forEach(
-        nome => {
+paises.forEach(  
+    nome => {  
 
-            const option =
-                document.createElement(
-                    "option"
-                );
+        const option =  
+            document.createElement(  
+                "option"  
+            );  
 
-            option.value = nome;
+        option.value = nome;  
 
-            option.textContent =
-                `${bandeiraPais(nome)} ${nome}`;
+        option.textContent =  
+            `${bandeiraPais(nome)} ${nome}`;  
 
-            select.appendChild(
-                option
-            );
+        select.appendChild(  
+            option  
+        );  
 
-        }
-    );
+    }  
+);
 
 }
-
 
 // ============================================
 // BRASIL / EXTERIOR
@@ -260,136 +248,134 @@ function preencherPaises() {
 
 function configurarLocal() {
 
-    const radios =
-        document.querySelectorAll(
-            'input[name="local_tipo"]'
-        );
+const radios =  
+    document.querySelectorAll(  
+        'input[name="local_tipo"]'  
+    );  
 
 
-    radios.forEach(
-        radio => {
+radios.forEach(  
+    radio => {  
 
-            radio.addEventListener(
-                "change",
-                alterarLocal
-            );
+        radio.addEventListener(  
+            "change",  
+            alterarLocal  
+        );  
 
-        }
-    );
+    }  
+);
 
 }
-
 
 function alterarLocal() {
 
-    const selecionado =
-        document.querySelector(
-            'input[name="local_tipo"]:checked'
-        );
+const selecionado =  
+    document.querySelector(  
+        'input[name="local_tipo"]:checked'  
+    );  
 
 
-    const brasilFields =
-        document.getElementById(
-            "brasilFields"
-        );
+const brasilFields =  
+    document.getElementById(  
+        "brasilFields"  
+    );  
 
-    const exteriorFields =
-        document.getElementById(
-            "exteriorFields"
-        );
-
-
-    const cidade =
-        document.getElementById(
-            "cidade"
-        );
-
-    const estado =
-        document.getElementById(
-            "estado"
-        );
-
-    const pais =
-        document.getElementById(
-            "pais"
-        );
-
-    const codigoIbge =
-        document.getElementById(
-            "codigoIbge"
-        );
+const exteriorFields =  
+    document.getElementById(  
+        "exteriorFields"  
+    );  
 
 
-    if (!selecionado) {
+const cidade =  
+    document.getElementById(  
+        "cidade"  
+    );  
 
-        brasilFields?.classList.add(
-            "hidden"
-        );
+const estado =  
+    document.getElementById(  
+        "estado"  
+    );  
 
-        exteriorFields?.classList.add(
-            "hidden"
-        );
+const pais =  
+    document.getElementById(  
+        "pais"  
+    );  
 
-        return;
-
-    }
-
-
-    if (
-        selecionado.value === "Brasil"
-    ) {
-
-        brasilFields?.classList.remove(
-            "hidden"
-        );
-
-        exteriorFields?.classList.add(
-            "hidden"
-        );
+const codigoIbge =  
+    document.getElementById(  
+        "codigoIbge"  
+    );  
 
 
-        if (pais) {
-            pais.value = "";
-        }
+if (!selecionado) {  
+
+    brasilFields?.classList.add(  
+        "hidden"  
+    );  
+
+    exteriorFields?.classList.add(  
+        "hidden"  
+    );  
+
+    return;  
+
+}  
 
 
-    } else {
+if (  
+    selecionado.value === "Brasil"  
+) {  
 
-        brasilFields?.classList.add(
-            "hidden"
-        );
+    brasilFields?.classList.remove(  
+        "hidden"  
+    );  
 
-        exteriorFields?.classList.remove(
-            "hidden"
-        );
-
-
-        if (estado) {
-            estado.value = "";
-        }
+    exteriorFields?.classList.add(  
+        "hidden"  
+    );  
 
 
-        if (cidade) {
-
-            cidade.innerHTML = `
-                <option value="">
-                    Primeiro escolha o estado
-                </option>
-            `;
-
-            cidade.disabled = true;
-
-        }
+    if (pais) {  
+        pais.value = "";  
+    }  
 
 
-        if (codigoIbge) {
-            codigoIbge.value = "";
-        }
+} else {  
 
-    }
+    brasilFields?.classList.add(  
+        "hidden"  
+    );  
+
+    exteriorFields?.classList.remove(  
+        "hidden"  
+    );  
+
+
+    if (estado) {  
+        estado.value = "";  
+    }  
+
+
+    if (cidade) {  
+
+        cidade.innerHTML = `  
+            <option value="">  
+                Primeiro escolha o estado  
+            </option>  
+        `;  
+
+        cidade.disabled = true;  
+
+    }  
+
+
+    if (codigoIbge) {  
+        codigoIbge.value = "";  
+    }  
 
 }
 
+}
 
 // ============================================
 // CARREGAR CIDADES DO IBGE
@@ -397,150 +383,149 @@ function alterarLocal() {
 
 async function carregarCidades() {
 
-    const estado =
-        document.getElementById(
-            "estado"
-        );
+const estado =  
+    document.getElementById(  
+        "estado"  
+    );  
 
-    const cidade =
-        document.getElementById(
-            "cidade"
-        );
+const cidade =  
+    document.getElementById(  
+        "cidade"  
+    );  
 
-    const codigoIbge =
-        document.getElementById(
-            "codigoIbge"
-        );
-
-
-    if (
-        !estado ||
-        !cidade ||
-        !codigoIbge
-    ) {
-        return;
-    }
+const codigoIbge =  
+    document.getElementById(  
+        "codigoIbge"  
+    );  
 
 
-    const uf =
-        estado.value;
+if (  
+    !estado ||  
+    !cidade ||  
+    !codigoIbge  
+) {  
+    return;  
+}  
 
 
-    codigoIbge.value = "";
-
-    cidade.disabled = true;
-
-
-    if (!uf) {
-
-        cidade.innerHTML = `
-            <option value="">
-                Primeiro escolha o estado
-            </option>
-        `;
-
-        return;
-
-    }
+const uf =  
+    estado.value;  
 
 
-    cidade.innerHTML = `
-        <option value="">
-            Carregando cidades...
-        </option>
-    `;
+codigoIbge.value = "";  
+
+cidade.disabled = true;  
 
 
-    try {
+if (!uf) {  
 
-        const resposta =
-            await fetch(
-                `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
-            );
+    cidade.innerHTML = `  
+        <option value="">  
+            Primeiro escolha o estado  
+        </option>  
+    `;  
 
+    return;  
 
-        if (!resposta.ok) {
-
-            throw new Error(
-                "Não foi possível carregar as cidades."
-            );
-
-        }
+}  
 
 
-        const municipios =
-            await resposta.json();
+cidade.innerHTML = `  
+    <option value="">  
+        Carregando cidades...  
+    </option>  
+`;  
 
 
-        municipios.sort(
-            (a, b) =>
-                a.nome.localeCompare(
-                    b.nome
-                )
-        );
+try {  
+
+    const resposta =  
+        await fetch(  
+            `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`  
+        );  
 
 
-        cidade.innerHTML = `
-            <option value="">
-                Escolha a cidade
-            </option>
-        `;
+    if (!resposta.ok) {  
+
+        throw new Error(  
+            "Não foi possível carregar as cidades."  
+        );  
+
+    }  
 
 
-        municipios.forEach(
-            municipio => {
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
-
-                option.value =
-                    municipio.id;
-
-                option.textContent =
-                    municipio.nome;
-
-                cidade.appendChild(
-                    option
-                );
-
-            }
-        );
+    const municipios =  
+        await resposta.json();  
 
 
-        cidade.disabled = false;
+    municipios.sort(  
+        (a, b) =>  
+            a.nome.localeCompare(  
+                b.nome  
+            )  
+    );  
 
 
-        cidade.addEventListener(
-            "change",
-            () => {
-
-                codigoIbge.value =
-                    cidade.value || "";
-
-            }
-        );
+    cidade.innerHTML = `  
+        <option value="">  
+            Escolha a cidade  
+        </option>  
+    `;  
 
 
-    } catch (error) {
+    municipios.forEach(  
+        municipio => {  
 
-        console.error(
-            "Erro ao carregar cidades:",
-            error
-        );
+            const option =  
+                document.createElement(  
+                    "option"  
+                );  
+
+            option.value =  
+                municipio.id;  
+
+            option.textContent =  
+                municipio.nome;  
+
+            cidade.appendChild(  
+                option  
+            );  
+
+        }  
+    );  
 
 
-        cidade.innerHTML = `
-            <option value="">
-                Erro ao carregar cidades
-            </option>
-        `;
+    cidade.disabled = false;  
 
-    }
+
+    cidade.addEventListener(  
+        "change",  
+        () => {  
+
+            codigoIbge.value =  
+                cidade.value || "";  
+
+        }  
+    );  
+
+
+} catch (error) {  
+
+    console.error(  
+        "Erro ao carregar cidades:",  
+        error  
+    );  
+
+
+    cidade.innerHTML = `  
+        <option value="">  
+            Erro ao carregar cidades  
+        </option>  
+    `;  
 
 }
 
+}
 
 // ============================================
 // FORMULÁRIO
@@ -548,527 +533,522 @@ async function carregarCidades() {
 
 function configurarFormulario() {
 
-    const form =
-        document.getElementById(
-            "cadastroForm"
-        );
+const form =  
+    document.getElementById(  
+        "cadastroForm"  
+    );  
 
 
-    if (!form) {
+if (!form) {  
 
-        console.error(
-            "Formulário cadastroForm não encontrado."
-        );
+    console.error(  
+        "Formulário cadastroForm não encontrado."  
+    );  
 
-        return;
+    return;  
 
-    }
+}  
 
 
-    form.addEventListener(
-        "submit",
-        enviarCadastro
-    );
+form.addEventListener(  
+    "submit",  
+    enviarCadastro  
+);
 
 }
-
 
 // ============================================
 // ENVIAR CADASTRO
 // ============================================
 
 async function enviarCadastro(
-    event
+event
 ) {
 
-    event.preventDefault();
+event.preventDefault();  
 
 
-    const form =
-        document.getElementById(
-            "cadastroForm"
-        );
+const form =  
+    document.getElementById(  
+        "cadastroForm"  
+    );  
 
 
-    const botao =
-        document.getElementById(
-            "submitButton"
-        );
+const botao =  
+    document.getElementById(  
+        "submitButton"  
+    );  
 
 
-    const mensagem =
-        document.getElementById(
-            "formMessage"
-        );
+const mensagem =  
+    document.getElementById(  
+        "formMessage"  
+    );  
 
 
-    const nome =
-        document.getElementById(
-            "nome"
-        )?.value.trim();
+const nome =  
+    document.getElementById(  
+        "nome"  
+    )?.value.trim();  
 
 
-    const idade =
-        Number(
-            document.getElementById(
-                "idade"
-            )?.value
-        );
+const idade =  
+    Number(  
+        document.getElementById(  
+            "idade"  
+        )?.value  
+    );  
 
 
-    const localSelecionado =
-        document.querySelector(
-            'input[name="local_tipo"]:checked'
-        );
+const localSelecionado =  
+    document.querySelector(  
+        'input[name="local_tipo"]:checked'  
+    );  
 
 
-    const genero =
-        document.getElementById(
-            "genero"
-        )?.value;
+const genero =  
+    document.getElementById(  
+        "genero"  
+    )?.value;  
 
 
-    const exibicao =
-        document.querySelector(
-            'input[name="exibicao"]:checked'
-        );
+const exibicao =  
+    document.querySelector(  
+        'input[name="exibicao"]:checked'  
+    );  
 
 
-    const consentimento =
-        document.getElementById(
-            "consentimento"
-        )?.checked;
+const consentimento =  
+    document.getElementById(  
+        "consentimento"  
+    )?.checked;  
 
 
-    const estado =
-        document.getElementById(
-            "estado"
-        );
+const estado =  
+    document.getElementById(  
+        "estado"  
+    );  
 
 
-    const cidade =
-        document.getElementById(
-            "cidade"
-        );
+const cidade =  
+    document.getElementById(  
+        "cidade"  
+    );  
 
 
-    const codigoIbge =
-        document.getElementById(
-            "codigoIbge"
-        );
+const codigoIbge =  
+    document.getElementById(  
+        "codigoIbge"  
+    );  
 
 
-    const pais =
-        document.getElementById(
-            "pais"
-        );
+const pais =  
+    document.getElementById(  
+        "pais"  
+    );  
 
 
-    let localTipo =
-        localSelecionado
-            ? localSelecionado.value
-            : null;
+let localTipo =  
+    localSelecionado  
+        ? localSelecionado.value  
+        : null;  
 
 
-    let estadoUF = null;
+let estadoUF = null;  
 
-    let nomeCidade = null;
+let nomeCidade = null;  
 
-    let ibge = null;
+let ibge = null;  
 
-    let nomePais = null;
+let nomePais = null;  
 
 
-    if (
-        localTipo === "Brasil"
-    ) {
+if (  
+    localTipo === "Brasil"  
+) {  
 
-        estadoUF =
-            estado?.value || null;
+    estadoUF =  
+        estado?.value || null;  
 
 
-        if (
-            cidade &&
-            cidade.selectedIndex >= 0
-        ) {
+    if (  
+        cidade &&  
+        cidade.selectedIndex >= 0  
+    ) {  
 
-            nomeCidade =
-                cidade.options[
-                    cidade.selectedIndex
-                ]?.textContent || null;
+        nomeCidade =  
+            cidade.options[  
+                cidade.selectedIndex  
+            ]?.textContent || null;  
 
-        }
+    }  
 
 
-        ibge =
-            codigoIbge?.value ||
-            cidade?.value ||
-            null;
+    ibge =  
+        codigoIbge?.value ||  
+        cidade?.value ||  
+        null;  
 
-    }
+}  
 
 
-    if (
-        localTipo === "Exterior"
-    ) {
+if (  
+    localTipo === "Exterior"  
+) {  
 
-        nomePais =
-            pais?.value || null;
+    nomePais =  
+        pais?.value || null;  
 
-    }
+}  
 
 
-    if (!nome) {
+if (!nome) {  
 
-        mostrarMensagem(
-            "Digite seu nome."
-        );
+    mostrarMensagem(  
+        "Digite seu nome."  
+    );  
 
-        return;
+    return;  
 
-    }
+}  
 
 
-    if (
-        !idade ||
-        idade < 13 ||
-        idade > 120
-    ) {
+if (  
+    !idade ||  
+    idade < 13 ||  
+    idade > 120  
+) {  
 
-        mostrarMensagem(
-            "Digite uma idade válida entre 13 e 120 anos."
-        );
+    mostrarMensagem(  
+        "Digite uma idade válida entre 13 e 120 anos."  
+    );  
 
-        return;
+    return;  
 
-    }
+}  
 
 
-    if (!localTipo) {
+if (!localTipo) {  
 
-        mostrarMensagem(
-            "Escolha se você está no Brasil ou no exterior."
-        );
+    mostrarMensagem(  
+        "Escolha se você está no Brasil ou no exterior."  
+    );  
 
-        return;
+    return;  
 
-    }
+}  
 
 
-    if (
-        localTipo === "Brasil" &&
-        (
-            !estadoUF ||
-            !nomeCidade ||
-            !ibge
-        )
-    ) {
+if (  
+    localTipo === "Brasil" &&  
+    (  
+        !estadoUF ||  
+        !nomeCidade ||  
+        !ibge  
+    )  
+) {  
 
-        mostrarMensagem(
-            "Escolha o estado e a cidade."
-        );
+    mostrarMensagem(  
+        "Escolha o estado e a cidade."  
+    );  
 
-        return;
+    return;  
 
-    }
+}  
 
 
-    if (
-        localTipo === "Exterior" &&
-        !nomePais
-    ) {
+if (  
+    localTipo === "Exterior" &&  
+    !nomePais  
+) {  
 
-        mostrarMensagem(
-            "Escolha o país."
-        );
+    mostrarMensagem(  
+        "Escolha o país."  
+    );  
 
-        return;
+    return;  
 
-    }
+}  
 
 
-    if (!genero) {
+if (!genero) {  
 
-        mostrarMensagem(
-            "Escolha uma opção de gênero."
-        );
+    mostrarMensagem(  
+        "Escolha uma opção de gênero."  
+    );  
 
-        return;
+    return;  
 
-    }
+}  
 
 
-    if (!exibicao) {
+if (!exibicao) {  
 
-        mostrarMensagem(
-            "Escolha como você quer aparecer no mapa."
-        );
+    mostrarMensagem(  
+        "Escolha como você quer aparecer no mapa."  
+    );  
 
-        return;
+    return;  
 
-    }
+}  
 
 
-    if (!consentimento) {
+if (!consentimento) {  
 
-        mostrarMensagem(
-            "É necessário autorizar a utilização dos dados."
-        );
+    mostrarMensagem(  
+        "É necessário autorizar a utilização dos dados."  
+    );  
 
-        return;
+    return;  
 
-    }
+}  
 
 
-    const textoOriginal =
-        botao?.textContent;
+const textoOriginal =  
+    botao?.textContent;  
 
 
-    if (botao) {
+if (botao) {  
 
-        botao.disabled = true;
+    botao.disabled = true;  
 
-        botao.textContent =
-            "CADASTRANDO...";
+    botao.textContent =  
+        "CADASTRANDO...";  
 
-    }
+}  
 
 
-    limparMensagem();
+limparMensagem();  
 
 
-    try {
+try {  
 
-        console.log(
-            "Enviando cadastro:",
-            {
-                nome,
-                idade,
-                localTipo,
-                estadoUF,
-                nomeCidade,
-                ibge,
-                nomePais,
-                genero,
-                exibicao: exibicao.value,
-                consentimento
-            }
-        );
+    console.log(  
+        "Enviando cadastro:",  
+        {  
+            nome,  
+            idade,  
+            localTipo,  
+            estadoUF,  
+            nomeCidade,  
+            ibge,  
+            nomePais,  
+            genero,  
+            exibicao: exibicao.value,  
+            consentimento  
+        }  
+    );  
 
 
-        const {
-            data,
-            error
-        } = await db.rpc(
-            "cadastrar_participante",
-            {
-                p_nome: nome,
+    const {  
+        data,  
+        error  
+    } = await db.rpc(  
+        "cadastrar_participante",  
+        {  
+            p_nome: nome,  
 
-                p_idade: idade,
+            p_idade: idade,  
 
-                p_local_tipo:
-                    localTipo,
+            p_local_tipo:  
+                localTipo,  
 
-                p_estado_uf:
-                    estadoUF,
+            p_estado_uf:  
+                estadoUF,  
 
-                p_cidade:
-                    nomeCidade,
+            p_cidade:  
+                nomeCidade,  
 
-                p_codigo_ibge:
-                    ibge,
+            p_codigo_ibge:  
+                ibge,  
 
-                p_pais:
-                    nomePais,
+            p_pais:  
+                nomePais,  
 
-                p_genero:
-                    genero,
+            p_genero:  
+                genero,  
 
-                p_exibicao:
-                    exibicao.value,
+            p_exibicao:  
+                exibicao.value,  
 
-                p_consentimento:
-                    true
-            }
-        );
+            p_consentimento:  
+                true  
+        }  
+    );  
 
 
-        console.log(
-            "Resposta Supabase:",
-            data,
-            error
-        );
+    console.log(  
+        "Resposta Supabase:",  
+        data,  
+        error  
+    );  
 
 
-        if (error) {
-            throw error;
-        }
+    if (error) {  
+        throw error;  
+    }  
 
 
-        form.reset();
+    form.reset();  
 
 
-        const cidadeSelect =
-            document.getElementById(
-                "cidade"
-            );
+    const cidadeSelect =  
+        document.getElementById(  
+            "cidade"  
+        );  
 
 
-        if (cidadeSelect) {
+    if (cidadeSelect) {  
 
-            cidadeSelect.innerHTML = `
-                <option value="">
-                    Primeiro escolha o estado
-                </option>
-            `;
+        cidadeSelect.innerHTML = `  
+            <option value="">  
+                Primeiro escolha o estado  
+            </option>  
+        `;  
 
-            cidadeSelect.disabled = true;
+        cidadeSelect.disabled = true;  
 
-        }
+    }  
 
 
-        const codigo =
-            document.getElementById(
-                "codigoIbge"
-            );
+    const codigo =  
+        document.getElementById(  
+            "codigoIbge"  
+        );  
 
 
-        if (codigo) {
-            codigo.value = "";
-        }
+    if (codigo) {  
+        codigo.value = "";  
+    }  
 
 
-        alterarLocal();
+    alterarLocal();  
 
-        mostrarSucesso();
+    mostrarSucesso();  
 
-        await carregarDados();
+    await carregarDados();  
 
 
-    } catch (error) {
+} catch (error) {  
 
-        console.error(
-            "ERRO COMPLETO DO CADASTRO:",
-            error
-        );
+    console.error(  
+        "ERRO COMPLETO DO CADASTRO:",  
+        error  
+    );  
 
 
-        const detalhes = [
-            error?.message,
-            error?.details,
-            error?.hint,
-            error?.code
-        ]
-            .filter(Boolean)
-            .join(" | ");
+    const detalhes = [  
+        error?.message,  
+        error?.details,  
+        error?.hint,  
+        error?.code  
+    ]  
+        .filter(Boolean)  
+        .join(" | ");  
 
 
-        mostrarMensagem(
-            detalhes ||
-            "O Supabase retornou um erro sem detalhes."
-        );
+    mostrarMensagem(  
+        detalhes ||  
+        "O Supabase retornou um erro sem detalhes."  
+    );  
 
 
-    } finally {
+} finally {  
 
-        if (botao) {
+    if (botao) {  
 
-            botao.disabled = false;
+        botao.disabled = false;  
 
-            botao.textContent =
-                textoOriginal ||
-                "ENTRAR NO MAPA";
+        botao.textContent =  
+            textoOriginal ||  
+            "ENTRAR NO MAPA";  
 
-        }
-
-    }
+    }  
 
 }
 
+}
 
 // ============================================
 // MENSAGENS
 // ============================================
 
 function mostrarMensagem(
-    texto
+texto
 ) {
 
-    const elemento =
-        document.getElementById(
-            "formMessage"
-        );
+const elemento =  
+    document.getElementById(  
+        "formMessage"  
+    );  
 
 
-    if (!elemento) {
+if (!elemento) {  
 
-        alert(texto);
+    alert(texto);  
 
-        return;
+    return;  
 
-    }
-
-
-    elemento.textContent =
-        texto;
+}  
 
 
-    elemento.classList.add(
-        "visible"
-    );
+elemento.textContent =  
+    texto;  
+
+
+elemento.classList.add(  
+    "visible"  
+);
 
 }
-
 
 function limparMensagem() {
 
-    const elemento =
-        document.getElementById(
-            "formMessage"
-        );
+const elemento =  
+    document.getElementById(  
+        "formMessage"  
+    );  
 
 
-    if (!elemento) {
-        return;
-    }
+if (!elemento) {  
+    return;  
+}  
 
 
-    elemento.textContent = "";
+elemento.textContent = "";  
 
-    elemento.classList.remove(
-        "visible"
-    );
+elemento.classList.remove(  
+    "visible"  
+);
 
 }
-
 
 function mostrarSucesso() {
 
-    const elemento =
-        document.getElementById(
-            "formMessage"
-        );
+const elemento =  
+    document.getElementById(  
+        "formMessage"  
+    );  
 
 
-    if (!elemento) {
-        return;
-    }
+if (!elemento) {  
+    return;  
+}  
 
 
-    elemento.textContent =
-        "Você está no mapa! 💚💛";
+elemento.textContent =  
+    "Você está no mapa! 💚💛";  
 
 
-    elemento.classList.add(
-        "visible"
-    );
+elemento.classList.add(  
+    "visible"  
+);  
 
-    elemento.classList.add(
-        "success"
-    );
+elemento.classList.add(  
+    "success"  
+);
 
 }
-
 
 // ============================================
 // MAPA
@@ -1076,44 +1056,37 @@ function mostrarSucesso() {
 
 function inicializarMapa() {
 
-    const elemento =
-        document.getElementById(
-            "map"
-        );
+const elemento =  
+    document.getElementById(  
+        "map"  
+    );  
 
 
-    if (!elemento) {
-        return;
-    }
+if (!elemento) {  
+    return;  
+}  
 
 
-    mapa =
-        L.map(
-            "map"
-        ).setView(
-            [-14.2350, -51.9253],
-            4
-        );
+mapa =  
+    L.map(  
+        "map"  
+    ).setView(  
+        [-14.2350, -51.9253],  
+        4  
+    );  
 
 
-    L.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        {
-            attribution:
-                "&copy; OpenStreetMap contributors"
-        }
-    ).addTo(
-        mapa
-    );
-
-
-    mapa.on(
-        "zoomend",
-        atualizarNivelDosMarcadores
-    );
+L.tileLayer(  
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",  
+    {  
+        attribution:  
+            "&copy; OpenStreetMap contributors"  
+    }  
+).addTo(  
+    mapa  
+);
 
 }
-
 
 // ============================================
 // CARREGAR DADOS
@@ -1121,25 +1094,24 @@ function inicializarMapa() {
 
 async function carregarDados() {
 
-    try {
+try {  
 
-        await carregarEstatisticas();
+    await carregarEstatisticas();  
 
-        await carregarDadosMapa();
+    await carregarDadosMapa();  
 
-        await carregarPaises();
+    await carregarPaises();  
 
-    } catch (error) {
+} catch (error) {  
 
-        console.error(
-            "Erro ao carregar dados:",
-            error
-        );
-
-    }
+    console.error(  
+        "Erro ao carregar dados:",  
+        error  
+    );  
 
 }
 
+}
 
 // ============================================
 // ESTATÍSTICAS
@@ -1147,223 +1119,219 @@ async function carregarDados() {
 
 async function carregarEstatisticas() {
 
-    const {
-        data,
-        error
-    } = await db.rpc(
-        "estatisticas_mapa"
-    );
+const {  
+    data,  
+    error  
+} = await db.rpc(  
+    "estatisticas_mapa"  
+);  
 
 
-    if (error) {
+if (error) {  
 
-        console.error(
-            "Erro estatisticas_mapa:",
-            error
-        );
+    console.error(  
+        "Erro estatisticas_mapa:",  
+        error  
+    );  
 
-        return;
+    return;  
 
-    }
-
-
-    estatisticasAtuais =
-        data || {};
+}  
 
 
-    atualizarEstatisticas();
+estatisticasAtuais =  
+    data || {};  
+
+
+atualizarEstatisticas();
 
 }
-
 
 function atualizarEstatisticas() {
 
-    const dados =
-        estatisticasAtuais || {};
+const dados =  
+    estatisticasAtuais || {};  
 
 
-    atualizarElemento(
-        "totalTorcedores",
-        dados.total || 0
-    );
+atualizarElemento(  
+    "totalTorcedores",  
+    dados.total || 0  
+);  
 
 
-    atualizarElemento(
-        "totalCidades",
-        dados.cidades || 0
-    );
+atualizarElemento(  
+    "totalCidades",  
+    dados.cidades || 0  
+);  
 
 
-    atualizarElemento(
-        "totalEstados",
-        dados.estados || 0
-    );
+atualizarElemento(  
+    "totalEstados",  
+    dados.estados || 0  
+);  
 
 
-    atualizarElemento(
-        "totalExterior",
-        dados.exterior || 0
-    );
+atualizarElemento(  
+    "totalExterior",  
+    dados.exterior || 0  
+);  
 
 
-    atualizarElemento(
-        "origemBrasil",
-        dados.brasil || 0
-    );
+atualizarElemento(  
+    "origemBrasil",  
+    dados.brasil || 0  
+);  
 
 
-    atualizarElemento(
-        "origemExterior",
-        dados.exterior || 0
-    );
+atualizarElemento(  
+    "origemExterior",  
+    dados.exterior || 0  
+);  
 
 
-    const total =
-        Number(
-            dados.total || 0
-        );
+const total =  
+    Number(  
+        dados.total || 0  
+    );  
 
 
-    const feminino =
-        Number(
-            dados.genero_feminino || 0
-        );
+const feminino =  
+    Number(  
+        dados.genero_feminino || 0  
+    );  
 
 
-    const masculino =
-        Number(
-            dados.genero_masculino || 0
-        );
+const masculino =  
+    Number(  
+        dados.genero_masculino || 0  
+    );  
 
 
-    const naoBinario =
-        Number(
-            dados.genero_nao_binario || 0
-        );
+const naoBinario =  
+    Number(  
+        dados.genero_nao_binario || 0  
+    );  
 
 
-    const outro =
-        Number(
-            dados.genero_outro || 0
-        );
+const outro =  
+    Number(  
+        dados.genero_outro || 0  
+    );  
 
 
-    const naoInformado =
-        Number(
-            dados.genero_nao_informado || 0
-        );
+const naoInformado =  
+    Number(  
+        dados.genero_nao_informado || 0  
+    );  
 
 
-    atualizarPercentual(
-        "generoFeminino",
-        "barFeminino",
-        feminino,
-        total
-    );
+atualizarPercentual(  
+    "generoFeminino",  
+    "barFeminino",  
+    feminino,  
+    total  
+);  
 
 
-    atualizarPercentual(
-        "generoMasculino",
-        "barMasculino",
-        masculino,
-        total
-    );
+atualizarPercentual(  
+    "generoMasculino",  
+    "barMasculino",  
+    masculino,  
+    total  
+);  
 
 
-    atualizarPercentual(
-        "generoNaoBinario",
-        "barNaoBinario",
-        naoBinario,
-        total
-    );
+atualizarPercentual(  
+    "generoNaoBinario",  
+    "barNaoBinario",  
+    naoBinario,  
+    total  
+);  
 
 
-    atualizarPercentual(
-        "generoOutro",
-        "barOutro",
-        outro,
-        total
-    );
+atualizarPercentual(  
+    "generoOutro",  
+    "barOutro",  
+    outro,  
+    total  
+);  
 
 
-    atualizarPercentual(
-        "generoNaoInformado",
-        "barNaoInformado",
-        naoInformado,
-        total
-    );
+atualizarPercentual(  
+    "generoNaoInformado",  
+    "barNaoInformado",  
+    naoInformado,  
+    total  
+);
 
 }
-
 
 function atualizarPercentual(
-    id,
-    barraId,
-    quantidade,
-    total
+id,
+barraId,
+quantidade,
+total
 ) {
 
-    const percentual =
-        total > 0
-            ? (quantidade / total) * 100
-            : 0;
+const percentual =  
+    total > 0  
+        ? (quantidade / total) * 100  
+        : 0;  
 
 
-    const elemento =
-        document.getElementById(
-            id
-        );
+const elemento =  
+    document.getElementById(  
+        id  
+    );  
 
 
-    const barra =
-        document.getElementById(
-            barraId
-        );
+const barra =  
+    document.getElementById(  
+        barraId  
+    );  
 
 
-    if (elemento) {
+if (elemento) {  
 
-        elemento.textContent =
-            `${percentual.toFixed(1)}%`;
+    elemento.textContent =  
+        `${percentual.toFixed(1)}%`;  
 
-    }
+}  
 
 
-    if (barra) {
+if (barra) {  
 
-        barra.style.width =
-            `${percentual}%`;
-
-    }
+    barra.style.width =  
+        `${percentual}%`;  
 
 }
 
+}
 
 function atualizarElemento(
-    id,
-    valor
+id,
+valor
 ) {
 
-    const elemento =
-        document.getElementById(
-            id
-        );
+const elemento =  
+    document.getElementById(  
+        id  
+    );  
 
 
-    if (!elemento) {
-        return;
-    }
+if (!elemento) {  
+    return;  
+}  
 
 
-    elemento.textContent =
-        Number(
-            valor
-        ).toLocaleString(
-            "pt-BR"
-        );
+elemento.textContent =  
+    Number(  
+        valor  
+    ).toLocaleString(  
+        "pt-BR"  
+    );
 
 }
-
 
 // ============================================
 // DADOS DO MAPA
@@ -1371,779 +1339,478 @@ function atualizarElemento(
 
 async function carregarDadosMapa() {
 
-    const {
-        data,
-        error
-    } = await db.rpc(
-        "dados_mapa"
-    );
+const {  
+    data,  
+    error  
+} = await db.rpc(  
+    "dados_mapa"  
+);  
 
 
-    if (error) {
+if (error) {  
 
-        console.error(
-            "Erro dados_mapa:",
-            error
-        );
+    console.error(  
+        "Erro dados_mapa:",  
+        error  
+    );  
 
-        return;
+    return;  
 
-    }
-
-
-    dadosMapa =
-        data || [];
+}  
 
 
-    await desenharMarcadores();
+dadosMapa =  
+    data || [];  
+
+
+await desenharMarcadores();
 
 }
-
 
 // ============================================
 // DESENHAR MARCADORES
 // ============================================
 
-async function desenharMarcadores(
-    forcarNivel = false
-) {
+async function desenharMarcadores() {
 
-    if (!mapa) {
-        return;
-    }
+if (!mapa) {  
+    return;  
+}  
 
 
-    const nivel =
-        obterNivelMarcadores();
+marcadores.forEach(  
+    marcador => {  
+
+        mapa.removeLayer(  
+            marcador  
+        );  
+
+    }  
+);  
 
 
-    if (
-        !forcarNivel &&
-        nivel === nivelMarcadoresAtual
-    ) {
-        return;
-    }
+marcadores = [];  
 
 
-    nivelMarcadoresAtual =
-        nivel;
+const cidades = {};  
 
 
-    // ----------------------------------------
-    // REMOVER MARCADORES ANTERIORES
-    // ----------------------------------------
+dadosMapa.forEach(  
+    item => {  
 
-    marcadores.forEach(
-        marcador => {
-
-            mapa.removeLayer(
-                marcador
-            );
-
-        }
-    );
+        if (!item.codigo_ibge) {  
+            return;  
+        }  
 
 
-    marcadores = [];
+        const codigo =  
+            String(  
+                item.codigo_ibge  
+            );  
 
 
-    // ----------------------------------------
-    // NÍVEL ESTADUAL
-    // ----------------------------------------
+        if (!cidades[codigo]) {  
 
-    if (
-        nivel === "estado"
-    ) {
+            cidades[codigo] = {  
+                codigo,  
+                cidade:  
+                    item.cidade,  
+                estado:  
+                    item.estado_uf,  
+                participantes: []  
+            };  
 
-        await desenharMarcadoresEstados();
-
-        return;
-
-    }
+        }  
 
 
-    // ----------------------------------------
-    // NÍVEL MUNICIPAL
-    // ----------------------------------------
+        cidades[codigo]  
+            .participantes  
+            .push(  
+                item  
+            );  
 
-    await desenharMarcadoresCidades();
+    }  
+);  
+
+
+for (  
+    const cidadeInfo  
+    of Object.values(cidades)  
+) {  
+
+    try {  
+
+        const coordenadas =  
+            await obterCoordenadasMunicipio(  
+                cidadeInfo.codigo,  
+                cidadeInfo.estado  
+            );  
+
+
+        if (!coordenadas) {  
+            continue;  
+        }  
+
+
+        const quantidade =  
+            cidadeInfo.participantes.length;  
+
+
+        // --------------------------------  
+        // TAMANHO DO MARCADOR  
+        // --------------------------------  
+
+        const tamanho =  
+            Math.max(  
+                52,  
+                Math.min(  
+                    92,  
+                    52 +  
+                    Math.sqrt(  
+                        quantidade  
+                    ) * 10  
+                )  
+            );  
+
+
+        const tamanhoFonte =  
+            Math.max(  
+                17,  
+                Math.min(  
+                    30,  
+                    tamanho / 2.4  
+                )  
+            );  
+
+
+        const icone =  
+            L.divIcon({  
+                className:  
+                    "custom-city-marker",  
+
+                html: `  
+                    <div  
+                        class="city-marker"  
+                        style="  
+                            width:${tamanho}px;  
+                            height:${tamanho}px;  
+                            font-size:${tamanhoFonte}px;  
+                            line-height:${tamanho}px;  
+                        "  
+                    >  
+                        ${quantidade}  
+                    </div>  
+                `,  
+
+                iconSize: [  
+                    tamanho,  
+                    tamanho  
+                ],  
+
+                iconAnchor: [  
+                    tamanho / 2,  
+                    tamanho / 2  
+                ]  
+
+            });  
+
+
+        const marcador =  
+            L.marker(  
+                coordenadas,  
+                {  
+                    icon: icone  
+                }  
+            ).addTo(  
+                mapa  
+            );  
+
+
+        // --------------------------------  
+        // LISTA DE TORCEDORES DA CIDADE  
+        // --------------------------------  
+
+        const listaTorcedores =  
+            cidadeInfo.participantes  
+                .map(  
+                    participante => {  
+
+                        const nome =  
+                            participante.nome_exibicao ||  
+                            "Torcedor";  
+
+                        const idade =  
+                            Number(  
+                                participante.idade  
+                            );  
+
+
+                        const idadeTexto =  
+                            Number.isFinite(  
+                                idade  
+                            )  
+                                ? `, ${idade} anos`  
+                                : "";  
+
+
+                        return `  
+                            <div class="supporter-item">  
+                                <strong>  
+                                    ${escapeHTML(  
+                                        nome  
+                                    )}  
+                                </strong>${idadeTexto}  
+                            </div>  
+                        `;  
+
+                    }  
+                )  
+                .join("");  
+
+
+        // --------------------------------  
+        // POPUP  
+        // --------------------------------  
+
+        const popup =  
+            `  
+                <div class="city-popup">  
+
+                    <strong class="city-popup-title">  
+                        ${escapeHTML(  
+                            cidadeInfo.cidade  
+                        )}/${escapeHTML(  
+                            cidadeInfo.estado  
+                        )}  
+                    </strong>  
+
+                    <div class="city-popup-count">  
+                        ${quantidade}  
+                        torcedor${quantidade === 1 ? "" : "es"}  
+                    </div>  
+
+                    <div class="city-popup-list">  
+                        ${listaTorcedores}  
+                    </div>  
+
+                </div>  
+            `;  
+
+
+        marcador.bindPopup(  
+            popup  
+        );  
+
+
+        marcadores.push(  
+            marcador  
+        );  
+
+
+    } catch (error) {  
+
+        console.error(  
+            "Erro ao criar marcador:",  
+            error  
+        );  
+
+    }  
 
 }
 
-
-// ============================================
-// DEFINIR NÍVEL PELO ZOOM
-// ============================================
-
-function obterNivelMarcadores() {
-
-    if (!mapa) {
-        return "estado";
-    }
-
-
-    const zoom =
-        mapa.getZoom();
-
-
-    // Zoom 4, 5 e 6 = estados
-    // Zoom 7+ = cidades
-
-    return zoom >= 7
-        ? "cidade"
-        : "estado";
-
 }
-
-
-// ============================================
-// ATUALIZAR AO DAR ZOOM
-// ============================================
-
-async function atualizarNivelDosMarcadores() {
-
-    const novoNivel =
-        obterNivelMarcadores();
-
-
-    if (
-        novoNivel ===
-        nivelMarcadoresAtual
-    ) {
-
-        return;
-
-    }
-
-
-    await desenharMarcadores(
-        true
-    );
-
-}
-
-
-// ============================================
-// AGRUPAR POR ESTADO
-// ============================================
-
-function agruparPorEstado() {
-
-    const estadosAgrupados = {};
-
-
-    dadosMapa.forEach(
-        item => {
-
-            if (!item.estado_uf) {
-                return;
-            }
-
-
-            const uf =
-                String(
-                    item.estado_uf
-                ).trim();
-
-
-            if (!estadosAgrupados[uf]) {
-
-                estadosAgrupados[uf] = [];
-
-            }
-
-
-            estadosAgrupados[uf].push(
-                item
-            );
-
-        }
-    );
-
-
-    return estadosAgrupados;
-
-}
-
-
-// ============================================
-// MARCADORES DOS ESTADOS
-// ============================================
-
-async function desenharMarcadoresEstados() {
-
-    const agrupados =
-        agruparPorEstado();
-
-
-    for (
-        const [uf, participantes]
-        of Object.entries(
-            agrupados
-        )
-    ) {
-
-        const coordenadas =
-            coordenadaEstado(
-                uf
-            );
-
-
-        if (!coordenadas) {
-            continue;
-        }
-
-
-        const quantidade =
-            participantes.length;
-
-
-        const tamanho =
-            calcularTamanhoMarcador(
-                quantidade,
-                50,
-                88,
-                9
-            );
-
-
-        const tamanhoFonte =
-            calcularFonteMarcador(
-                tamanho
-            );
-
-
-        const icone =
-            criarIconeMarcador(
-                quantidade,
-                tamanho,
-                tamanhoFonte,
-                "state-marker"
-            );
-
-
-        const marcador =
-            L.marker(
-                coordenadas,
-                {
-                    icon: icone
-                }
-            ).addTo(
-                mapa
-            );
-
-
-        const nomeEstado =
-            estados[uf] ||
-            uf;
-
-
-        marcador.bindPopup(
-            `
-                <div class="city-popup">
-
-                    <strong class="city-popup-title">
-                        ${escapeHTML(
-                            nomeEstado
-                        )}
-                    </strong>
-
-                    <div class="city-popup-count">
-                        ${quantidade}
-                        torcedor${quantidade === 1 ? "" : "es"}
-                    </div>
-
-                </div>
-            `
-        );
-
-
-        marcadores.push(
-            marcador
-        );
-
-    }
-
-}
-
-
-// ============================================
-// MARCADORES DAS CIDADES
-// ============================================
-
-async function desenharMarcadoresCidades() {
-
-    const cidades = {};
-
-
-    dadosMapa.forEach(
-        item => {
-
-            if (!item.codigo_ibge) {
-                return;
-            }
-
-
-            const codigo =
-                String(
-                    item.codigo_ibge
-                );
-
-
-            if (!cidades[codigo]) {
-
-                cidades[codigo] = {
-                    codigo,
-                    cidade:
-                        item.cidade,
-                    estado:
-                        item.estado_uf,
-                    participantes: []
-                };
-
-            }
-
-
-            cidades[codigo]
-                .participantes
-                .push(
-                    item
-                );
-
-        }
-    );
-
-
-    for (
-        const cidadeInfo
-        of Object.values(cidades)
-    ) {
-
-        try {
-
-            const coordenadas =
-                await obterCoordenadasMunicipio(
-                    cidadeInfo.codigo,
-                    cidadeInfo.estado
-                );
-
-
-            if (!coordenadas) {
-                continue;
-            }
-
-
-            const quantidade =
-                cidadeInfo.participantes.length;
-
-
-            const tamanho =
-                calcularTamanhoMarcador(
-                    quantidade,
-                    52,
-                    94,
-                    10
-                );
-
-
-            const tamanhoFonte =
-                calcularFonteMarcador(
-                    tamanho
-                );
-
-
-            const icone =
-                criarIconeMarcador(
-                    quantidade,
-                    tamanho,
-                    tamanhoFonte,
-                    "city-marker"
-                );
-
-
-            const marcador =
-                L.marker(
-                    coordenadas,
-                    {
-                        icon: icone
-                    }
-                ).addTo(
-                    mapa
-                );
-
-
-            const listaTorcedores =
-                cidadeInfo.participantes
-                    .map(
-                        participante => {
-
-                            const nome =
-                                participante.nome_exibicao ||
-                                "Torcedor";
-
-
-                            const idade =
-                                Number(
-                                    participante.idade
-                                );
-
-
-                            const idadeTexto =
-                                Number.isFinite(
-                                    idade
-                                )
-                                    ? `, ${idade} anos`
-                                    : "";
-
-
-                            return `
-                                <div class="supporter-item">
-                                    <strong>
-                                        ${escapeHTML(
-                                            nome
-                                        )}
-                                    </strong>${idadeTexto}
-                                </div>
-                            `;
-
-                        }
-                    )
-                    .join("");
-
-
-            const popup =
-                `
-                    <div class="city-popup">
-
-                        <strong class="city-popup-title">
-                            ${escapeHTML(
-                                cidadeInfo.cidade
-                            )}/${escapeHTML(
-                                cidadeInfo.estado
-                            )}
-                        </strong>
-
-                        <div class="city-popup-count">
-                            ${quantidade}
-                            torcedor${quantidade === 1 ? "" : "es"}
-                        </div>
-
-                        <div class="city-popup-list">
-                            ${listaTorcedores}
-                        </div>
-
-                    </div>
-                `;
-
-
-            marcador.bindPopup(
-                popup
-            );
-
-
-            marcadores.push(
-                marcador
-            );
-
-
-        } catch (error) {
-
-            console.error(
-                "Erro ao criar marcador:",
-                cidadeInfo,
-                error
-            );
-
-        }
-
-    }
-
-}
-
-
-// ============================================
-// TAMANHO DO MARCADOR
-// ============================================
-
-function calcularTamanhoMarcador(
-    quantidade,
-    minimo,
-    maximo,
-    multiplicador
-) {
-
-    return Math.max(
-        minimo,
-        Math.min(
-            maximo,
-            minimo +
-            Math.sqrt(
-                quantidade
-            ) * multiplicador
-        )
-    );
-
-}
-
-
-// ============================================
-// TAMANHO DA FONTE
-// ============================================
-
-function calcularFonteMarcador(
-    tamanho
-) {
-
-    return Math.max(
-        17,
-        Math.min(
-            30,
-            tamanho / 2.4
-        )
-    );
-
-}
-
-
-// ============================================
-// CRIAR ÍCONE DO MARCADOR
-// ============================================
-
-function criarIconeMarcador(
-    quantidade,
-    tamanho,
-    tamanhoFonte,
-    classe
-) {
-
-    return L.divIcon({
-
-        className:
-            "custom-city-marker",
-
-        html: `
-            <div
-                class="${classe}"
-                style="
-                    width:${tamanho}px;
-                    height:${tamanho}px;
-                    font-size:${tamanhoFonte}px;
-                    line-height:${tamanho}px;
-                "
-            >
-                ${quantidade}
-            </div>
-        `,
-
-        iconSize: [
-            tamanho,
-            tamanho
-        ],
-
-        iconAnchor: [
-            tamanho / 2,
-            tamanho / 2
-        ]
-
-    });
-
-}
-
 
 // ============================================
 // COORDENADAS IBGE
 // ============================================
 
 async function obterCoordenadasMunicipio(
-    codigo,
-    uf
+codigo,
+uf
 ) {
 
-    try {
+try {  
 
-        const resposta =
-            await fetch(
-                `https://servicodados.ibge.gov.br/api/v3/malhas/municipios/${codigo}?formato=application/vnd.geo+json&qualidade=minima`
-            );
-
-
-        if (!resposta.ok) {
-
-            throw new Error(
-                "Erro na API de malhas do IBGE."
-            );
-
-        }
+    const resposta =  
+        await fetch(  
+            `https://servicodados.ibge.gov.br/api/v3/malhas/municipios/${codigo}?formato=application/vnd.geo+json&qualidade=minima`  
+        );  
 
 
-        const geojson =
-            await resposta.json();
+    if (!resposta.ok) {  
+
+        throw new Error(  
+            "Erro na API de malhas do IBGE."  
+        );  
+
+    }  
 
 
-        const centro =
-            encontrarCentroGeoJSON(
-                geojson
-            );
+    const geojson =  
+        await resposta.json();  
 
 
-        if (centro) {
-            return centro;
-        }
+    const centro =  
+        encontrarCentroGeoJSON(  
+            geojson  
+        );  
 
 
-    } catch (error) {
-
-        console.warn(
-            "Erro ao obter coordenadas:",
-            codigo,
-            error
-        );
-
-    }
+    if (centro) {  
+        return centro;  
+    }  
 
 
-    return coordenadaEstado(
-        uf
-    );
+} catch (error) {  
+
+    console.warn(  
+        "Erro ao obter coordenadas:",  
+        codigo,  
+        error  
+    );  
+
+}  
+
+
+return coordenadaEstado(  
+    uf  
+);
 
 }
-
 
 // ============================================
 // CENTRO DO GEOJSON
 // ============================================
 
 function encontrarCentroGeoJSON(
-    geojson
+geojson
 ) {
 
-    const pontos = [];
+const pontos = [];  
 
 
-    function percorrer(
-        coordenadas
-    ) {
+function percorrer(  
+    coordenadas  
+) {  
 
-        if (
-            !Array.isArray(
-                coordenadas
-            )
-        ) {
-            return;
-        }
-
-
-        if (
-            coordenadas.length >= 2 &&
-            typeof coordenadas[0] === "number" &&
-            typeof coordenadas[1] === "number"
-        ) {
-
-            pontos.push([
-                coordenadas[1],
-                coordenadas[0]
-            ]);
-
-            return;
-
-        }
+    if (  
+        !Array.isArray(  
+            coordenadas  
+        )  
+    ) {  
+        return;  
+    }  
 
 
-        coordenadas.forEach(
-            percorrer
-        );
+    if (  
+        coordenadas.length >= 2 &&  
+        typeof coordenadas[0] === "number" &&  
+        typeof coordenadas[1] === "number"  
+    ) {  
 
-    }
+        pontos.push([  
+            coordenadas[1],  
+            coordenadas[0]  
+        ]);  
 
+        return;  
 
-    if (
-        geojson?.geometry?.coordinates
-    ) {
-
-        percorrer(
-            geojson.geometry.coordinates
-        );
-
-    }
+    }  
 
 
-    if (!pontos.length) {
-        return null;
-    }
+    coordenadas.forEach(  
+        percorrer  
+    );  
+
+}  
 
 
-    let latitude = 0;
+if (  
+    geojson?.geometry?.coordinates  
+) {  
 
-    let longitude = 0;
+    percorrer(  
+        geojson.geometry.coordinates  
+    );  
 
-
-    pontos.forEach(
-        ponto => {
-
-            latitude += ponto[0];
-
-            longitude += ponto[1];
-
-        }
-    );
+}  
 
 
-    return [
-        latitude / pontos.length,
-        longitude / pontos.length
-    ];
+if (!pontos.length) {  
+    return null;  
+}  
+
+
+let latitude = 0;  
+
+let longitude = 0;  
+
+
+pontos.forEach(  
+    ponto => {  
+
+        latitude += ponto[0];  
+
+        longitude += ponto[1];  
+
+    }  
+);  
+
+
+return [  
+    latitude / pontos.length,  
+    longitude / pontos.length  
+];
 
 }
-
 
 // ============================================
 // COORDENADAS DOS ESTADOS
 // ============================================
 
 function coordenadaEstado(
-    uf
+uf
 ) {
 
-    const coordenadas = {
+const coordenadas = {  
 
-        AC: [-9.0238, -70.8120],
-        AL: [-9.5713, -36.7820],
-        AP: [1.4102, -51.7700],
-        AM: [-3.4168, -65.8561],
-        BA: [-12.5797, -41.7007],
-        CE: [-5.4984, -39.3206],
-        DF: [-15.7998, -47.8645],
-        ES: [-19.1834, -40.3089],
-        GO: [-15.8270, -49.8362],
-        MA: [-5.4200, -45.4400],
-        MT: [-12.6819, -56.9211],
-        MS: [-20.7722, -54.7852],
-        MG: [-18.5122, -44.5550],
-        PA: [-3.4168, -52.2166],
-        PB: [-7.2400, -36.7820],
-        PR: [-24.8947, -51.5500],
-        PE: [-8.8137, -36.9541],
-        PI: [-7.7183, -42.7289],
-        RJ: [-22.2523, -42.6600],
-        RN: [-5.8120, -36.5920],
-        RS: [-30.0346, -51.2177],
-        RO: [-10.9431, -62.8278],
-        RR: [2.7376, -62.0751],
-        SC: [-27.2423, -50.2189],
-        SP: [-22.2500, -48.5000],
-        SE: [-10.5741, -37.3857],
-        TO: [-10.1753, -48.2982]
+    AC: [-9.0238, -70.8120],  
+    AL: [-9.5713, -36.7820],  
+    AP: [1.4102, -51.7700],  
+    AM: [-3.4168, -65.8561],  
+    BA: [-12.5797, -41.7007],  
+    CE: [-5.4984, -39.3206],  
+    DF: [-15.7998, -47.8645],  
+    ES: [-19.1834, -40.3089],  
+    GO: [-15.8270, -49.8362],  
+    MA: [-5.4200, -45.4400],  
+    MT: [-12.6819, -56.9211],  
+    MS: [-20.7722, -54.7852],  
+    MG: [-18.5122, -44.5550],  
+    PA: [-3.4168, -52.2166],  
+    PB: [-7.2400, -36.7820],  
+    PR: [-24.8947, -51.5500],  
+    PE: [-8.8137, -36.9541],  
+    PI: [-7.7183, -42.7289],  
+    RJ: [-22.2523, -42.6600],  
+    RN: [-5.8120, -36.5920],  
+    RS: [-30.0346, -51.2177],  
+    RO: [-10.9431, -62.8278],  
+    RR: [2.7376, -62.0751],  
+    SC: [-27.2423, -50.2189],  
+    SP: [-22.2500, -48.5000],  
+    SE: [-10.5741, -37.3857],  
+    TO: [-10.1753, -48.2982]  
 
-    };
+};  
 
 
-    return (
-        coordenadas[uf] ||
-        null
-    );
+return (  
+    coordenadas[uf] ||  
+    null  
+);
 
 }
-
 
 // ============================================
 // PAÍSES NO EXTERIOR
@@ -2151,118 +1818,116 @@ function coordenadaEstado(
 
 async function carregarPaises() {
 
-    const {
-        data,
-        error
-    } = await db.rpc(
-        "torcida_por_pais"
-    );
+const {  
+    data,  
+    error  
+} = await db.rpc(  
+    "torcida_por_pais"  
+);  
 
 
-    if (error) {
+if (error) {  
 
-        console.error(
-            "Erro torcida_por_pais:",
-            error
-        );
+    console.error(  
+        "Erro torcida_por_pais:",  
+        error  
+    );  
 
-        return;
+    return;  
 
-    }
-
-
-    const container =
-        document.getElementById(
-            "listaPaises"
-        );
+}  
 
 
-    if (!container) {
-        return;
-    }
+const container =  
+    document.getElementById(  
+        "listaPaises"  
+    );  
 
 
-    container.innerHTML = "";
+if (!container) {  
+    return;  
+}  
 
 
-    if (
-        !data ||
-        data.length === 0
-    ) {
-
-        container.innerHTML = `
-            <p class="empty-state">
-                Ainda não há torcedores cadastrados no exterior.
-            </p>
-        `;
-
-        return;
-
-    }
+container.innerHTML = "";  
 
 
-    data.forEach(
-        item => {
+if (  
+    !data ||  
+    data.length === 0  
+) {  
 
-            const linha =
-                document.createElement(
-                    "div"
-                );
+    container.innerHTML = `  
+        <p class="empty-state">  
+            Ainda não há torcedores cadastrados no exterior.  
+        </p>  
+    `;  
 
+    return;  
 
-            linha.className =
-                "country-row";
-
-
-            const bandeira =
-                bandeiraPais(
-                    item.pais
-                );
+}  
 
 
-            linha.innerHTML = `
-                <span>
-                    ${bandeira}
-                    ${escapeHTML(
-                        item.pais
-                    )}
-                </span>
+data.forEach(  
+    item => {  
 
-                <strong>
-                    ${Number(
-                        item.quantidade
-                    ).toLocaleString(
-                        "pt-BR"
-                    )}
-                </strong>
-            `;
+        const linha =  
+            document.createElement(  
+                "div"  
+            );  
 
 
-            container.appendChild(
-                linha
-            );
+        linha.className =  
+            "country-row";  
 
-        }
-    );
+
+        const bandeira =  
+            bandeiraPais(  
+                item.pais  
+            );  
+
+
+        linha.innerHTML = `  
+            <span>  
+                ${bandeira}  
+                ${escapeHTML(  
+                    item.pais  
+                )}  
+            </span>  
+
+            <strong>  
+                ${Number(  
+                    item.quantidade  
+                ).toLocaleString(  
+                    "pt-BR"  
+                )}  
+            </strong>  
+        `;  
+
+
+        container.appendChild(  
+            linha  
+        );  
+
+    }  
+);
 
 }
-
 
 // ============================================
 // BANDEIRA DO PAÍS
 // ============================================
 
 function bandeiraPais(
-    pais
+pais
 ) {
 
-    return (
-        bandeirasPaises[pais] ||
-        "🌎"
-    );
+return (  
+    bandeirasPaises[pais] ||  
+    "🌎"  
+);
 
 }
-
 
 // ============================================
 // REALTIME
@@ -2270,91 +1935,90 @@ function bandeiraPais(
 
 function iniciarRealtime() {
 
-    try {
+try {  
 
-        db
-            .channel(
-                "mapa-da-torcida"
-            )
-            .on(
-                "broadcast",
-                {
-                    event:
-                        "atualizacao"
-                },
-                async () => {
+    db  
+        .channel(  
+            "mapa-da-torcida"  
+        )  
+        .on(  
+            "broadcast",  
+            {  
+                event:  
+                    "atualizacao"  
+            },  
+            async () => {  
 
-                    console.log(
-                        "Mapa atualizado."
-                    );
-
-
-                    await carregarDados();
-
-                }
-            )
-            .subscribe(
-                status => {
-
-                    console.log(
-                        "Realtime:",
-                        status
-                    );
-
-                }
-            );
+                console.log(  
+                    "Mapa atualizado."  
+                );  
 
 
-    } catch (error) {
+                await carregarDados();  
 
-        console.error(
-            "Erro no Realtime:",
-            error
-        );
+            }  
+        )  
+        .subscribe(  
+            status => {  
 
-    }
+                console.log(  
+                    "Realtime:",  
+                    status  
+                );  
+
+            }  
+        );  
+
+
+} catch (error) {  
+
+    console.error(  
+        "Erro no Realtime:",  
+        error  
+    );  
 
 }
 
+}
 
 // ============================================
 // SEGURANÇA
 // ============================================
 
 function escapeHTML(
-    texto
+texto
 ) {
 
-    if (
-        texto === null ||
-        texto === undefined
-    ) {
+if (  
+    texto === null ||  
+    texto === undefined  
+) {  
 
-        return "";
+    return "";  
 
-    }
+}  
 
 
-    return String(texto)
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+return String(texto)  
+    .replace(  
+        /&/g,  
+        "&amp;"  
+    )  
+    .replace(  
+        /</g,  
+        "&lt;"  
+    )  
+    .replace(  
+        />/g,  
+        "&gt;"  
+    )  
+    .replace(  
+        /"/g,  
+        "&quot;"  
+    )  
+    .replace(  
+        /'/g,  
+        "&#039;"  
+    );
 
 }
