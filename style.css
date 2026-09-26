@@ -403,6 +403,38 @@ section {
 
 
 /* =========================================================
+   PAINEL DO ESTADO
+   ========================================================= */
+
+#painelEstadoMapa {
+    touch-action: pan-y;
+}
+
+#painelEstadoMapa .state-panel-body {
+    touch-action: pan-y;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+
+#painelEstadoMapa .state-panel-header {
+    flex: 0 0 auto;
+}
+
+#painelEstadoMapa .state-panel-close {
+    flex: 0 0 auto;
+}
+
+#painelEstadoMapa .state-city-supporters {
+    width: 100%;
+}
+
+#painelEstadoMapa .supporter-item {
+    user-select: text;
+}
+
+
+/* =========================================================
    ESTATÍSTICAS
    ========================================================= */
 
@@ -811,6 +843,15 @@ footer strong {
         height: 500px;
 
         border-radius: 18px;
+    }
+
+    #painelEstadoMapa {
+        width: min(380px, 92%);
+        max-width: 92%;
+    }
+
+    #painelEstadoMapa .state-panel-body {
+        overscroll-behavior-y: contain;
     }
 
     .location-options {
