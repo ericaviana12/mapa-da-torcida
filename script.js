@@ -1090,10 +1090,6 @@ function inicializarMapa() {
     );
 
 
-    // ========================================
-    // ALTERA OS MARCADORES CONFORME O ZOOM
-    // ========================================
-
     mapa.on(
         "zoomend",
         desenharMarcadores
@@ -1391,10 +1387,6 @@ async function desenharMarcadores() {
     }
 
 
-    // Cada novo desenho recebe uma versão.
-    // Isso impede que uma busca antiga do IBGE
-    // reapareça depois que o usuário mudar o zoom.
-
     const versaoAtual =
         ++versaoMarcadores;
 
@@ -1418,15 +1410,7 @@ async function desenharMarcadores() {
 
 
     // ========================================
-    // ÍCONE DA BOLINHA
-    // ========================================
-    //
-    // A mesma bolinha é usada tanto para
-    // estados quanto para cidades.
-    //
-    // O número fica DENTRO de um círculo
-    // real, com tamanho proporcional à
-    // quantidade de torcedores.
+    // CRIAR A BOLINHA
     // ========================================
 
     function criarIconeBolinha(
@@ -1456,49 +1440,54 @@ async function desenharMarcadores() {
             );
 
 
-        return L.divIcon({
+        return {
 
-            className:
-                "custom-city-marker",
+            icone:
+                L.divIcon({
 
-            html: `
-                <div
-                    class="city-marker"
-                    style="
-                        width: ${tamanho}px;
-                        height: ${tamanho}px;
-                        min-width: ${tamanho}px;
-                        min-height: ${tamanho}px;
-                        max-width: ${tamanho}px;
-                        max-height: ${tamanho}px;
-                        border-radius: 50%;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        box-sizing: border-box;
-                        text-align: center;
-                        font-size: ${tamanhoFonte}px;
-                        font-weight: 700;
-                        line-height: 1;
-                        padding: 0;
-                        margin: 0;
-                    "
-                >
-                    ${quantidade}
-                </div>
-            `,
+                    className:
+                        "custom-city-marker",
 
-            iconSize: [
-                tamanho,
-                tamanho
-            ],
+                    html: `
+                        <div
+                            class="city-marker"
+                            style="
+                                width:${tamanho}px;
+                                height:${tamanho}px;
+                                min-width:${tamanho}px;
+                                min-height:${tamanho}px;
+                                border-radius:50%;
+                                display:flex;
+                                align-items:center;
+                                justify-content:center;
+                                box-sizing:border-box;
+                                text-align:center;
+                                font-size:${tamanhoFonte}px;
+                                font-weight:700;
+                                line-height:1;
+                                padding:0;
+                                margin:0;
+                            "
+                        >
+                            ${quantidade}
+                        </div>
+                    `,
 
-            iconAnchor: [
-                tamanho / 2,
-                tamanho / 2
-            ]
+                    iconSize: [
+                        tamanho,
+                        tamanho
+                    ],
 
-        });
+                    iconAnchor: [
+                        tamanho / 2,
+                        tamanho / 2
+                    ]
+
+                }),
+
+            tamanho
+
+        };
 
     }
 
@@ -1507,11 +1496,7 @@ async function desenharMarcadores() {
     // ZOOM AFASTADO
     // ========================================
     //
-    // Zoom menor que 7:
-    // UMA BOLINHA POR ESTADO.
-    //
-    // O número representa o total de
-    // torcedores daquele estado.
+    // Aqui aparece UMA BOLINHA POR ESTADO.
     // ========================================
 
     if (zoom < 7) {
@@ -1538,8 +1523,11 @@ async function desenharMarcadores() {
                 ) {
 
                     estadosAgrupados[uf] = {
+
                         uf,
+
                         quantidade: 0
+
                     };
 
                 }
@@ -1568,14 +1556,18 @@ async function desenharMarcadores() {
                 }
 
 
+                const marcadorInfo =
+                    criarIconeBolinha(
+                        estadoInfo.quantidade
+                    );
+
+
                 const marcador =
                     L.marker(
                         coordenadas,
                         {
                             icon:
-                                criarIconeBolinha(
-                                    estadoInfo.quantidade
-                                )
+                                marcadorInfo.icone
                         }
                     ).addTo(
                         mapa
@@ -1589,10 +1581,6 @@ async function desenharMarcadores() {
                     estadoInfo.uf;
 
 
-                const quantidade =
-                    estadoInfo.quantidade;
-
-
                 const popup =
                     `
                         <div class="city-popup">
@@ -1604,8 +1592,8 @@ async function desenharMarcadores() {
                             </strong>
 
                             <div class="city-popup-count">
-                                ${quantidade}
-                                torcedor${quantidade === 1 ? "" : "es"}
+                                ${estadoInfo.quantidade}
+                                torcedor${estadoInfo.quantidade === 1 ? "" : "es"}
                             </div>
 
                         </div>
@@ -1633,13 +1621,14 @@ async function desenharMarcadores() {
     // ZOOM APROXIMADO
     // ========================================
     //
-    // Zoom 7 ou maior:
-    // AS BOLINHAS DOS ESTADOS SOMEM.
+    // Aqui desaparecem os estados.
     //
-    // Entram as BOLINHAS DAS CIDADES.
+    // Cada cidade passa a ter SUA PRÓPRIA
+    // BOLINHA com seu número.
     //
-    // Cada número representa a quantidade
-    // de torcedores daquela cidade.
+    // Depois as posições são verificadas
+    // para evitar que uma bolinha fique
+    // em cima da outra.
     // ========================================
 
     const cidades = {};
@@ -1690,14 +1679,17 @@ async function desenharMarcadores() {
     );
 
 
+    const cidadesComCoordenadas = [];
+
+
+    // ========================================
+    // BUSCAR COORDENADAS
+    // ========================================
+
     for (
         const cidadeInfo
         of Object.values(cidades)
     ) {
-
-        // Se o zoom mudou enquanto o IBGE
-        // estava sendo consultado, abandona
-        // este desenho antigo.
 
         if (
             versaoAtual !==
@@ -1735,21 +1727,328 @@ async function desenharMarcadores() {
                     .length;
 
 
-            // --------------------------------
-            // BOLINHA DA CIDADE
-            // --------------------------------
-
-            const icone =
+            const marcadorInfo =
                 criarIconeBolinha(
                     quantidade
                 );
 
 
+            cidadesComCoordenadas.push({
+
+                cidadeInfo,
+
+                coordenadas,
+
+                quantidade,
+
+                tamanho:
+                    marcadorInfo.tamanho,
+
+                icone:
+                    marcadorInfo.icone
+
+            });
+
+
+        } catch (error) {
+
+            console.error(
+                "Erro ao obter coordenadas da cidade:",
+                error
+            );
+
+        }
+
+    }
+
+
+    // ========================================
+    // EVITAR SOBREPOSIÇÃO
+    // ========================================
+    //
+    // A posição original continua sendo a
+    // referência da cidade.
+    //
+    // Se duas bolinhas ficarem próximas
+    // demais na tela, a segunda é deslocada
+    // um pouco em volta da primeira.
+    //
+    // Isso impede:
+    //
+    //   1
+    //   2
+    //
+    // de virarem uma bolinha em cima da outra.
+    // ========================================
+
+    const posicoesOcupadas = [];
+
+
+    function distanciaPixels(
+        pontoA,
+        pontoB
+    ) {
+
+        const a =
+            mapa.latLngToLayerPoint(
+                pontoA
+            );
+
+
+        const b =
+            mapa.latLngToLayerPoint(
+                pontoB
+            );
+
+
+        const dx =
+            a.x - b.x;
+
+
+        const dy =
+            a.y - b.y;
+
+
+        return Math.sqrt(
+            dx * dx +
+            dy * dy
+        );
+
+    }
+
+
+    function encontrarPosicaoLivre(
+        coordenadas,
+        tamanho
+    ) {
+
+        const distanciaMinima =
+            tamanho + 12;
+
+
+        // Primeira tentativa:
+        // exatamente na cidade.
+
+        let tentativa =
+            coordenadas;
+
+
+        let livre = true;
+
+
+        posicoesOcupadas.forEach(
+            ocupada => {
+
+                if (
+                    distanciaPixels(
+                        tentativa,
+                        ocupada.coordenadas
+                    ) <
+                    Math.max(
+                        distanciaMinima,
+                        ocupada.tamanho + 12
+                    )
+                ) {
+
+                    livre = false;
+
+                }
+
+            }
+        );
+
+
+        if (livre) {
+            return tentativa;
+        }
+
+
+        // ====================================
+        // TENTATIVAS AO REDOR DO PONTO
+        // ====================================
+
+        const pontoOriginal =
+            mapa.latLngToLayerPoint(
+                coordenadas
+            );
+
+
+        const angulos = [
+            0,
+            45,
+            90,
+            135,
+            180,
+            225,
+            270,
+            315,
+            22,
+            67,
+            112,
+            157,
+            202,
+            247,
+            292,
+            337
+        ];
+
+
+        const distancias = [
+            distanciaMinima,
+            distanciaMinima * 1.5,
+            distanciaMinima * 2,
+            distanciaMinima * 2.5,
+            distanciaMinima * 3
+        ];
+
+
+        for (
+            const distancia
+            of distancias
+        ) {
+
+            for (
+                const angulo
+                of angulos
+            ) {
+
+                const radianos =
+                    angulo *
+                    Math.PI /
+                    180;
+
+
+                const candidato =
+                    L.point(
+                        pontoOriginal.x +
+                        Math.cos(
+                            radianos
+                        ) *
+                        distancia,
+
+                        pontoOriginal.y +
+                        Math.sin(
+                            radianos
+                        ) *
+                        distancia
+                    );
+
+
+                const latLng =
+                    mapa.layerPointToLatLng(
+                        candidato
+                    );
+
+
+                let candidatoLivre =
+                    true;
+
+
+                for (
+                    const ocupada
+                    of posicoesOcupadas
+                ) {
+
+                    const distancia =
+                        distanciaPixels(
+                            latLng,
+                            ocupada.coordenadas
+                        );
+
+
+                    const distanciaNecessaria =
+                        Math.max(
+                            tamanho,
+                            ocupada.tamanho
+                        ) + 12;
+
+
+                    if (
+                        distancia <
+                        distanciaNecessaria
+                    ) {
+
+                        candidatoLivre =
+                            false;
+
+                        break;
+
+                    }
+
+                }
+
+
+                if (
+                    candidatoLivre
+                ) {
+
+                    return latLng;
+
+                }
+
+            }
+
+        }
+
+
+        // Se não encontrou espaço
+        // suficiente, mantém a posição
+        // original.
+
+        return coordenadas;
+
+    }
+
+
+    // ========================================
+    // ORDENAR
+    // ========================================
+    //
+    // As maiores bolinhas entram primeiro.
+    // ========================================
+
+    cidadesComCoordenadas.sort(
+        (a, b) =>
+            b.quantidade -
+            a.quantidade
+    );
+
+
+    // ========================================
+    // CRIAR MARCADORES DAS CIDADES
+    // ========================================
+
+    cidadesComCoordenadas.forEach(
+        cidadeItem => {
+
+            const cidadeInfo =
+                cidadeItem.cidadeInfo;
+
+
+            const posicao =
+                encontrarPosicaoLivre(
+                    cidadeItem.coordenadas,
+                    cidadeItem.tamanho
+                );
+
+
+            posicoesOcupadas.push({
+
+                coordenadas:
+                    posicao,
+
+                tamanho:
+                    cidadeItem.tamanho
+
+            });
+
+
             const marcador =
                 L.marker(
-                    coordenadas,
+                    posicao,
                     {
-                        icon: icone
+                        icon:
+                            cidadeItem.icone
                     }
                 ).addTo(
                     mapa
@@ -1757,7 +2056,7 @@ async function desenharMarcadores() {
 
 
             // --------------------------------
-            // LISTA DE TORCEDORES DA CIDADE
+            // LISTA DE TORCEDORES
             // --------------------------------
 
             const listaTorcedores =
@@ -1786,11 +2085,13 @@ async function desenharMarcadores() {
 
                             return `
                                 <div class="supporter-item">
+
                                     <strong>
                                         ${escapeHTML(
                                             nome
                                         )}
                                     </strong>${idadeTexto}
+
                                 </div>
                             `;
 
@@ -1802,6 +2103,10 @@ async function desenharMarcadores() {
             // --------------------------------
             // POPUP
             // --------------------------------
+
+            const quantidade =
+                cidadeItem.quantidade;
+
 
             const popup =
                 `
@@ -1837,17 +2142,8 @@ async function desenharMarcadores() {
                 marcador
             );
 
-
-        } catch (error) {
-
-            console.error(
-                "Erro ao criar marcador:",
-                error
-            );
-
         }
-
-    }
+    );
 
 }
 
