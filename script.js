@@ -81,6 +81,31 @@ const paises = [
 
 
 // ============================================
+// BANDEIRAS
+// ============================================
+
+const bandeirasPaises = {
+    "Argentina": "🇦🇷",
+    "Bolívia": "🇧🇴",
+    "Canadá": "🇨🇦",
+    "Chile": "🇨🇱",
+    "Colômbia": "🇨🇴",
+    "Estados Unidos": "🇺🇸",
+    "França": "🇫🇷",
+    "Alemanha": "🇩🇪",
+    "Itália": "🇮🇹",
+    "Japão": "🇯🇵",
+    "México": "🇲🇽",
+    "Paraguai": "🇵🇾",
+    "Peru": "🇵🇪",
+    "Portugal": "🇵🇹",
+    "Reino Unido": "🇬🇧",
+    "Uruguai": "🇺🇾",
+    "Outro": "🌎"
+};
+
+
+// ============================================
 // VARIÁVEIS
 // ============================================
 
@@ -214,7 +239,8 @@ function preencherPaises() {
 
             option.value = nome;
 
-            option.textContent = nome;
+            option.textContent =
+                `${bandeiraPais(nome)} ${nome}`;
 
             select.appendChild(
                 option
@@ -574,10 +600,6 @@ async function enviarCadastro(
         );
 
 
-    // ----------------------------------------
-    // CAMPOS
-    // ----------------------------------------
-
     const nome =
         document.getElementById(
             "nome"
@@ -655,10 +677,6 @@ async function enviarCadastro(
     let nomePais = null;
 
 
-    // ----------------------------------------
-    // BRASIL
-    // ----------------------------------------
-
     if (
         localTipo === "Brasil"
     ) {
@@ -688,10 +706,6 @@ async function enviarCadastro(
     }
 
 
-    // ----------------------------------------
-    // EXTERIOR
-    // ----------------------------------------
-
     if (
         localTipo === "Exterior"
     ) {
@@ -701,10 +715,6 @@ async function enviarCadastro(
 
     }
 
-
-    // ========================================
-    // VALIDAÇÕES
-    // ========================================
 
     if (!nome) {
 
@@ -808,10 +818,6 @@ async function enviarCadastro(
     }
 
 
-    // ========================================
-    // ENVIANDO
-    // ========================================
-
     const textoOriginal =
         botao?.textContent;
 
@@ -893,15 +899,9 @@ async function enviarCadastro(
 
 
         if (error) {
-
             throw error;
-
         }
 
-
-        // ====================================
-        // SUCESSO
-        // ====================================
 
         form.reset();
 
@@ -938,11 +938,8 @@ async function enviarCadastro(
 
         alterarLocal();
 
-
         mostrarSucesso();
 
-
-        // Atualiza mapa e números
         await carregarDados();
 
 
@@ -988,7 +985,7 @@ async function enviarCadastro(
 
 
 // ============================================
-// MENSAGEM
+// MENSAGENS
 // ============================================
 
 function mostrarMensagem(
@@ -1036,7 +1033,6 @@ function limparMensagem() {
 
     elemento.textContent = "";
 
-
     elemento.classList.remove(
         "visible"
     );
@@ -1064,7 +1060,6 @@ function mostrarSucesso() {
     elemento.classList.add(
         "visible"
     );
-
 
     elemento.classList.add(
         "success"
@@ -1172,10 +1167,6 @@ async function carregarEstatisticas() {
 
 }
 
-
-// ============================================
-// ATUALIZAR ESTATÍSTICAS
-// ============================================
 
 function atualizarEstatisticas() {
 
@@ -1490,15 +1481,29 @@ async function desenharMarcadores() {
                 cidadeInfo.participantes.length;
 
 
+            // --------------------------------
+            // TAMANHO DO MARCADOR
+            // --------------------------------
+
             const tamanho =
                 Math.max(
-                    30,
+                    52,
                     Math.min(
-                        70,
-                        30 +
+                        92,
+                        52 +
                         Math.sqrt(
                             quantidade
-                        ) * 8
+                        ) * 10
+                    )
+                );
+
+
+            const tamanhoFonte =
+                Math.max(
+                    17,
+                    Math.min(
+                        30,
+                        tamanho / 2.4
                     )
                 );
 
@@ -1514,10 +1519,8 @@ async function desenharMarcadores() {
                             style="
                                 width:${tamanho}px;
                                 height:${tamanho}px;
-                                font-size:${Math.max(
-                                    12,
-                                    tamanho / 3
-                                )}px;
+                                font-size:${tamanhoFonte}px;
+                                line-height:${tamanho}px;
                             "
                         >
                             ${quantidade}
@@ -1548,17 +1551,79 @@ async function desenharMarcadores() {
                 );
 
 
+            // --------------------------------
+            // LISTA DE TORCEDORES DA CIDADE
+            // --------------------------------
+
+            const listaTorcedores =
+                cidadeInfo.participantes
+                    .map(
+                        participante => {
+
+                            const nome =
+                                participante.nome_exibicao ||
+                                "Torcedor";
+
+                            const idade =
+                                Number(
+                                    participante.idade
+                                );
+
+
+                            const idadeTexto =
+                                Number.isFinite(
+                                    idade
+                                )
+                                    ? `, ${idade} anos`
+                                    : "";
+
+
+                            return `
+                                <div class="supporter-item">
+                                    <strong>
+                                        ${escapeHTML(
+                                            nome
+                                        )}
+                                    </strong>${idadeTexto}
+                                </div>
+                            `;
+
+                        }
+                    )
+                    .join("");
+
+
+            // --------------------------------
+            // POPUP
+            // --------------------------------
+
+            const popup =
+                `
+                    <div class="city-popup">
+
+                        <strong class="city-popup-title">
+                            ${escapeHTML(
+                                cidadeInfo.cidade
+                            )}/${escapeHTML(
+                                cidadeInfo.estado
+                            )}
+                        </strong>
+
+                        <div class="city-popup-count">
+                            ${quantidade}
+                            torcedor${quantidade === 1 ? "" : "es"}
+                        </div>
+
+                        <div class="city-popup-list">
+                            ${listaTorcedores}
+                        </div>
+
+                    </div>
+                `;
+
+
             marcador.bindPopup(
-                `
-                    <strong>
-                        ${escapeHTML(
-                            cidadeInfo.cidade
-                        )}
-                    </strong>
-                    <br>
-                    ${quantidade}
-                    torcedor${quantidade === 1 ? "" : "es"}
-                `
+                popup
             );
 
 
@@ -1599,9 +1664,11 @@ async function obterCoordenadasMunicipio(
 
 
         if (!resposta.ok) {
+
             throw new Error(
                 "Erro na API de malhas do IBGE."
             );
+
         }
 
 
@@ -1843,8 +1910,15 @@ async function carregarPaises() {
                 "country-row";
 
 
+            const bandeira =
+                bandeiraPais(
+                    item.pais
+                );
+
+
             linha.innerHTML = `
                 <span>
+                    ${bandeira}
                     ${escapeHTML(
                         item.pais
                     )}
@@ -1865,6 +1939,22 @@ async function carregarPaises() {
             );
 
         }
+    );
+
+}
+
+
+// ============================================
+// BANDEIRA DO PAÍS
+// ============================================
+
+function bandeiraPais(
+    pais
+) {
+
+    return (
+        bandeirasPaises[pais] ||
+        "🌎"
     );
 
 }
