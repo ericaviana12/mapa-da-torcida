@@ -108,12 +108,6 @@ let mapa = null;
 
 let marcadores = [];
 
-let marcadoresEstados = [];
-
-let marcadoresCidades = [];
-
-let nivelMarcadoresAtual = null;
-
 let dadosMapa = [];
 
 let estatisticasAtuais = {};
@@ -1007,13 +1001,12 @@ L.tileLayer(
     mapa
 );
 
-// ============================================
-// ALTERAR MARCADORES CONFORME O ZOOM
-// ============================================
+// ALTERAÇÃO: redesenha os marcadores
+// quando o nível de zoom muda.
 
 mapa.on(
     "zoomend",
-    atualizarMarcadoresPorZoom
+    desenharMarcadores
 );
 
 }
@@ -1292,36 +1285,172 @@ marcadores.forEach(
     }
 );
 
-marcadoresEstados.forEach(
-    marcador => {
-
-        mapa.removeLayer(
-            marcador
-        );
-
-    }
-);
-
-marcadoresCidades.forEach(
-    marcador => {
-
-        mapa.removeLayer(
-            marcador
-        );
-
-    }
-);
-
 marcadores = [];
 
-marcadoresEstados = [];
+// --------------------------------------------
+// VERIFICAR ZOOM
+// --------------------------------------------
 
-marcadoresCidades = [];
+const zoom =
+    mapa.getZoom();
 
-nivelMarcadoresAtual = null;
+const mostrarEstados =
+    zoom < 7;
 
 // --------------------------------------------
-// AGRUPAR CIDADES
+// ZOOM AFASTADO
+// MOSTRAR UM MARCADOR POR ESTADO
+// --------------------------------------------
+
+if (mostrarEstados) {
+
+    const estadosAgrupados = {};
+
+    dadosMapa.forEach(
+        item => {
+
+            const uf =
+                String(
+                    item.estado_uf || ""
+                ).trim();
+
+            if (!uf) {
+                return;
+            }
+
+            if (!estadosAgrupados[uf]) {
+
+                estadosAgrupados[uf] = {
+                    uf,
+                    quantidade: 0
+                };
+
+            }
+
+            estadosAgrupados[uf]
+                .quantidade++;
+
+        }
+    );
+
+    Object.values(
+        estadosAgrupados
+    ).forEach(
+        estadoInfo => {
+
+            const coordenadas =
+                coordenadaEstado(
+                    estadoInfo.uf
+                );
+
+            if (!coordenadas) {
+                return;
+            }
+
+            const quantidade =
+                estadoInfo.quantidade;
+
+            const tamanho =
+                Math.max(
+                    52,
+                    Math.min(
+                        92,
+                        52 +
+                        Math.sqrt(
+                            quantidade
+                        ) * 10
+                    )
+                );
+
+            const tamanhoFonte =
+                Math.max(
+                    17,
+                    Math.min(
+                        30,
+                        tamanho / 2.4
+                    )
+                );
+
+            const icone =
+                L.divIcon({
+
+                    className:
+                        "custom-city-marker",
+
+                    html: `
+                        <div
+                            class="city-marker"
+                            style="
+                                width:${tamanho}px;
+                                height:${tamanho}px;
+                                font-size:${tamanhoFonte}px;
+                                line-height:${tamanho}px;
+                            "
+                        >
+                            ${quantidade}
+                        </div>
+                    `,
+
+                    iconSize: [
+                        tamanho,
+                        tamanho
+                    ],
+
+                    iconAnchor: [
+                        tamanho / 2,
+                        tamanho / 2
+                    ]
+
+                });
+
+            const marcador =
+                L.marker(
+                    coordenadas,
+                    {
+                        icon: icone
+                    }
+                ).addTo(
+                    mapa
+                );
+
+            const nomeEstado =
+                estados[
+                    estadoInfo.uf
+                ] ||
+                estadoInfo.uf;
+
+            marcador.bindPopup(
+                `
+                    <div class="city-popup">
+
+                        <strong class="city-popup-title">
+                            ${escapeHTML(
+                                nomeEstado
+                            )}
+                        </strong>
+
+                        <div class="city-popup-count">
+                            ${quantidade}
+                            torcedor${quantidade === 1 ? "" : "es"}
+                        </div>
+
+                    </div>
+                `
+            );
+
+            marcadores.push(
+                marcador
+            );
+
+        }
+    );
+
+    return;
+}
+
+// --------------------------------------------
+// ZOOM APROXIMADO
+// MOSTRAR UM MARCADOR POR CIDADE
 // --------------------------------------------
 
 const cidades = {};
@@ -1362,146 +1491,6 @@ dadosMapa.forEach(
     }
 );
 
-// --------------------------------------------
-// AGRUPAR ESTADOS
-// --------------------------------------------
-
-const estadosAgrupados = {};
-
-dadosMapa.forEach(
-    item => {
-
-        const uf =
-            String(
-                item.estado_uf || ""
-            ).trim();
-
-        if (!uf) {
-            return;
-        }
-
-        if (!estadosAgrupados[uf]) {
-
-            estadosAgrupados[uf] = {
-                uf,
-                quantidade: 0
-            };
-
-        }
-
-        estadosAgrupados[uf]
-            .quantidade++;
-
-    }
-);
-
-// --------------------------------------------
-// MARCADORES DOS ESTADOS
-// --------------------------------------------
-
-Object.values(
-    estadosAgrupados
-).forEach(
-    estadoInfo => {
-
-        const coordenadas =
-            coordenadaEstado(
-                estadoInfo.uf
-            );
-
-        if (!coordenadas) {
-            return;
-        }
-
-        const tamanho =
-            calcularTamanhoMarcador(
-                estadoInfo.quantidade
-            );
-
-        const tamanhoFonte =
-            calcularTamanhoFonte(
-                tamanho
-            );
-
-        const icone =
-            L.divIcon({
-
-                className:
-                    "custom-city-marker",
-
-                html: `
-                    <div
-                        class="city-marker"
-                        style="
-                            width:${tamanho}px;
-                            height:${tamanho}px;
-                            font-size:${tamanhoFonte}px;
-                            line-height:${tamanho}px;
-                        "
-                    >
-                        ${estadoInfo.quantidade}
-                    </div>
-                `,
-
-                iconSize: [
-                    tamanho,
-                    tamanho
-                ],
-
-                iconAnchor: [
-                    tamanho / 2,
-                    tamanho / 2
-                ]
-
-            });
-
-        const marcador =
-            L.marker(
-                coordenadas,
-                {
-                    icon: icone
-                }
-            );
-
-        const nomeEstado =
-            estados[
-                estadoInfo.uf
-            ] ||
-            estadoInfo.uf;
-
-        const popup =
-            `
-                <div class="city-popup">
-
-                    <strong class="city-popup-title">
-                        ${escapeHTML(
-                            nomeEstado
-                        )}
-                    </strong>
-
-                    <div class="city-popup-count">
-                        ${estadoInfo.quantidade}
-                        torcedor${estadoInfo.quantidade === 1 ? "" : "es"}
-                    </div>
-
-                </div>
-            `;
-
-        marcador.bindPopup(
-            popup
-        );
-
-        marcadoresEstados.push(
-            marcador
-        );
-
-    }
-);
-
-// --------------------------------------------
-// MARCADORES DAS CIDADES
-// --------------------------------------------
-
 for (
     const cidadeInfo
     of Object.values(cidades)
@@ -1527,13 +1516,24 @@ for (
         // --------------------------------
 
         const tamanho =
-            calcularTamanhoMarcador(
-                quantidade
+            Math.max(
+                52,
+                Math.min(
+                    92,
+                    52 +
+                    Math.sqrt(
+                        quantidade
+                    ) * 10
+                )
             );
 
         const tamanhoFonte =
-            calcularTamanhoFonte(
-                tamanho
+            Math.max(
+                17,
+                Math.min(
+                    30,
+                    tamanho / 2.4
+                )
             );
 
         const icone =
@@ -1573,6 +1573,8 @@ for (
                 {
                     icon: icone
                 }
+            ).addTo(
+                mapa
             );
 
         // --------------------------------
@@ -1646,7 +1648,7 @@ for (
             popup
         );
 
-        marcadoresCidades.push(
+        marcadores.push(
             marcador
         );
 
@@ -1660,156 +1662,6 @@ for (
     }
 
 }
-
-// --------------------------------------------
-// MOSTRAR O NÍVEL CORRETO CONFORME O ZOOM
-// --------------------------------------------
-
-atualizarMarcadoresPorZoom();
-
-}
-
-// ============================================
-// TAMANHO DOS MARCADORES
-// ============================================
-
-function calcularTamanhoMarcador(
-quantidade
-) {
-
-return Math.max(
-    52,
-    Math.min(
-        92,
-        52 +
-        Math.sqrt(
-            quantidade
-        ) * 10
-    )
-);
-
-}
-
-function calcularTamanhoFonte(
-tamanho
-) {
-
-return Math.max(
-    17,
-    Math.min(
-        30,
-        tamanho / 2.4
-    )
-);
-
-}
-
-// ============================================
-// ALTERAR MARCADORES CONFORME O ZOOM
-// ============================================
-
-function atualizarMarcadoresPorZoom() {
-
-if (!mapa) {
-    return;
-}
-
-if (
-    !marcadoresEstados.length &&
-    !marcadoresCidades.length
-) {
-    return;
-}
-
-const zoom =
-    mapa.getZoom();
-
-// --------------------------------------------
-// ZOOM 4 ATÉ 6 = ESTADOS
-// ZOOM 7+ = CIDADES
-// --------------------------------------------
-
-const nivel =
-    zoom < 7
-        ? "estado"
-        : "cidade";
-
-// Se já está mostrando o nível correto,
-// não precisa fazer nada.
-if (
-    nivel === nivelMarcadoresAtual
-) {
-    return;
-}
-
-// --------------------------------------------
-// REMOVER MARCADORES VISÍVEIS
-// --------------------------------------------
-
-marcadores.forEach(
-    marcador => {
-
-        mapa.removeLayer(
-            marcador
-        );
-
-    }
-);
-
-marcadores = [];
-
-// --------------------------------------------
-// MOSTRAR ESTADOS
-// --------------------------------------------
-
-if (
-    nivel === "estado"
-) {
-
-    marcadoresEstados.forEach(
-        marcador => {
-
-            marcador.addTo(
-                mapa
-            );
-
-        }
-    );
-
-    marcadores =
-        [
-            ...marcadoresEstados
-        ];
-
-}
-
-// --------------------------------------------
-// MOSTRAR CIDADES
-// --------------------------------------------
-
-if (
-    nivel === "cidade"
-) {
-
-    marcadoresCidades.forEach(
-        marcador => {
-
-            marcador.addTo(
-                mapa
-            );
-
-        }
-    );
-
-    marcadores =
-        [
-            ...marcadoresCidades
-        ];
-
-}
-
-nivelMarcadoresAtual =
-    nivel;
 
 }
 
